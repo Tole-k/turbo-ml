@@ -3,8 +3,7 @@ from typing import Set
 
 
 class Process(ABC):
-    def __init__(se
-    lf) -> None:
+    def __init__(self) -> None:
         super().__init__()
 
     @abstractmethod
