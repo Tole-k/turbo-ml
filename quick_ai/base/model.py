@@ -1,6 +1,6 @@
 from abc import ABC, ABCMeta, abstractmethod
 import pickle
-from typing import List
+from typing import List, Iterable
 
 
 class Model(ABC):
@@ -9,13 +9,13 @@ class Model(ABC):
         self.model = None
 
     @abstractmethod
-    def train(self, data) -> None:
+    def train(self, data: Iterable, target: Iterable) -> None:
         pass
 
     @abstractmethod
-    def predict(self, guess) -> List[int]:
+    def predict(self, guess: Iterable) -> List:
         pass
 
     def save(self, path: str) -> None:
         with open(path, 'wb') as file:
-            pickle.dump(self.model, file)
+            pickle.dump(self, file)
