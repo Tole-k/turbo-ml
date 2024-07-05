@@ -4,7 +4,7 @@ from typing import List
 
 
 class Workflow:
-    # TODO maybe inherit from list to make it more convinient
+    # TODO maybe inherit from list to make it more convenient
     def __init__(self) -> None:
         super().__init__()
         self._workflow: List[Process] = []
@@ -20,7 +20,7 @@ class Workflow:
         # TODO define input_type format
         input_types = [input_type]
         for process in self._workflow:
-            aif = process.avalible_input_formats()
+            aif = process.available_input_formats()
             if all(in_type not in aif for in_type in input_types):
                 return False
         return True

@@ -3,13 +3,14 @@ from typing import Set
 
 
 class Process(ABC):
-    def __init__(self) -> None:
+    def __init__(se
+    lf) -> None:
         super().__init__()
 
     @abstractmethod
-    def avalible_input_formats(self) -> Set:
+    def available_input_formats(self) -> Set:
         pass
 
     @abstractmethod
-    def avalible_output_formats(self) -> Set:
+    def available_output_formats(self) -> Set:
         pass
