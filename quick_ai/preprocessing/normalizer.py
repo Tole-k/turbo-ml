@@ -29,15 +29,21 @@ class Normalizer(Preprocessor):
         return np.transpose(target)[0]
 
 
-data = [[-1, 2], [-0.5, 6], [0, 10], [1, 18]]
-target = [1, 2, 3, 4]
-normalizer = Normalizer()
-data, target = normalizer.fit(data, target)
-print(data)
-data = [[1, 2], [0.1, 13]]
-data = normalizer.preprocess(data)
-print(data)
-print(target)
-target = normalizer.inverse(target)
-print(target)
-print(all(target == [1, 2, 3, 4]))
+def main():
+
+    data = [[-1, 2], [-0.5, 6], [0, 10], [1, 18]]
+    target = [1, 2, 3, 4]
+    normalizer = Normalizer()
+    data, target = normalizer.fit(data, target)
+    print(data)
+    data = [[1, 2], [0.1, 13]]
+    data = normalizer.preprocess(data)
+    print(data)
+    print(target)
+    target = normalizer.inverse_target(target)
+    print(target)
+    print(all(target == [1, 2, 3, 4]))
+
+
+if __name__ == '__main__':
+    main()
