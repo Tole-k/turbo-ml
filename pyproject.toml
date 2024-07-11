@@ -1,11 +1,12 @@
 [tool.poetry]
 name = "quick-ai"
 version = "0.1.0"
-description = "A short description of your project"
+description = ""
+# TODO write a description
 authors = ["Dawid Siera <dawid.siera@gmail.com>", "Anatol Kaczmarek <mail@mail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
