@@ -88,4 +88,6 @@ def get_heart_disease() -> Tuple[pd.DataFrame, pd.DataFrame]:
                'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'num']
     heart_disease = pd.read_csv(StringIO(response.text),
                                 header=None, names=columns)
-    return heart_disease, pd.DataFrame(heart_disease['num'])
+    target = pd.DataFrame(heart_disease['num'])
+    heart_disease.drop(columns=['num'], inplace=True)
+    return heart_disease, target
