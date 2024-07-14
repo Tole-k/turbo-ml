@@ -6,7 +6,11 @@ class NanImputer:
     numerical_imputer = SimpleImputer(strategy="mean")
     categorical_imputer = SimpleImputer(strategy="most_frequent")
     
-    def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
+    def fit_transform(self, data: pd.DataFrame, nan_threshold : float = 1.0) -> pd.DataFrame:
+        nans=data.isna().sum()/len(data)
+        self.cols_to_drop = nans[nans>nan_threshold]
+        data.drop(columns=self.cols_to_drop.index,inplace=True)
+        print(data)
         og_cols = data.columns
         data=data.apply(lambda x: x.astype(bool) if x.isin([0,1]).all() else x)
         numerical_cols = data.select_dtypes(include=[np.number])
@@ -15,6 +19,7 @@ class NanImputer:
         categorical_cols = pd.DataFrame(self.categorical_imputer.fit_transform(categorical_cols),columns=categorical_cols.columns)
         data = pd.concat([numerical_cols,categorical_cols],axis=1)
         return data[og_cols]
+
     def fit_transform_target(self, target: pd.Series) -> pd.Series:
         if target.isin([0,1]).all():
             target  = target.astype(bool)
@@ -23,7 +28,9 @@ class NanImputer:
         elif np.issubdtype(target.dtype, np.object) or np.issubdtype(target.dtype, np.bool_):
             target = pd.Series(self.categorical_imputer.fit_transform(np.transpose([target]))[:,0])
         return target
+
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
+        data.drop(columns=self.cols_to_drop.index,inplace=True)
         og_cols = data.columns
         data=data.apply(lambda x: x.astype(bool) if x.isin([0,1]).all() else x)
         numerical_cols = data.select_dtypes(include=[np.number])
@@ -32,6 +39,7 @@ class NanImputer:
         categorical_cols = pd.DataFrame(self.categorical_imputer.transform(categorical_cols),columns=categorical_cols.columns)
         data = pd.concat([numerical_cols,categorical_cols],axis=1)
         return data[og_cols]
+
     def transform_target(self, target: pd.Series) -> pd.Series:
         if target.isin([0,1]).all():
             target  = target.astype(bool)
