@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from ..base.preprocess import Preprocessor
 from sklearn.impute import SimpleImputer
-class NanImputer:
+class NanImputer(Preprocessor):
     numerical_imputer = SimpleImputer(strategy="mean")
     categorical_imputer = SimpleImputer(strategy="most_frequent")
     
@@ -10,7 +10,6 @@ class NanImputer:
         nans=data.isna().sum()/len(data)
         self.cols_to_drop = nans[nans>nan_threshold]
         data.drop(columns=self.cols_to_drop.index,inplace=True)
-        print(data)
         og_cols = data.columns
         data=data.apply(lambda x: x.astype(bool) if x.isin([0,1]).all() else x)
         numerical_cols = data.select_dtypes(include=[np.number])

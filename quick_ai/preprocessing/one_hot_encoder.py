@@ -5,7 +5,7 @@ from ..base.preprocess import Preprocessor
 from sklearn.preprocessing import OneHotEncoder
 
 
-class OneHotEnc():
+class OneHotEnc(Preprocessor):
     def __init__(self) -> None:
         super().__init__()
         self.encoder = OneHotEncoder(dtype=bool)

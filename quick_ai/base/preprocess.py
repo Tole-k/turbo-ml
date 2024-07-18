@@ -7,7 +7,11 @@ class Preprocessor(ABC):
     def __init__(self) -> None:
         super().__init__()
         self.model = None
+        
+    @abstractmethod
+    def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
+        pass
 
     @abstractmethod
-    def preprocess(self, data: pd.DataFrame, target: pd.Series) -> Tuple[pd.DataFrame, pd.Series]:
+    def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         pass

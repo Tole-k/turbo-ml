@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
+from ..base.preprocess import Preprocessor
 from sklearn.feature_selection import VarianceThreshold
 
-class VarianceSelector:
+class VarianceSelector(Preprocessor):
     
     def fit_transform(self, data:pd.DataFrame, threshold1:float=0.1,threshold2:float=0.9)->pd.DataFrame:
         data=data.apply(lambda x: x.astype(bool) if x.isin([0,1]).all() else x)

@@ -11,8 +11,8 @@ class Standardizer(Preprocessor):
         self.scaler = StandardScaler()
         self.target_scaler = StandardScaler()
 
-    def fit(
-        self, data: pd.DataFrame, target: pd.Series
+    def fit_transform(
+        self, data: pd.DataFrame
     ) -> Tuple[pd.DataFrame, pd.Series]:
         data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
         normalized_numeric_cols = pd.DataFrame(
@@ -26,16 +26,18 @@ class Standardizer(Preprocessor):
                 else x
             )
         )
-
+        return data
+    
+    def fit_transform_target(self, target: pd.Series) -> pd.Series:
         if target.isin([0, 1]).all():
             target = target.astype(bool)
         if np.issubdtype(target.dtype, np.number):
             target = pd.Series(
                 self.target_scaler.fit_transform(np.transpose([target]))[:, 0]
             )
-        return data, target
+        return target
 
-    def preprocess(self, data: pd.DataFrame) -> pd.DataFrame:
+    def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
         normalized_numeric_cols = pd.DataFrame(
             self.scaler.transform(data.select_dtypes(include=[np.number])),
@@ -49,7 +51,7 @@ class Standardizer(Preprocessor):
             )
         )
 
-    def inverse(self, data: pd.DataFrame) -> pd.DataFrame:
+    def inverse_transform(self, data: pd.DataFrame) -> pd.DataFrame:
         data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
         normalized_numeric_cols = pd.DataFrame(
             self.scaler.inverse_transform(data.select_dtypes(include=[np.number])),
@@ -63,14 +65,14 @@ class Standardizer(Preprocessor):
             )
         )
 
-    def preprocess_target(self, target: pd.Series) -> pd.Series:
+    def transform_target(self, target: pd.Series) -> pd.Series:
         if target.isin([0, 1]).all():
             target = target.astype(bool)
         if np.issubdtype(target.dtype, np.number):
             target = self.target_scaler.transform(np.transpose([target]))
         return target
 
-    def inverse_target(self, target: pd.Series) -> pd.Series:
+    def inverse_transform_target(self, target: pd.Series) -> pd.Series:
         if target.isin([0, 1]).all():
             target = target.astype(bool)
         if np.issubdtype(target.dtype, np.number):
@@ -97,10 +99,9 @@ def main():
     print(target)
     print()
     standardizer = Standardizer()
-    data, target = standardizer.fit(data, target)
+    data = standardizer.fit_transform(data)
     print("After Standardization:")
     print(data)
-    print(target)
     print()
     data = pd.DataFrame(
         {
@@ -111,15 +112,21 @@ def main():
             "E": [1, 0.2, "c", 0],
         }
     )
-    data = standardizer.preprocess(data)
+    data = standardizer.transform(data)
     print("Standardazing more data:")
     print(data)
     print()
-    target = standardizer.inverse_target(target)
+    data = standardizer.inverse_transform(data)
+    print("Inverse Data:")
+    print(data)
+    print()
+    target = standardizer.fit_transform_target(target)
+    print("After Normalizing Target:")
+    print(target)
+    target = standardizer.inverse_transform_target(target)
     print("Inverse Target:")
     print(target)
     print("Equal to the original: ", all(target == [45, 22, 69, 18]))
-
 
 if __name__ == "__main__":
     main()
