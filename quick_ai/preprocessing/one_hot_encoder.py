@@ -28,7 +28,8 @@ class OneHotEnc(Preprocessor):
     def fit_transform_target(self, target: pd.Series) -> pd.DataFrame | pd.Series:
         if not np.isin(target.dtype, [np.number, bool]):
             target = pd.DataFrame(
-                self.target_encoder.fit_transform(np.transpose([target])).toarray(),
+                self.target_encoder.fit_transform(
+                    np.transpose([target])).toarray(),
                 columns=self.target_encoder.get_feature_names_out(),
             )
         return target
@@ -55,7 +56,8 @@ class OneHotEnc(Preprocessor):
     def transform_target(self, target: pd.Series) -> pd.Series | pd.DataFrame:
         if not np.isin(target.dtype, [np.number, bool]):
             target = pd.DataFrame(
-                self.target_encoder.transform(np.transpose([target])).toarray(),
+                self.target_encoder.transform(
+                    np.transpose([target])).toarray(),
                 columns=self.target_encoder.get_feature_names_out(),
             )
         return target

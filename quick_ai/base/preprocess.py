@@ -23,4 +23,3 @@ class Preprocessor(ABC):
     @abstractmethod
     def transform_target(self, target: pd.Series) -> pd.DataFrame | pd.Series:
         pass
-

@@ -12,21 +12,27 @@ class Normalizer(Preprocessor):
         self.target_scaler = MinMaxScaler()
 
     def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
-        data=data.apply(lambda x: x.astype(bool) if x.isin([0,1]).all() else x)
-        normalized_numeric_cols = pd.DataFrame(self.scaler.fit_transform(data.select_dtypes(include=[np.number])),columns=self.scaler.get_feature_names_out())
-        data = data.apply(lambda x: normalized_numeric_cols[x.name] if x.name in normalized_numeric_cols.columns else x)
+        data = data.apply(lambda x: x.astype(
+            bool) if x.isin([0, 1]).all() else x)
+        data = data.apply(lambda x: x.astype(
+            bool) if x.isin([0, 1]).all() else x)
+        normalized_numeric_cols = pd.DataFrame(self.scaler.fit_transform(
+            data.select_dtypes(include=[np.number])), columns=self.scaler.get_feature_names_out())
+        data = data.apply(
+            lambda x: normalized_numeric_cols[x.name] if x.name in normalized_numeric_cols.columns else x)
         return data
 
     def fit_transform_target(self, target: pd.Series) -> pd.Series:
         if target.isin([0, 1]).all():
-            target  = target.astype(bool)
+            target = target.astype(bool)
         if np.issubdtype(target.dtype, np.number):
-            target = pd.Series(self.target_scaler.fit_transform(np.transpose([target]))[:,0])
+            target = pd.Series(self.target_scaler.fit_transform(
+                np.transpose([target]))[:, 0])
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
+        data = data.apply(lambda x: x.astype(
+            bool) if x.isin([0, 1]).all() else x)
         normalized_numeric_cols = pd.DataFrame(
             self.scaler.transform(data.select_dtypes(include=[np.number])),
             columns=self.scaler.get_feature_names_out(),
@@ -37,16 +43,17 @@ class Normalizer(Preprocessor):
 
     def transform_target(self, target: pd.Series) -> pd.Series:
         if target.isin([0, 1]).all():
-            target  = target.astype(bool)
+            target = target.astype(bool)
         if np.issubdtype(target.dtype, np.number):
             target = self.target_scaler.transform(np.transpose([target]))
         return target
 
     def inverse_transform_target(self, target: pd.Series) -> pd.Series:
         if target.isin([0, 1]).all():
-            target  = target.astype(bool)
+            target = target.astype(bool)
         if np.issubdtype(target.dtype, np.number):
-            target = self.target_scaler.inverse_transform(np.transpose([target]))
+            target = self.target_scaler.inverse_transform(
+                np.transpose([target]))
         return np.transpose(target)[0]
 
 
@@ -57,7 +64,7 @@ def main():
         'B': [10, 20, 30, 40],
         'C': ["a", "b", "c", "d"],
         'D': [0, 1, 0, 1],
-        'E': [1,0.2,"c",0],
+        'E': [1, 0.2, "c", 0],
         'target': [45, 22, 69, 18],
     })
     data = dataset.drop(columns=["target"])
@@ -76,7 +83,7 @@ def main():
         'B': [11, 21, 31, 41],
         'C': ["a", "b", "c", "d"],
         'D': [0, 1, 0, 1],
-        'E': [1,0.2,"c",0],
+        'E': [1, 0.2, "c", 0],
     })
     data = normalizer.transform(data)
     print("Normalizing more data:")

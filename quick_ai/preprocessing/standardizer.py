@@ -12,7 +12,8 @@ class Standardizer(Preprocessor):
         self.target_scaler = StandardScaler()
 
     def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
+        data = data.apply(lambda x: x.astype(
+            bool) if x.isin([0, 1]).all() else x)
         normalized_numeric_cols = pd.DataFrame(
             self.scaler.fit_transform(data.select_dtypes(include=[np.number])),
             columns=self.scaler.get_feature_names_out(),
@@ -36,7 +37,8 @@ class Standardizer(Preprocessor):
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
+        data = data.apply(lambda x: x.astype(
+            bool) if x.isin([0, 1]).all() else x)
         normalized_numeric_cols = pd.DataFrame(
             self.scaler.transform(data.select_dtypes(include=[np.number])),
             columns=self.scaler.get_feature_names_out(),
@@ -60,7 +62,8 @@ class Standardizer(Preprocessor):
         if target.isin([0, 1]).all():
             target = target.astype(bool)
         if np.issubdtype(target.dtype, np.number):
-            target = self.target_scaler.inverse_transform(np.transpose([target]))
+            target = self.target_scaler.inverse_transform(
+                np.transpose([target]))
         return np.transpose(target)[0]
 
 

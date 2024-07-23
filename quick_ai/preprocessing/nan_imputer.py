@@ -15,7 +15,8 @@ class NanImputer(Preprocessor):
         self.cols_to_drop = nans[nans > nan_threshold]
         data.drop(columns=self.cols_to_drop.index, inplace=True)
         og_cols = data.columns
-        data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
+        data = data.apply(lambda x: x.astype(
+            bool) if x.isin([0, 1]).all() else x)
         numerical_cols = data.select_dtypes(include=[np.number])
         categorical_cols = data.select_dtypes(
             include=[object, "category", "string", np.bool_]
@@ -36,20 +37,23 @@ class NanImputer(Preprocessor):
             target = target.astype(bool)
         if np.issubdtype(target.dtype, np.number):
             target = pd.Series(
-                self.numerical_imputer.fit_transform(np.transpose([target]))[:, 0]
+                self.numerical_imputer.fit_transform(
+                    np.transpose([target]))[:, 0]
             )
         elif np.issubdtype(target.dtype, np.object) or np.issubdtype(
             target.dtype, np.bool_
         ):
             target = pd.Series(
-                self.categorical_imputer.fit_transform(np.transpose([target]))[:, 0]
+                self.categorical_imputer.fit_transform(
+                    np.transpose([target]))[:, 0]
             )
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         data.drop(columns=self.cols_to_drop.index, inplace=True)
         og_cols = data.columns
-        data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
+        data = data.apply(lambda x: x.astype(
+            bool) if x.isin([0, 1]).all() else x)
         numerical_cols = data.select_dtypes(include=[np.number])
         categorical_cols = data.select_dtypes(
             include=[object, "category", "string", np.bool_]
@@ -76,7 +80,8 @@ class NanImputer(Preprocessor):
             target.dtype, np.bool_
         ):
             target = pd.Series(
-                self.categorical_imputer.transform(np.transpose([target]))[:, 0]
+                self.categorical_imputer.transform(
+                    np.transpose([target]))[:, 0]
             )
         return target
 
