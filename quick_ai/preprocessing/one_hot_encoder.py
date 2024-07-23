@@ -12,36 +12,52 @@ class OneHotEnc(Preprocessor):
         self.target_encoder = OneHotEncoder(dtype=bool)
 
     def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        categorical_cols = data.select_dtypes(include=["category",object,"string"]).map(lambda x: str(x))
+        categorical_cols = data.select_dtypes(
+            include=["category", object, "string"]
+        ).map(lambda x: str(x))
         self.categorical_cols = categorical_cols.columns
-        encoded_data = pd.DataFrame(self.encoder.fit_transform(categorical_cols).toarray(), columns=self.encoder.get_feature_names_out())
+        encoded_data = pd.DataFrame(
+            self.encoder.fit_transform(categorical_cols).toarray(),
+            columns=self.encoder.get_feature_names_out(),
+        )
         self.encoded_cols = encoded_data.columns
         data.drop(columns=categorical_cols.columns, inplace=True)
         data[encoded_data.columns] = encoded_data
         return data
-    
-    def fit_transform_target(self, target: pd.Series) -> pd.DataFrame|pd.Series:
+
+    def fit_transform_target(self, target: pd.Series) -> pd.DataFrame | pd.Series:
         if not np.isin(target.dtype, [np.number, bool]):
-            target = pd.DataFrame(self.target_encoder.fit_transform(np.transpose([target])).toarray(),columns=self.target_encoder.get_feature_names_out())
+            target = pd.DataFrame(
+                self.target_encoder.fit_transform(np.transpose([target])).toarray(),
+                columns=self.target_encoder.get_feature_names_out(),
+            )
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         categorical_cols = data[self.categorical_cols].map(lambda x: str(x))
-        encoded_data = pd.DataFrame(self.encoder.transform(categorical_cols).toarray(), columns=self.encoder.get_feature_names_out())
+        encoded_data = pd.DataFrame(
+            self.encoder.transform(categorical_cols).toarray(),
+            columns=self.encoder.get_feature_names_out(),
+        )
         data.drop(columns=categorical_cols.columns, inplace=True)
         data[encoded_data.columns] = encoded_data
         return data
 
     def inverse_transform(self, data: pd.DataFrame) -> pd.DataFrame:
         to_decode = data[self.encoded_cols]
-        encoded_data = pd.DataFrame(self.encoder.inverse_transform(to_decode), columns=self.categorical_cols)
+        encoded_data = pd.DataFrame(
+            self.encoder.inverse_transform(to_decode), columns=self.categorical_cols
+        )
         data.drop(columns=to_decode.columns, inplace=True)
         data[encoded_data.columns] = encoded_data
         return data
 
-    def transform_target(self, target: pd.Series) -> pd.Series|pd.DataFrame:
+    def transform_target(self, target: pd.Series) -> pd.Series | pd.DataFrame:
         if not np.isin(target.dtype, [np.number, bool]):
-            target = pd.DataFrame(self.target_encoder.transform(np.transpose([target])).toarray(),columns=self.target_encoder.get_feature_names_out())
+            target = pd.DataFrame(
+                self.target_encoder.transform(np.transpose([target])).toarray(),
+                columns=self.target_encoder.get_feature_names_out(),
+            )
         return target
 
     def inverse_transform_target(self, target: pd.DataFrame) -> pd.Series:
@@ -96,7 +112,7 @@ def main():
     target = ohe.inverse_transform_target(target)
     print("Inverse Target:")
     print(target)
-    print("Equal to the original: ", all(target == ["frog", "duck", "hen", "frog"]))
+    assert all(target == ["frog", "duck", "hen", "frog"])
 
 
 if __name__ == "__main__":

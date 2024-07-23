@@ -11,9 +11,7 @@ class Standardizer(Preprocessor):
         self.scaler = StandardScaler()
         self.target_scaler = StandardScaler()
 
-    def fit_transform(
-        self, data: pd.DataFrame
-    ) -> Tuple[pd.DataFrame, pd.Series]:
+    def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
         data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
         normalized_numeric_cols = pd.DataFrame(
             self.scaler.fit_transform(data.select_dtypes(include=[np.number])),
@@ -27,7 +25,7 @@ class Standardizer(Preprocessor):
             )
         )
         return data
-    
+
     def fit_transform_target(self, target: pd.Series) -> pd.Series:
         if target.isin([0, 1]).all():
             target = target.astype(bool)
@@ -41,20 +39,6 @@ class Standardizer(Preprocessor):
         data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
         normalized_numeric_cols = pd.DataFrame(
             self.scaler.transform(data.select_dtypes(include=[np.number])),
-            columns=self.scaler.get_feature_names_out(),
-        )
-        return data.apply(
-            lambda x: (
-                normalized_numeric_cols[x.name]
-                if x.name in normalized_numeric_cols.columns
-                else x
-            )
-        )
-
-    def inverse_transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
-        normalized_numeric_cols = pd.DataFrame(
-            self.scaler.inverse_transform(data.select_dtypes(include=[np.number])),
             columns=self.scaler.get_feature_names_out(),
         )
         return data.apply(
@@ -116,17 +100,14 @@ def main():
     print("Standardazing more data:")
     print(data)
     print()
-    data = standardizer.inverse_transform(data)
-    print("Inverse Data:")
-    print(data)
-    print()
     target = standardizer.fit_transform_target(target)
     print("After Normalizing Target:")
     print(target)
     target = standardizer.inverse_transform_target(target)
     print("Inverse Target:")
     print(target)
-    print("Equal to the original: ", all(target == [45, 22, 69, 18]))
+    assert all(target == [45, 22, 69, 18])
+
 
 if __name__ == "__main__":
     main()

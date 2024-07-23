@@ -11,21 +11,22 @@ class Normalizer(Preprocessor):
         self.scaler = MinMaxScaler()
         self.target_scaler = MinMaxScaler()
 
-    def fit_transform(self, data: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series]:
+    def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
+        data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
         data=data.apply(lambda x: x.astype(bool) if x.isin([0,1]).all() else x)
         normalized_numeric_cols = pd.DataFrame(self.scaler.fit_transform(data.select_dtypes(include=[np.number])),columns=self.scaler.get_feature_names_out())
         data = data.apply(lambda x: normalized_numeric_cols[x.name] if x.name in normalized_numeric_cols.columns else x)
         return data
-        
+
     def fit_transform_target(self, target: pd.Series) -> pd.Series:
-        if target.isin([0,1]).all():
+        if target.isin([0, 1]).all():
             target  = target.astype(bool)
         if np.issubdtype(target.dtype, np.number):
             target = pd.Series(self.target_scaler.fit_transform(np.transpose([target]))[:,0])
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        data=data.apply(lambda x: x.astype(bool) if x.isin([0,1]).all() else x)
+        data = data.apply(lambda x: x.astype(bool) if x.isin([0, 1]).all() else x)
         normalized_numeric_cols = pd.DataFrame(
             self.scaler.transform(data.select_dtypes(include=[np.number])),
             columns=self.scaler.get_feature_names_out(),
@@ -34,25 +35,15 @@ class Normalizer(Preprocessor):
             lambda x: normalized_numeric_cols[x.name] if x.name in normalized_numeric_cols.columns else x
         )
 
-    def inverse_transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        data=data.apply(lambda x: x.astype(bool) if x.isin([0,1]).all() else x)
-        normalized_numeric_cols = pd.DataFrame(
-            self.scaler.inverse_transform(data.select_dtypes(include=[np.number])),
-            columns=self.scaler.get_feature_names_out(),
-        )
-        return data.apply(
-            lambda x: normalized_numeric_cols[x.name] if x.name in normalized_numeric_cols.columns else x
-        )
-
     def transform_target(self, target: pd.Series) -> pd.Series:
-        if target.isin([0,1]).all():
+        if target.isin([0, 1]).all():
             target  = target.astype(bool)
         if np.issubdtype(target.dtype, np.number):
             target = self.target_scaler.transform(np.transpose([target]))
         return target
 
     def inverse_transform_target(self, target: pd.Series) -> pd.Series:
-        if target.isin([0,1]).all():
+        if target.isin([0, 1]).all():
             target  = target.astype(bool)
         if np.issubdtype(target.dtype, np.number):
             target = self.target_scaler.inverse_transform(np.transpose([target]))
@@ -91,17 +82,13 @@ def main():
     print("Normalizing more data:")
     print(data)
     print()
-    data = normalizer.inverse_transform(data)
-    print("Inverse Data:")
-    print(data)
-    print()
     target = normalizer.fit_transform_target(target)
     print("After Standardazing Target:")
     print(target)
     target = normalizer.inverse_transform_target(target)
     print("Inverse Target:")
     print(target)
-    print("Equal to the original: ", all(target == [45, 22, 69, 18]))
+    assert all(target == [45, 22, 69, 18])
 
 
 if __name__ == '__main__':
