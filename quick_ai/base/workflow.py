@@ -1,6 +1,7 @@
 import pickle
 from .process import Process
-from typing import List
+from .model import Model
+from typing import List, Iterable, Any
 
 
 class Workflow:
@@ -25,5 +26,23 @@ class Workflow:
                 return False
         return True
 
+    def to_model(self) -> Model:
+        return WorkflowModel(self)
+
     def __getitem__(self, value) -> Process:
         return self._workflow[value]
+
+
+class WorkflowModel(Model):
+    def __init__(self, workflow: Workflow) -> None:
+        self.workflow = workflow
+        super().__init__()
+
+    def train(self, data: Iterable, target: Iterable) -> None:
+        for process in self.workflow:
+            data = process.tr(data, target)
+
+    def predict(self, guess: Any) -> List:
+        for process in self.workflow:
+            guess = process.pr(guess)
+        return guess
