@@ -4,6 +4,9 @@ import random
 
 
 class RandomGuesser(Model):
+    input_formats = {Iterable}
+    output_formats = {List[int]}
+    
     def __init__(self) -> None:
         super().__init__()
         self.possibilities: List[int] = list()
