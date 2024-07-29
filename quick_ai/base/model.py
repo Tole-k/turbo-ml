@@ -15,14 +15,14 @@ class ModelMetaclass(type):
         training = getattr(new_class, 'train', None)
         if training:
             def new_train(self, data: Iterable, target: Iterable):
-                new_class._was_trained = True
+                self._was_trained = True
                 return training(self, data, target)
             setattr(new_class, 'train', new_train)
 
         prediction = getattr(new_class, 'predict', None)
         if prediction:
-            def new_predict(self, guess: Any):
-                if not new_class._was_trained:
+            def new_predict(self, guess: Any) -> List:
+                if not self._was_trained:
                     raise NotTrainedException(
                         'Model must be trained before predicting')
                 return prediction(self, guess)
