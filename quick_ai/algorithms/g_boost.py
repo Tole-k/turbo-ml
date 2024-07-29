@@ -4,6 +4,9 @@ from typing import List, Iterable
 
 
 class GBoostClassifier(Model):
+    input_formats = {Iterable[int | float]}
+    output_formats = {List[int | str]}
+
     def __init__(self, loss='log_loss', learning_rate=0.1, n_estimators=100,
                  subsample=1.0, criterion='friedman_mse', min_samples_split=2,
                  min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3,
@@ -42,6 +45,9 @@ class GBoostClassifier(Model):
 
 
 class GBoostRegressor(Model):
+    input_formats = {Iterable[int | float]}
+    output_formats = {List[float]}
+
     def __init__(self, loss='squared_error', learning_rate=0.1,
                  n_estimators=100, subsample=1.0, criterion='friedman_mse',
                  min_samples_split=2, min_samples_leaf=1,
@@ -80,3 +86,13 @@ class GBoostRegressor(Model):
 
     def predict(self, guess: Iterable) -> List:
         return self.reg.predict(guess)
+
+
+# X, y = make_hastie_10_2(random_state=0)
+# X_train, X_test = X[:2000], X[2000:]
+# y_train, y_test = y[:2000], y[2000:]
+#
+# clf = GBoostClassifier(n_estimators=100, learning_rate=1.0,
+#                        max_depth=1, random_state=0)
+# clf.train(X_train, y_train)
+# print(clf.predict(X_test))

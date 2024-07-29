@@ -4,6 +4,9 @@ from typing import List, Iterable
 
 
 class AdaBoostClassifier(Model):
+    input_formats = {Iterable[int | float]}
+    output_formats = {List[int | str]}
+
     def __init__(
         self,
         estimator=None,
@@ -29,6 +32,9 @@ class AdaBoostClassifier(Model):
 
 
 class AdaBoostRegressor(Model):
+    input_formats = {Iterable[int | float]}
+    output_formats = {List[float]}
+
     def __init__(
         self,
         base_estimator=None,
@@ -51,3 +57,11 @@ class AdaBoostRegressor(Model):
 
     def predict(self, guess: Iterable) -> List:
         return self.ada_boost.predict(guess)
+
+
+# X, y = make_classification(n_samples=1000, n_features=4,
+#                            n_informative=2, n_redundant=0,
+#                            random_state=0, shuffle=False)
+# clf = AdaBoostClassifier(n_estimators=100, algorithm="SAMME", random_state=0)
+# clf.train(X, y)
+# print(clf.predict([[0, 0, 0, 0]]))

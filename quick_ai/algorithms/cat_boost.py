@@ -1,9 +1,13 @@
 import catboost as cb
+import numpy as np
 from ..base import Model
 from typing import List, Iterable
 
 
 class CatBoostClassifier(Model):
+    input_formats = {Iterable[int | float]}
+    output_formats = {List[int | float | str]}
+
     def __init__(self, iterations=None,
                  learning_rate=None,
                  depth=None,
@@ -29,6 +33,7 @@ class CatBoostClassifier(Model):
                  use_best_model=None,
                  verbose=None,
                  logging_level=None,
+                 silent=None,
                  metric_period=None,
                  ctr_leaf_count_limit=None,
                  store_all_simple_ctr=None,
@@ -135,6 +140,7 @@ class CatBoostClassifier(Model):
             use_best_model=use_best_model,
             verbose=verbose,
             logging_level=logging_level,
+            silent=silent,
             metric_period=metric_period,
             ctr_leaf_count_limit=ctr_leaf_count_limit,
             store_all_simple_ctr=store_all_simple_ctr,
@@ -153,9 +159,6 @@ class CatBoostClassifier(Model):
             custom_metric=custom_metric,
             eval_metric=eval_metric,
             bagging_temperature=bagging_temperature,
-            save_snapshot=save_snapshot,
-            snapshot_file=snapshot_file,
-            snapshot_interval=snapshot_interval,
             fold_len_multiplier=fold_len_multiplier,
             used_ram_limit=used_ram_limit,
             gpu_ram_part=gpu_ram_part,
@@ -195,7 +198,6 @@ class CatBoostClassifier(Model):
             max_leaves=max_leaves,
             num_leaves=num_leaves,
             score_function=score_function,
-            leaf_estimation_backtracking=leaf_estimation_backtracking,
             ctr_history_unit=ctr_history_unit,
             monotone_constraints=monotone_constraints,
             feature_weights=feature_weights,
@@ -212,7 +214,8 @@ class CatBoostClassifier(Model):
             dictionaries=dictionaries,
             feature_calcers=feature_calcers,
             text_processing=text_processing,
-            fixed_binary_splits=fixed_binary_splits
+            fixed_binary_splits=fixed_binary_splits,
+
         )
 
     def train(self, data: Iterable, target: Iterable) -> None:
@@ -223,6 +226,9 @@ class CatBoostClassifier(Model):
 
 
 class CatBoostRegressor(Model):
+    input_formats = {Iterable[int | float]}
+    output_formats = {List[int | float]}
+
     def __init__(self, iterations=None,
                  learning_rate=None,
                  depth=None,
@@ -378,7 +384,6 @@ class CatBoostRegressor(Model):
             simple_ctr=simple_ctr,
             combinations_ctr=combinations_ctr,
             per_feature_ctr=per_feature_ctr,
-            per_feature_ctr=per_feature_ctr,
             task_type=task_type,
             device_config=device_config,
             devices=devices,
@@ -407,7 +412,6 @@ class CatBoostRegressor(Model):
             max_leaves=max_leaves,
             num_leaves=num_leaves,
             score_function=score_function,
-            leaf_estimation_backtracking=leaf_estimation_backtracking,
             ctr_history_unit=ctr_history_unit,
             monotone_constraints=monotone_constraints,
             feature_weights=feature_weights,
@@ -427,3 +431,29 @@ class CatBoostRegressor(Model):
 
     def predict(self, guess: Iterable) -> List:
         return self.reg.predict(guess)
+
+
+# train_data = np.random.randint(0,
+#                                100,
+#                                size=(100, 10))
+#
+# train_labels = np.random.randint(0,
+#                                  2,
+#                                  size=(100))
+#
+# train_labels = np.array(["big " if i == 1 else "small" for i in train_labels])
+#
+# test_data = catboost_pool = cb.Pool(train_data,
+#                                     train_labels)
+#
+# model = CatBoostClassifier(iterations=2,
+#                            depth=2,
+#                            learning_rate=1,
+#                            loss_function='Logloss',
+#                            logging_level='Silent',
+#                            allow_writing_files=False)
+# # train the model
+# model.train(train_data, train_labels)
+# # make the prediction using the resulting model
+# preds_class = model.predict(test_data)
+# print("class = ", preds_class)
