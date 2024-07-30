@@ -4,8 +4,8 @@ from typing import List, Iterable
 
 
 class CatBoostClassifier(Model):
-    _input_formats = {Iterable[int | float]}
-    _output_formats = {List[int | float | str]}
+    input_formats = {Iterable[int | float]}
+    output_formats = {List[int | float | str]}
 
     def __init__(self, iterations=None,
                  learning_rate=None,
@@ -227,8 +227,8 @@ class CatBoostClassifier(Model):
 
 
 class CatBoostRegressor(Model):
-    _input_formats = {Iterable[int | float]}
-    _output_formats = {List[int | float]}
+    input_formats = {Iterable[int | float]}
+    output_formats = {List[int | float]}
 
     def __init__(self, iterations=None,
                  learning_rate=None,

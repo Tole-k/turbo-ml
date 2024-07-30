@@ -6,8 +6,8 @@ from sklearn.model_selection import train_test_split
 
 
 class XGBoostClassifier(Model):
-    _input_formats = {Iterable[int | float]}
-    _output_formats = {List[int]}
+    input_formats = {Iterable[int | float]}
+    output_formats = {List[int]}
 
     def __init__(self,
                  max_depth: Optional[int] = None,
@@ -108,8 +108,8 @@ class XGBoostClassifier(Model):
 
 
 class XGBoostRegressor(Model):
-    _input_formats = {Iterable[int | float]}
-    _output_formats = {List[int | float]}
+    input_formats = {Iterable[int | float]}
+    output_formats = {List[int | float]}
 
     def __init__(self,
                  max_depth: Optional[int] = None,
