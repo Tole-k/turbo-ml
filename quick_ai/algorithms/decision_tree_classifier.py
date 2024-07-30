@@ -6,7 +6,7 @@ from sklearn import tree
 
 class DecisionTreeClassifier(Model):
     input_formats = {Iterable[int | float]}
-    output_formats = {List[int | str]}
+    output_formats = {List[int], List[str]}
 
     def __init__(
         self,
@@ -45,5 +45,5 @@ class DecisionTreeClassifier(Model):
     def train(self, data: Iterable[int | float], target: Iterable) -> None:
         self.tree = self.tree.fit(data, target)
 
-    def predict(self, guess: Iterable[int | float]) -> List[int | str]:
+    def predict(self, guess: Iterable[int | float]) -> List[int] | List[str]:
         return self.tree.predict(guess)
