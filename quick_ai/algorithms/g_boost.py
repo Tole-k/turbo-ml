@@ -4,8 +4,8 @@ from typing import List, Iterable
 
 
 class GBoostClassifier(Model):
-    input_formats = {Iterable[int | float]}
-    output_formats = {List[int | str]}
+    _input_formats = {Iterable[int | float]}
+    _output_formats = {List[int | str]}
 
     def __init__(self, loss='log_loss', learning_rate=0.1, n_estimators=100,
                  subsample=1.0, criterion='friedman_mse', min_samples_split=2,
@@ -45,8 +45,8 @@ class GBoostClassifier(Model):
 
 
 class GBoostRegressor(Model):
-    input_formats = {Iterable[int | float]}
-    output_formats = {List[float]}
+    _input_formats = {Iterable[int | float]}
+    _output_formats = {List[float]}
 
     def __init__(self, loss='squared_error', learning_rate=0.1,
                  n_estimators=100, subsample=1.0, criterion='friedman_mse',

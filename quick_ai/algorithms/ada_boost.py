@@ -4,8 +4,8 @@ from typing import List, Iterable
 
 
 class AdaBoostClassifier(Model):
-    input_formats = {Iterable[int | float]}
-    output_formats = {List[int | str]}
+    _input_formats = {Iterable[int | float]}
+    _output_formats = {List[int | str]}
 
     def __init__(
         self,
@@ -32,8 +32,8 @@ class AdaBoostClassifier(Model):
 
 
 class AdaBoostRegressor(Model):
-    input_formats = {Iterable[int | float]}
-    output_formats = {List[float]}
+    _input_formats = {Iterable[int | float]}
+    _output_formats = {List[float]}
 
     def __init__(
         self,

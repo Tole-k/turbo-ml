@@ -1,12 +1,11 @@
 import catboost as cb
-import numpy as np
 from ..base import Model
 from typing import List, Iterable
 
 
 class CatBoostClassifier(Model):
-    input_formats = {Iterable[int | float]}
-    output_formats = {List[int | float | str]}
+    _input_formats = {Iterable[int | float]}
+    _output_formats = {List[int | float | str]}
 
     def __init__(self, iterations=None,
                  learning_rate=None,
@@ -215,7 +214,9 @@ class CatBoostClassifier(Model):
             feature_calcers=feature_calcers,
             text_processing=text_processing,
             fixed_binary_splits=fixed_binary_splits,
-
+            save_snapshot=save_snapshot,
+            snapshot_file=snapshot_file,
+            snapshot_interval=snapshot_interval,
         )
 
     def train(self, data: Iterable, target: Iterable) -> None:
@@ -226,8 +227,8 @@ class CatBoostClassifier(Model):
 
 
 class CatBoostRegressor(Model):
-    input_formats = {Iterable[int | float]}
-    output_formats = {List[int | float]}
+    _input_formats = {Iterable[int | float]}
+    _output_formats = {List[int | float]}
 
     def __init__(self, iterations=None,
                  learning_rate=None,
@@ -423,7 +424,8 @@ class CatBoostRegressor(Model):
             diffusion_temperature=diffusion_temperature,
             posterior_sampling=posterior_sampling,
             boost_from_average=boost_from_average,
-            fixed_binary_splits=fixed_binary_splits
+            fixed_binary_splits=fixed_binary_splits,
+            ctr_target_border_count=ctr_target_border_count,
         )
 
     def train(self, data: Iterable, target: Iterable) -> None:
