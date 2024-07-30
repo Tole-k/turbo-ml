@@ -5,7 +5,7 @@ from typing import List, Iterable
 
 class GBoostClassifier(Model):
     input_formats = {Iterable[int | float]}
-    output_formats = {List[int | str]}
+    output_formats = {List[int], List[str]}
 
     def __init__(self, loss='log_loss', learning_rate=0.1, n_estimators=100,
                  subsample=1.0, criterion='friedman_mse', min_samples_split=2,
@@ -37,10 +37,10 @@ class GBoostClassifier(Model):
             ccp_alpha=ccp_alpha
         )
 
-    def train(self, data: Iterable, target: Iterable) -> None:
+    def train(self, data: Iterable[int | float], target: Iterable) -> None:
         self.clf = self.clf.fit(data, target)
 
-    def predict(self, guess: Iterable) -> List:
+    def predict(self, guess: Iterable[int | float]) -> List[int] | List[str]:
         return self.clf.predict(guess)
 
 
@@ -81,10 +81,10 @@ class GBoostRegressor(Model):
             ccp_alpha=ccp_alpha
         )
 
-    def train(self, data: Iterable, target: Iterable) -> None:
+    def train(self, data: Iterable[int | float], target: Iterable) -> None:
         return self.reg.fit(data, target)
 
-    def predict(self, guess: Iterable) -> List:
+    def predict(self, guess: Iterable[int | float]) -> List[float]:
         return self.reg.predict(guess)
 
 

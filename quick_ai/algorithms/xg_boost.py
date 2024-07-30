@@ -95,7 +95,7 @@ class XGBoostClassifier(Model):
         )
         self.early_stopping = early_stopping
 
-    def train(self, data: Iterable, target: Iterable) -> None:
+    def train(self, data: Iterable[int | float], target: Iterable) -> None:
         if self.early_stopping:
             x_train, x_val, y_train, y_val = train_test_split(
                 data, target, test_size=0.20)
@@ -103,13 +103,13 @@ class XGBoostClassifier(Model):
         else:
             self.clf.fit(data, target)
 
-    def predict(self, guess: Iterable) -> List:
+    def predict(self, guess: Iterable[int | float]) -> List[int]:
         return self.clf.predict(guess)
 
 
 class XGBoostRegressor(Model):
     input_formats = {Iterable[int | float]}
-    output_formats = {List[int | float]}
+    output_formats = {List[float]}
 
     def __init__(self,
                  max_depth: Optional[int] = None,
@@ -197,7 +197,7 @@ class XGBoostRegressor(Model):
         )
         self.early_stopping = early_stopping
 
-    def train(self, data: Iterable, target: Iterable) -> None:
+    def train(self, data: Iterable[int | float], target: Iterable) -> None:
         if self.early_stopping:
             x_train, x_val, y_train, y_val = train_test_split(
                 data, target, test_size=0.20)
@@ -205,13 +205,11 @@ class XGBoostRegressor(Model):
         else:
             self.clf.fit(data, target)
 
-    def predict(self, guess: Iterable) -> List:
+    def predict(self, guess: Iterable[int | float]) -> List[float]:
         return self.clf.predict(guess)
 
-
 # X, y = load_breast_cancer(return_X_y=True)
-# yp = np.array(["big" if i == 1 else "small" for i in y])
 # clf = XGBoostClassifier(
 #     tree_method="hist", early_stopping=True, early_stopping_rounds=2)
-# clf.train(X, yp)
+# clf.train(X, y)
 # print(clf.predict(X))

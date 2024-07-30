@@ -5,7 +5,7 @@ from typing import List, Iterable
 
 class CatBoostClassifier(Model):
     input_formats = {Iterable[int | float]}
-    output_formats = {List[int | float | str]}
+    output_formats = {List[int], List[str]}
 
     def __init__(self, iterations=None,
                  learning_rate=None,
@@ -219,16 +219,16 @@ class CatBoostClassifier(Model):
             snapshot_interval=snapshot_interval,
         )
 
-    def train(self, data: Iterable, target: Iterable) -> None:
+    def train(self, data: Iterable[int | float], target: Iterable) -> None:
         self.clf = self.clf.fit(data, target)
 
-    def predict(self, guess: Iterable) -> List:
+    def predict(self, guess: Iterable[int | float]) -> List[int] | List[str]:
         return self.clf.predict(guess)
 
 
 class CatBoostRegressor(Model):
     input_formats = {Iterable[int | float]}
-    output_formats = {List[int | float]}
+    output_formats = {List[float]}
 
     def __init__(self, iterations=None,
                  learning_rate=None,
@@ -428,10 +428,10 @@ class CatBoostRegressor(Model):
             ctr_target_border_count=ctr_target_border_count,
         )
 
-    def train(self, data: Iterable, target: Iterable) -> None:
+    def train(self, data: Iterable[int | float], target: Iterable) -> None:
         self.reg = self.reg.fit(data, target)
 
-    def predict(self, guess: Iterable) -> List:
+    def predict(self, guess: Iterable[int | float]) -> List[float]:
         return self.reg.predict(guess)
 
 

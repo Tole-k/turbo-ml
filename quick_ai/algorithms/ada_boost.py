@@ -5,7 +5,7 @@ from typing import List, Iterable
 
 class AdaBoostClassifier(Model):
     input_formats = {Iterable[int | float]}
-    output_formats = {List[int | str]}
+    output_formats = {List[int], List[str]}
 
     def __init__(
         self,
@@ -24,10 +24,10 @@ class AdaBoostClassifier(Model):
             random_state=random_state,
         )
 
-    def train(self, data: Iterable, target: Iterable) -> None:
+    def train(self, data: Iterable[int | float], target: Iterable) -> None:
         self.ada_boost = self.ada_boost.fit(data, target)
 
-    def predict(self, guess: Iterable) -> List:
+    def predict(self, guess: Iterable[int | float]) -> List[int] | List[str]:
         return self.ada_boost.predict(guess)
 
 
@@ -52,10 +52,10 @@ class AdaBoostRegressor(Model):
             random_state=random_state,
         )
 
-    def train(self, data: Iterable, target: Iterable) -> None:
+    def train(self, data: Iterable[int | float], target: Iterable) -> None:
         self.ada_boost = self.ada_boost.fit(data, target)
 
-    def predict(self, guess: Iterable) -> List:
+    def predict(self, guess: Iterable[int | float]) -> List[float]:
         return self.ada_boost.predict(guess)
 
 
