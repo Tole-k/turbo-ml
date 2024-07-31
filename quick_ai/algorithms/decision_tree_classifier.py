@@ -5,8 +5,8 @@ from sklearn import tree
 
 
 class DecisionTreeClassifier(Model):
-    input_formats = {Iterable[int | float]}
-    output_formats = {List[int], List[str]}
+    input_formats = {Iterable[int | float | bool]}
+    output_formats = {List[int], List[str] | List[bool]}
 
     def __init__(
         self,
@@ -42,8 +42,8 @@ class DecisionTreeClassifier(Model):
             ccp_alpha=ccp_alpha,
         )
 
-    def train(self, data: Iterable[int | float], target: Iterable) -> None:
+    def train(self, data: Iterable[int | float | bool], target: Iterable) -> None:
         self.tree = self.tree.fit(data, target)
 
-    def predict(self, guess: Iterable[int | float]) -> List[int] | List[str]:
+    def predict(self, guess: Iterable[int | float | bool]) -> List[int] | List[str] | List[bool]:
         return self.tree.predict(guess)
