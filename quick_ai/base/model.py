@@ -1,6 +1,6 @@
 from abc import ABC, ABCMeta, abstractmethod
 import pickle
-from typing import List, Iterable, Any
+from typing import List, Iterable, Any, Type
 from quick_ai.utils.error_tools.exceptions import NotTrainedException
 
 __ALL_MODELS__: List[type] = []
@@ -50,5 +50,5 @@ class Model(metaclass=ModelMetaclass):
             pickle.dump(self, file)
 
 
-def get_model_list() -> List[Model]:
+def get_model_list() -> List[Type[Model]]:
     return __ALL_MODELS__
