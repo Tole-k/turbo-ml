@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 import pickle
-from typing import List, Iterable
+from collections.abc import Iterable
 from .process import Process
 
 
 class Model(ABC):
     input_formats = {Iterable}
-    output_formats = {List}
+    output_formats = {list}
 
     def __init__(self) -> None:
         super().__init__()
@@ -17,7 +17,7 @@ class Model(ABC):
         pass
 
     @abstractmethod
-    def predict(self, guess: Iterable) -> List:
+    def predict(self, guess: Iterable) -> list:
         pass
 
     def save(self, path: str) -> None:
@@ -30,7 +30,7 @@ class ModelProcess(Process):
         self.model = model
         super().__init__()
 
-    def pr(self, guess: Iterable) -> List:
+    def pr(self, guess: Iterable) -> list:
         return self.model.predict(guess)
 
     def tr(self, data: Iterable, target: Iterable) -> None:
