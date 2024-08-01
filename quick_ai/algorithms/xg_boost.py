@@ -1,12 +1,13 @@
 import xgboost as xgb
 from ..base import Model
-from typing import List, Iterable, Optional
+from typing import Optional
 from sklearn.model_selection import train_test_split
+from collections.abc import Iterable
 
 
 class XGBoostClassifier(Model):
     input_formats = {Iterable[int | float | bool]}
-    output_formats = {List[int] | List[bool]}
+    output_formats = {list[int] | list[bool]}
 
     def __init__(self,
                  max_depth: Optional[int] = None,
@@ -53,7 +54,7 @@ class XGBoostClassifier(Model):
 
 class XGBoostRegressor(Model):
     input_formats = {Iterable[int | float | bool]}
-    output_formats = {List[float]}
+    output_formats = {list[float]}
 
     def __init__(self,
                  max_depth: Optional[int] = None,
@@ -90,7 +91,7 @@ class XGBoostRegressor(Model):
         else:
             self.clf.fit(data, target)
 
-    def predict(self, guess: Iterable[int | float | bool]) -> List[float]:
+    def predict(self, guess: Iterable[int | float | bool]) -> list[float]:
         return self.clf.predict(guess)
 
 

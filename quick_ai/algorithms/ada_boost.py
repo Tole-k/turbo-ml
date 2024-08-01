@@ -1,11 +1,11 @@
 from sklearn import ensemble
 from ..base import Model
-from typing import List, Iterable
+from collections.abc import Iterable
 
 
 class AdaBoostClassifier(Model):
     input_formats = {Iterable[int | float]}
-    output_formats = {List[int], List[str]}
+    output_formats = {list[int], list[str]}
 
     def __init__(
         self,
@@ -27,13 +27,13 @@ class AdaBoostClassifier(Model):
     def train(self, data: Iterable[int | float], target: Iterable) -> None:
         self.ada_boost = self.ada_boost.fit(data, target)
 
-    def predict(self, guess: Iterable[int | float]) -> List[int] | List[str]:
+    def predict(self, guess: Iterable[int | float]) -> list[int] | list[str]:
         return self.ada_boost.predict(guess)
 
 
 class AdaBoostRegressor(Model):
     input_formats = {Iterable[int | float]}
-    output_formats = {List[float]}
+    output_formats = {list[float]}
 
     def __init__(
         self,
@@ -55,7 +55,7 @@ class AdaBoostRegressor(Model):
     def train(self, data: Iterable[int | float], target: Iterable) -> None:
         self.ada_boost = self.ada_boost.fit(data, target)
 
-    def predict(self, guess: Iterable[int | float]) -> List[float]:
+    def predict(self, guess: Iterable[int | float]) -> list[float]:
         return self.ada_boost.predict(guess)
 
 

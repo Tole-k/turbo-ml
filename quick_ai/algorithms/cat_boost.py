@@ -1,11 +1,11 @@
 import catboost as cb
 from ..base import Model
-from typing import List, Iterable
+from collections.abc import Iterable
 
 
 class CatBoostClassifier(Model):
     input_formats = {Iterable[int | float | bool | str]}
-    output_formats = {List[int], List[str], List[bool]}
+    output_formats = {list[int], list[str], list[bool]}
 
     def __init__(self, iterations=None,
                  learning_rate=None,
@@ -36,7 +36,7 @@ class CatBoostClassifier(Model):
     def train(self, data: Iterable[int | float | bool | str], target: Iterable) -> None:
         self.clf = self.clf.fit(data, target)
 
-    def predict(self, guess: Iterable[int | float | bool | str]) -> List[int] | List[bool] | List[str]:
+    def predict(self, guess: Iterable[int | float | bool | str]) -> list[int] | list[bool] | list[str]:
         return self.clf.predict(guess)
 
 
@@ -73,7 +73,7 @@ class CatBoostRegressor(Model):
     def train(self, data: Iterable[int | float | bool], target: Iterable) -> None:
         self.reg = self.reg.fit(data, target)
 
-    def predict(self, guess: Iterable[int | float | bool]) -> List[float]:
+    def predict(self, guess: Iterable[int | float | bool]) -> list[float]:
         return self.reg.predict(guess)
 
 

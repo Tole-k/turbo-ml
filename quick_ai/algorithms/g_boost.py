@@ -1,12 +1,12 @@
 from sklearn import ensemble
 from sklearn.datasets import make_hastie_10_2
 from ..base import Model
-from typing import List, Iterable
+from collections.abc import Iterable
 
 
 class GBoostClassifier(Model):
     input_formats = {Iterable[int | float]}
-    output_formats = {List[int], List[str]}
+    output_formats = {list[int], list[str]}
 
     def __init__(self, loss='log_loss', learning_rate=0.1, n_estimators=100,
                  subsample=1.0, min_samples_split=2, max_depth=3, **options) -> None:
@@ -24,13 +24,13 @@ class GBoostClassifier(Model):
     def train(self, data: Iterable[int | float], target: Iterable) -> None:
         self.clf = self.clf.fit(data, target)
 
-    def predict(self, guess: Iterable[int | float]) -> List[int] | List[str]:
+    def predict(self, guess: Iterable[int | float]) -> list[int] | list[str]:
         return self.clf.predict(guess)
 
 
 class GBoostRegressor(Model):
     input_formats = {Iterable[int | float]}
-    output_formats = {List[float]}
+    output_formats = {list[float]}
 
     def __init__(self, loss='squared_error', learning_rate=0.1,
                  n_estimators=100, subsample=1.0,
@@ -49,7 +49,7 @@ class GBoostRegressor(Model):
     def train(self, data: Iterable[int | float], target: Iterable) -> None:
         return self.reg.fit(data, target)
 
-    def predict(self, guess: Iterable[int | float]) -> List[float]:
+    def predict(self, guess: Iterable[int | float]) -> list[float]:
         return self.reg.predict(guess)
 
 
