@@ -11,7 +11,15 @@ class Process(ABC):
         pass
 
     @abstractmethod
+    def pr_validation(self, data: any) -> None:
+        pass
+
+    @abstractmethod
     def tr(self, data: any) -> any:
+        pass
+
+    @abstractmethod
+    def tr_validation(self, data: any) -> None:
         pass
 
     @abstractmethod
