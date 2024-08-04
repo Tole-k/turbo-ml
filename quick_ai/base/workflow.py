@@ -47,6 +47,7 @@ class WorkflowModel(Model):
                     process.pr_validation(data, target)
                 except Exception as e:
                     self.validator(process, e)
+                    continue
             try:
                 data = process.tr(data, target)
             except Exception as e:
@@ -59,6 +60,7 @@ class WorkflowModel(Model):
                     process.pr_validation(guess)
                 except Exception as e:
                     self.validator(process, e, validation=True)
+                    continue
             try:
                 guess = process.pr(guess)
             except Exception as e:
