@@ -1,7 +1,8 @@
-from abc import ABC, ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 import pickle
 from typing import List, Iterable, Any, Type
 from quick_ai.utils.error_tools.exceptions import NotTrainedException
+from .process import Process
 
 __ALL_MODELS__: List[type] = []
 
@@ -33,6 +34,9 @@ class ModelMetaclass(type):
 
 
 class Model(metaclass=ModelMetaclass):
+    input_formats = {Iterable}
+    output_formats = {list}
+
     def __init__(self) -> None:
         super().__init__()
         self.model = None
@@ -42,7 +46,7 @@ class Model(metaclass=ModelMetaclass):
         pass
 
     @abstractmethod
-    def predict(self, guess: Any) -> List:
+    def predict(self, guess: Iterable) -> list:
         pass
 
     def save(self, path: str) -> None:
@@ -52,3 +56,20 @@ class Model(metaclass=ModelMetaclass):
 
 def get_model_list() -> List[Type[Model]]:
     return __ALL_MODELS__
+
+class ModelProcess(Process):
+    def __init__(self, model: Model) -> None:
+        self.model = model
+        super().__init__()
+
+    def pr(self, guess: Iterable) -> list:
+        return self.model.predict(guess)
+
+    def tr(self, data: Iterable, target: Iterable) -> None:
+        self.model.train(data, target)
+
+    def available_input_formats(self) -> set:
+        return self.model.input_formats
+
+    def available_output_formats(self) -> set:
+        return self.model.output_formats

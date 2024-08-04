@@ -1,10 +1,13 @@
-from typing import List, Iterable, Literal, Mapping, Sequence
+from typing import Literal, Mapping, Sequence
 from numpy.random import RandomState
 from ..base import Model
 from sklearn import tree
+from collections.abc import Iterable
 
 
 class DecisionTreeClassifier(Model):
+    input_formats = {Iterable[int | float | bool]}
+    output_formats = {list[int], list[str] | list[bool]}
 
     def __init__(
         self,
@@ -40,8 +43,8 @@ class DecisionTreeClassifier(Model):
             ccp_alpha=ccp_alpha,
         )
 
-    def train(self, data: Iterable, target: Iterable) -> None:
+    def train(self, data: Iterable[int | float | bool], target: Iterable) -> None:
         self.tree = self.tree.fit(data, target)
 
-    def predict(self, guess: Iterable) -> List:
+    def predict(self, guess: Iterable[int | float | bool]) -> list[int] | list[str] | list[bool]:
         return self.tree.predict(guess)
