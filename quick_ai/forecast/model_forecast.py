@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import *
 from quick_ai.base import Model
 from quick_ai.base.model import get_model_list
@@ -18,18 +19,21 @@ class Forecast:
     def __init__(self) -> None:
         pass
 
+    @abstractmethod
     def predict(self, data, target) -> Model:
         pass
 
 
 class ExhaustiveSearch(Forecast):
-    def __init__(self) -> None:
-        pass
+    """ Search for the best model by evaluating all models in the list and picking the best one based on the evaluation function """
 
     def predict(self, data, target) -> Model:
         best_model: Tuple = (None, -float('inf'))
         for model_cls in get_model_list():
-            value = evaluate(model_cls, data, target)
-            if value > best_model[1]:
-                best_model = (model_cls, value)
+            try:
+                value = evaluate(model_cls, data, target)
+                if value > best_model[1]:
+                    best_model = (model_cls, value)
+            except:
+                continue
         return best_model[0]()
