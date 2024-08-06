@@ -44,14 +44,11 @@ class WorkflowModel(Model):
         for process in self.workflow:
             if self.validator and option.validation:
                 try:
-                    process.pr_validation(data, target)
+                    process.tr_validation(data, target)
                 except Exception as e:
-                    self.validator(process, e)
-                    continue
-            try:
-                data = process.tr(data, target)
-            except Exception as e:
-                self.validator(process, e)
+                    self.validator(process, e, validation=True)
+                    raise e
+            data = process.tr(data, target)
 
     def predict(self, guess: Any) -> List:
         for process in self.workflow:
@@ -60,9 +57,6 @@ class WorkflowModel(Model):
                     process.pr_validation(guess)
                 except Exception as e:
                     self.validator(process, e, validation=True)
-                    continue
-            try:
-                guess = process.pr(guess)
-            except Exception as e:
-                self.validator(process, e)
+                    raise e
+            guess = process.pr(guess)
         return guess
