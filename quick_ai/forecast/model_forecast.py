@@ -6,12 +6,15 @@ from quick_ai.base.model import get_model_list
 
 def evaluate(model: Type[Model], data: Any, target: Any) -> float:
     # TODO: Simple evaluation function, to be improved and moved somewhere else
-    train_size = int(len(data) * 9/10)
-    model = model()
-    model.train(data[:train_size], target[:train_size])
-    predictions = model.predict(data[train_size:])
-    mse = sum((predictions[i] - target[i]) **
-              2 for i in range(len(predictions))) / len(predictions)
+    try:
+        train_size = int(len(data) * 9/10)
+        model = model()
+        model.train(data[:train_size], target[:train_size])
+        predictions = model.predict(data[train_size:])
+        mse = sum((pred - targ) ** 2 for pred, targ in zip(predictions,
+                                                           target[train_size:])) / len(predictions)
+    except Exception as e:
+        mse = float('inf')
     return -mse
 
 

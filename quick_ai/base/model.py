@@ -14,6 +14,8 @@ class ModelMetaclass(type):
         new_class._was_trained = False
 
         training = getattr(new_class, 'train', None)
+        if getattr(training, '__isabstractmethod__', None):
+            training = None
         if training:
             def new_train(self, data: Iterable, target: Iterable):
                 self._was_trained = True
@@ -21,6 +23,8 @@ class ModelMetaclass(type):
             setattr(new_class, 'train', new_train)
 
         prediction = getattr(new_class, 'predict', None)
+        if getattr(prediction, '__isabstractmethod__', None):
+            prediction = None
         if prediction:
             def new_predict(self, guess: Any) -> List:
                 if not self._was_trained:
@@ -56,6 +60,7 @@ class Model(metaclass=ModelMetaclass):
 
 def get_model_list() -> List[Type[Model]]:
     return __ALL_MODELS__
+
 
 class ModelProcess(Process):
     def __init__(self, model: Model) -> None:
