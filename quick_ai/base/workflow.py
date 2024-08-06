@@ -2,6 +2,7 @@ import pickle
 from .process import Process
 from .model import Model
 from typing import List, Iterable, Any, Optional
+from ..utils import option
 
 
 class Workflow:
@@ -39,13 +40,26 @@ class WorkflowModel(Model):
             workflow = Workflow()
             # TODO: Add default workflow based on Random Guess
         self.workflow = workflow
+        self.validator = None
         super().__init__()
 
     def train(self, data: Iterable, target: Iterable) -> None:
         for process in self.workflow:
+            if self.validator and option.validation:
+                try:
+                    process.tr_validation(data, target)
+                except Exception as e:
+                    self.validator(process, e, validation=True)
+                    raise e
             data = process.tr(data, target)
 
     def predict(self, guess: Any) -> List:
         for process in self.workflow:
+            if self.validator and option.validation:
+                try:
+                    process.pr_validation(guess)
+                except Exception as e:
+                    self.validator(process, e, validation=True)
+                    raise e
             guess = process.pr(guess)
         return guess
