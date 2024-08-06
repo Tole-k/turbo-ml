@@ -39,7 +39,7 @@ class DecisionTreeClassifier(Model):
             class_weight=class_weight,
             random_state=random_state,
             min_impurity_decrease=min_impurity_decrease,
-            monotonic_cst=monotonic_cst,
+            # monotonic_cst=monotonic_cst,
             ccp_alpha=ccp_alpha,
         )
 
