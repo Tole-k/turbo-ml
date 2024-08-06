@@ -1,7 +1,7 @@
 import pickle
 from .process import Process
 from .model import Model
-from typing import List, Iterable, Any
+from typing import List, Iterable, Any, Optional
 from ..utils import option
 
 
@@ -35,7 +35,10 @@ class Workflow:
 
 
 class WorkflowModel(Model):
-    def __init__(self, workflow: Workflow) -> None:
+    def __init__(self, workflow: Optional[Workflow | None] = None) -> None:
+        if workflow is None:
+            workflow = Workflow()
+            # TODO: Add default workflow based on Random Guess
         self.workflow = workflow
         self.validator = None
         super().__init__()
