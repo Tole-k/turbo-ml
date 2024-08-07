@@ -1,6 +1,7 @@
 import sys
 from collections import defaultdict
 from .box import print_in_box, Box
+from .tutorial import *
 
 LOGO = """
   ____       _     __    ___   ____
@@ -55,14 +56,14 @@ def _choose_response(counter: int, default: str):
 def choose_option():
     def ask(counter: int):
         response = _choose_response(
-            counter, "To continue type 'c', to quit type 'q': ")
+            counter, "Choose option: 'number', quit: 'q': ")
         choice = input(response)
         match choice.lower():
             case '1':
                 sys.stdout.write('\033[F'*(box.num_lines+5))
                 sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
                 sys.stdout.write('\033[F'*(box.num_lines+5))
-                choose_option()
+                tutorial()
             case '2':
                 sys.stdout.write('\033[F'*(box.num_lines+5))
                 sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
@@ -122,6 +123,72 @@ def load_dataset():
 def show_credits():
     print_in_box(CREDITS + '\n' + LOGO, topic='Credits ')
     quit(0)
+
+
+def tutorial():
+    def show_tutorial(tutorial_number: int):
+        def ask(counter: int = 0):
+            response = _choose_response(
+                counter, "continue: 'c', menu: 'm', quit 'q': ")
+            choice = input(response)
+
+            match choice.lower():
+                case 'q': quit(0)
+                case 'm':
+                    sys.stdout.write('\033[F'*(size+5))
+                    sys.stdout.write(f'\n{' '*66}'*(size+5))
+                    sys.stdout.write('\033[F'*(size+5))
+                    tutorial()
+                case 'c':
+                    sys.stdout.write('\033[F'*(size+5))
+                    sys.stdout.write(f'\n{' '*66}'*(size+5))
+                    sys.stdout.write('\033[F'*(size+5))
+                    if tutorial_number+1 in TUTORIALS:
+                        show_tutorial(tutorial_number+1)
+                    else:
+                        tutorial()
+                case _:
+                    sys.stdout.write('\033[F')
+                    print(' '*100)
+                    sys.stdout.write('\033[F')
+                    ask(counter+1)
+
+        tutorial_name = TUTORIALS.get(tutorial_number)
+        tutorial_text = globals().get(f'TUTORIAL_{tutorial_number}')
+
+        size = print_in_box(tutorial_text, topic=tutorial_name)
+        ask(0)
+
+    def ask(counter: int = 0):
+        response = _choose_response(
+            counter, "tutorial: 'number', menu: 'm', quit 'q': ")
+        choice = input(response)
+
+        if choice.lower() == 'q':
+            quit(0)
+
+        if choice.lower() == 'm':
+            sys.stdout.write('\033[F'*(box.num_lines+5))
+            sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
+            sys.stdout.write('\033[F'*(box.num_lines+5))
+            choose_option()
+
+        if not choice.isdigit():
+            sys.stdout.write('\033[F')
+            print(' '*100)
+            sys.stdout.write('\033[F')
+            ask(counter+1)
+
+        choice = int(choice)
+        if choice in TUTORIALS:
+            sys.stdout.write('\033[F'*(box.num_lines+5))
+            sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
+            sys.stdout.write('\033[F'*(box.num_lines+5))
+            show_tutorial(choice)
+
+    box = Box(TUTORIALS, topic='Choose tutorial ')
+    box.print()
+    ask()
 
 
 if __name__ == '__main__':
