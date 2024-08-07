@@ -61,17 +61,17 @@ def choose_option():
         match choice.lower():
             case '1':
                 sys.stdout.write('\033[F'*(box.num_lines+5))
-                sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
+                sys.stdout.write(f"\n{' '*66}"*(box.num_lines+5))
                 sys.stdout.write('\033[F'*(box.num_lines+5))
                 tutorial()
             case '2':
                 sys.stdout.write('\033[F'*(box.num_lines+5))
-                sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
+                sys.stdout.write(f"\n{' '*66}"*(box.num_lines+5))
                 sys.stdout.write('\033[F'*(box.num_lines+5))
                 load_dataset()
             case '3':
                 sys.stdout.write('\033[F'*(box.num_lines+5))
-                sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
+                sys.stdout.write(f"\n{' '*66}"*(box.num_lines+5))
                 sys.stdout.write('\033[F'*(box.num_lines+5))
                 show_credits()
             case 'q': quit(0)
@@ -99,7 +99,7 @@ def welcome():
         match choice.lower():
             case 'c':
                 sys.stdout.write('\033[F'*(res+5))
-                sys.stdout.write(f'\n{' '*66}'*(res+5))
+                sys.stdout.write(f"\n{' '*66}"*(res+5))
                 sys.stdout.write('\033[F'*(res+5))
                 choose_option()
             case 'q': quit(0)
@@ -108,8 +108,9 @@ def welcome():
                 ask(counter+1)
     res = print_in_box(WELCOME_MESSAGE, topic='Welcome in Quick AI ')
     ask(0)
-    print(f'Now there should be calculations for dataset in file {
-          __DATASET_PATH}')  # TODO: Provide calculations for dataset in this file
+    # TODO: Provide calculations for dataset in this file
+    print(
+        f'Now there should be calculations for dataset in file {__DATASET_PATH}')
 
 
 def load_dataset():
@@ -136,12 +137,12 @@ def tutorial():
                 case 'q': quit(0)
                 case 'm':
                     sys.stdout.write('\033[F'*(size+5))
-                    sys.stdout.write(f'\n{' '*66}'*(size+5))
+                    sys.stdout.write(f"\n{' '*66}"*(size+5))
                     sys.stdout.write('\033[F'*(size+5))
                     tutorial()
                 case 'c':
                     sys.stdout.write('\033[F'*(size+5))
-                    sys.stdout.write(f'\n{' '*66}'*(size+5))
+                    sys.stdout.write(f"\n{' '*66}"*(size+5))
                     sys.stdout.write('\033[F'*(size+5))
                     if tutorial_number+1 in TUTORIAL_NAMES:
                         show_tutorial(tutorial_number+1)
@@ -169,7 +170,7 @@ def tutorial():
 
         if choice.lower() == 'm':
             sys.stdout.write('\033[F'*(box.num_lines+5))
-            sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
+            sys.stdout.write(f"\n{' '*66}"*(box.num_lines+5))
             sys.stdout.write('\033[F'*(box.num_lines+5))
             choose_option()
 
@@ -182,7 +183,7 @@ def tutorial():
         choice = int(choice)
         if choice in TUTORIAL_NAMES:
             sys.stdout.write('\033[F'*(box.num_lines+5))
-            sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
+            sys.stdout.write(f"\n{' '*66}"*(box.num_lines+5))
             sys.stdout.write('\033[F'*(box.num_lines+5))
             show_tutorial(choice)
 
