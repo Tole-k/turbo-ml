@@ -1,6 +1,7 @@
 import sys
 from collections import defaultdict
 from .box import print_in_box, Box
+
 LOGO = """
   ____       _     __    ___   ____
  / __ \\__ __(_)___/ /__ / _ | /  _/
@@ -36,6 +37,12 @@ RESPONSES = defaultdict(lambda: None, {
     13: "Okey, okey, you won, I give up, that's all I had"
 })
 
+CREDITS = """
+For now not sure who to credit, there are only two of us.
+"""
+
+__DATASET_PATH: str = ''
+
 
 def _choose_response(counter: int, default: str):
     if counter == 14:
@@ -53,11 +60,20 @@ def choose_option():
         match choice.lower():
             case '1':
                 sys.stdout.write('\033[F'*(box.num_lines+5))
+                sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
+                sys.stdout.write('\033[F'*(box.num_lines+5))
                 choose_option()
-            case '2': pass
-            case '3': pass
-            case 'q':
-                quit(0)
+            case '2':
+                sys.stdout.write('\033[F'*(box.num_lines+5))
+                sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
+                sys.stdout.write('\033[F'*(box.num_lines+5))
+                load_dataset()
+            case '3':
+                sys.stdout.write('\033[F'*(box.num_lines+5))
+                sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
+                sys.stdout.write('\033[F'*(box.num_lines+5))
+                show_credits()
+            case 'q': quit(0)
             case _:
                 sys.stdout.write('\033[F')
                 print(' '*100)
@@ -73,6 +89,8 @@ def choose_option():
 
 
 def welcome():
+    print(LOGO)
+
     def ask(counter: int = 0):
         response = _choose_response(
             counter, "To continue type 'c', to quit type 'q': ")
@@ -83,15 +101,28 @@ def welcome():
                 sys.stdout.write(f'\n{' '*66}'*(res+5))
                 sys.stdout.write('\033[F'*(res+5))
                 choose_option()
-            case 'q':
-                quit(0)
+            case 'q': quit(0)
             case _:
                 sys.stdout.write('\033[F')
                 ask(counter+1)
     res = print_in_box(WELCOME_MESSAGE, topic='Welcome in Quick AI ')
     ask(0)
+    print(f'Now there should be calculations for dataset in file {
+          __DATASET_PATH}')  # TODO: Provide calculations for dataset in this file
+
+
+def load_dataset():
+    print_in_box('Provide path to dataset file', topic='Load dataset ')
+    global __DATASET_PATH
+    __DATASET_PATH = input('Path: ')
+    print(__DATASET_PATH)
+    return
+
+
+def show_credits():
+    print_in_box(CREDITS + '\n' + LOGO, topic='Credits ')
+    quit(0)
 
 
 if __name__ == '__main__':
-    print(LOGO)
     welcome()
