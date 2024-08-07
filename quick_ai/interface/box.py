@@ -10,7 +10,8 @@ class Box:
 
     def print(self, with_header: bool = True) -> None:
         mes = '\n'.join(f'{i}: {j}'for i, j in self.params.items())
-        self.num_lines = print_in_box(mes, with_header=with_header)
+        self.num_lines = print_in_box(
+            mes, topic=self.topic, with_header=with_header)
 
     def update(self, params: dict, additional_backsteps: int = 0) -> None:
         self.params = params.copy()
@@ -24,8 +25,7 @@ def print_in_box(message: str, topic: str = 'Training', color_id: int = 92, max_
     max_width = option.text_size
     if with_header:
         print('+' + '-' * (max_width) + '+')
-        print(f'|\033[{color_id}m{' ' * ((max_width // 2) - len(topic)//2)
-                                  }{topic}{' ' * (max_width - (max_width//2) - len(topic)//2)}\033[0m|')
+        print(f'|\033[{color_id}m{' ' * ((max_width // 2) - len(topic)//2)}{topic}{' ' * (max_width - (max_width//2) - len(topic)//2)}\033[0m|')
         print('+' + '-' * (max_width) + '+')
 
     line_counter = 0
