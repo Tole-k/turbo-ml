@@ -1,7 +1,7 @@
 import sys
 from collections import defaultdict
 from .box import print_in_box, Box
-from .tutorial import *
+from .tutorial import TUTORIAL_DICT, TUTORIAL_NAMES
 
 LOGO = """
   ____       _     __    ___   ____
@@ -113,7 +113,7 @@ def welcome():
 
 
 def load_dataset():
-    print_in_box('Provide path to dataset file', topic='Load dataset ')
+    print_in_box('Provide path to dataset file', topic='Load dataset')
     global __DATASET_PATH
     __DATASET_PATH = input('Path: ')
     print(__DATASET_PATH)
@@ -143,7 +143,7 @@ def tutorial():
                     sys.stdout.write('\033[F'*(size+5))
                     sys.stdout.write(f'\n{' '*66}'*(size+5))
                     sys.stdout.write('\033[F'*(size+5))
-                    if tutorial_number+1 in TUTORIALS:
+                    if tutorial_number+1 in TUTORIAL_NAMES:
                         show_tutorial(tutorial_number+1)
                     else:
                         tutorial()
@@ -153,8 +153,8 @@ def tutorial():
                     sys.stdout.write('\033[F')
                     ask(counter+1)
 
-        tutorial_name = TUTORIALS.get(tutorial_number)
-        tutorial_text = globals().get(f'TUTORIAL_{tutorial_number}')
+        tutorial_name = TUTORIAL_NAMES.get(tutorial_number)
+        tutorial_text = TUTORIAL_DICT.get(tutorial_number)
 
         size = print_in_box(tutorial_text, topic=tutorial_name)
         ask(0)
@@ -180,13 +180,13 @@ def tutorial():
             ask(counter+1)
 
         choice = int(choice)
-        if choice in TUTORIALS:
+        if choice in TUTORIAL_NAMES:
             sys.stdout.write('\033[F'*(box.num_lines+5))
             sys.stdout.write(f'\n{' '*66}'*(box.num_lines+5))
             sys.stdout.write('\033[F'*(box.num_lines+5))
             show_tutorial(choice)
 
-    box = Box(TUTORIALS, topic='Choose tutorial ')
+    box = Box(TUTORIAL_NAMES, topic='Choose tutorial ')
     box.print()
     ask()
 
