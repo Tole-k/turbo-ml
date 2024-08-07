@@ -1,3 +1,4 @@
+import pandas as pd
 from datasets import *
 from ..base import Model
 import torch
@@ -8,8 +9,8 @@ from sklearn.model_selection import train_test_split
 
 
 class NeuralNetwork(Model):
-    input_formats = {torch.Tensor}
-    output_formats = {torch.Tensor}
+    input_formats = {pd.DataFrame}
+    output_formats = {pd.DataFrame | pd.Series}
 
     def addActivation(self, activation: str) -> nn.Module:
         match activation:
@@ -81,7 +82,7 @@ class NeuralNetwork(Model):
         def __len__(self):
             return len(self.data)
 
-    def train(self, data: torch.Tensor, target: torch.Tensor) -> None:
+    def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
         train_data, test_data, train_target, test_target = train_test_split(
             data, target, test_size=0.2)
 
@@ -131,18 +132,29 @@ class NeuralNetwork(Model):
                 total_loss /= len(test_loader)
                 print('Error on test set:', total_loss.item())
 
-    def predict(self, guess: torch.Tensor) -> torch.Tensor:
+    def predict(self, guess: pd.DataFrame | pd.Series) -> torch.Tensor:
+        result = None
         self.model.eval()
         with torch.inference_mode():
-            return torch.argmax(self.model(torch.tensor(
-                guess.values).float().to(self.device)), dim=1)
+            if self.task == 'classification':
+                result = torch.argmax(self.model(torch.tensor(
+                    guess.values).float().to(self.device)), dim=1)
+            else:
+                result = self.model(torch.tensor(
+                    guess.values).float().to(self.device))
+        if result.ndim == 1:
+            return pd.Series(result.cpu().numpy())
+        else:
+            return pd.DataFrame(result.cpu().numpy())
 
-
+# 
 # print('Iris')
 # data, target = get_iris()
+# target.map({0: '0', 1: '1', 2: '2'})
 # model = NeuralNetwork(4, 3, [128, 64], 'classification', ['relu', 'relu'],
 #                       'cross-entropy', 'adam', 32, 100)
 # model.train(data, target)
+# print(model.predict(data))
 #
 # print('Wine')
 # data, target = get_wine()
@@ -155,15 +167,19 @@ class NeuralNetwork(Model):
 # model = NeuralNetwork(30, 2, [128, 64], 'classification', ['relu', 'relu'],
 #                       'cross-entropy', 'adam', 32, 100)
 # model.train(data, target)
+# print(model.predict(data))
 #
 # print('Diabetes')
 # data, target = get_diabetes()
 # model = NeuralNetwork(10, 1, [128, 64], 'regression', [
 #     'relu', 'relu'], 'mse', 'adam', 32, 100)
 # model.train(data, target)
+# print(model.predict(data))
+
 #
 # print('Linnerud')
 # data, target = get_linnerud()
 # model = NeuralNetwork(3, 3, [128, 64], 'regression', [
 #     'relu', 'relu'], 'mse', 'adam', 32, 100)
 # model.train(data, target)
+# print(model.predict(data))
