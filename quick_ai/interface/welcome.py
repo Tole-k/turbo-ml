@@ -1,6 +1,20 @@
 import sys
 from collections import defaultdict
 from .box import print_in_box, Box
+LOGO = """
+  ____       _     __    ___   ____
+ / __ \\__ __(_)___/ /__ / _ | /  _/
+/ /_/ / // / / __/  '_// __ |_/ /  
+\\___\\_\\_,_/_/\\__/_/\\_\\/_/ |_/___/ 
+"""
+
+LOGO_COLOR = """\033[32m
+  ____       _     __    \033[33m___   ____\033[32m
+ / __ \\__ __(_)___/ /__ \033[33m/ _ | /  _/\033[32m
+/ /_/ / // / / __/  '_/\033[33m/ __ |_/ /\033[32m
+\\___\\_\\_,_/_/\\__/_/\\_\\\033[33m/_/ |_/___/\033[0m
+"""
+
 WELCOME_MESSAGE = """
 Welcome in Quick AI, this piece of software was created in order to make machine learning simple.
 Given some dataset algorithms from library should be able to find the best machine learning algorithm with optimal parameters to solve problem provided in dataset whether this is classification or regression task.
@@ -11,12 +25,12 @@ Given some dataset algorithms from library should be able to find the best machi
 - call quick_ai.predict(data) to find predictions
 """
 
-RESPONCES = defaultdict(lambda: None, {
+RESPONSES = defaultdict(lambda: None, {
     5: "Need a helping hand with ... writing single letter?",
     6: "Yep, looks like you need it :/",
     7: 'Hey! Stop it! Just choose one option',
     8: "Downloading multiple viruses, please wait",
-    9: "Ehh, life, I don't have too many responces left so just choose some option",
+    9: "Ehh, life, I don't have too many responses left so just choose some option",
     10: "Like I said, just choose some option!",
     12: "I though that most of people would lose on the last one",
     13: "Okey, okey, you won, I give up, that's all I had"
@@ -26,16 +40,16 @@ RESPONCES = defaultdict(lambda: None, {
 def _choose_response(counter: int, default: str):
     if counter == 14:
         quit(0)
-    if RESPONCES[counter] is None:
+    if RESPONSES[counter] is None:
         return default
-    return RESPONCES[counter]
+    return RESPONSES[counter]
 
 
 def choose_option():
     def ask(counter: int):
-        responce = _choose_response(
+        response = _choose_response(
             counter, "To continue type 'c', to quit type 'q': ")
-        choice = input(responce)
+        choice = input(response)
         match choice.lower():
             case '1':
                 sys.stdout.write('\033[F'*(box.num_lines+5))
@@ -60,9 +74,9 @@ def choose_option():
 
 def welcome():
     def ask(counter: int = 0):
-        responce = _choose_response(
+        response = _choose_response(
             counter, "To continue type 'c', to quit type 'q': ")
-        choice = input(responce)
+        choice = input(response)
         match choice.lower():
             case 'c':
                 sys.stdout.write('\033[F'*(res+5))
@@ -79,4 +93,5 @@ def welcome():
 
 
 if __name__ == '__main__':
+    print(LOGO)
     welcome()
