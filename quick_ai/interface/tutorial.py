@@ -1,3 +1,6 @@
+"""
+Module containing the tutorials for the QuickAI interface.
+"""
 # TODO: Implement tutorials
 TUTORIAL_1 = """
 test

@@ -1,4 +1,4 @@
-from .interface.welcome import welcome
+from .interface import welcome
 
 
 def main():

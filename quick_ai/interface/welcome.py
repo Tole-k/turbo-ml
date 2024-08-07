@@ -1,6 +1,9 @@
+""" 
+Main module implementing interactive command line interface for Quick AI library.
+"""
 import sys
 from collections import defaultdict
-from .box import print_in_box, Box
+from .items import print_in_box, Box
 from .tutorial import TUTORIAL_DICT, TUTORIAL_NAMES
 
 LOGO = """
@@ -44,6 +47,8 @@ For now not sure who to credit, there are only two of us.
 
 __DATASET_PATH: str = ''
 
+# TODO: Change sys.stdout.write clearing to a function to avoid repetition
+
 
 def _choose_response(counter: int, default: str):
     if counter == 14:
@@ -54,7 +59,8 @@ def _choose_response(counter: int, default: str):
 
 
 def choose_option():
-    def ask(counter: int):
+    """ Function to show main menu """
+    def _ask(counter: int):
         response = _choose_response(
             counter, "Choose option: 'number', quit: 'q': ")
         choice = input(response)
@@ -79,20 +85,21 @@ def choose_option():
                 sys.stdout.write('\033[F')
                 print(' '*100)
                 sys.stdout.write('\033[F')
-                ask(counter+1)
+                _ask(counter+1)
 
     options: dict = {'tutorial': 1,
                      'load dataset': 2,
                      'credits': 3}
     box = Box(options, topic='Choose option ')
     box.print()
-    ask(0)
+    _ask(0)
 
 
 def welcome():
+    """ Function to show welcome message and start interactive interface """
     print(LOGO)
 
-    def ask(counter: int = 0):
+    def _ask(counter: int = 0):
         response = _choose_response(
             counter, "To continue type 'c', to quit type 'q': ")
         choice = input(response)
@@ -105,15 +112,16 @@ def welcome():
             case 'q': quit(0)
             case _:
                 sys.stdout.write('\033[F')
-                ask(counter+1)
+                _ask(counter+1)
     res = print_in_box(WELCOME_MESSAGE, topic='Welcome in Quick AI ')
-    ask(0)
+    _ask(0)
     # TODO: Provide calculations for dataset in this file
     print(
         f'Now there should be calculations for dataset in file {__DATASET_PATH}')
 
 
 def load_dataset():
+    """ Function to show load dataset menu """
     print_in_box('Provide path to dataset file', topic='Load dataset')
     global __DATASET_PATH
     __DATASET_PATH = input('Path: ')
@@ -122,13 +130,15 @@ def load_dataset():
 
 
 def show_credits():
+    """ Function to show credits """
     print_in_box(CREDITS + '\n' + LOGO, topic='Credits ')
     quit(0)
 
 
 def tutorial():
-    def show_tutorial(tutorial_number: int):
-        def ask(counter: int = 0):
+    """ Function to show tutorial """
+    def _show_tutorial(tutorial_number: int):
+        def _ask_inner(counter: int = 0):
             response = _choose_response(
                 counter, "continue: 'c', menu: 'm', quit 'q': ")
             choice = input(response)
@@ -145,22 +155,22 @@ def tutorial():
                     sys.stdout.write(f"\n{' '*66}"*(size+5))
                     sys.stdout.write('\033[F'*(size+5))
                     if tutorial_number+1 in TUTORIAL_NAMES:
-                        show_tutorial(tutorial_number+1)
+                        _show_tutorial(tutorial_number+1)
                     else:
                         tutorial()
                 case _:
                     sys.stdout.write('\033[F')
                     print(' '*100)
                     sys.stdout.write('\033[F')
-                    ask(counter+1)
+                    _ask_inner(counter+1)
 
         tutorial_name = TUTORIAL_NAMES.get(tutorial_number)
         tutorial_text = TUTORIAL_DICT.get(tutorial_number)
 
         size = print_in_box(tutorial_text, topic=tutorial_name)
-        ask(0)
+        _ask_inner(0)
 
-    def ask(counter: int = 0):
+    def _ask(counter: int = 0):
         response = _choose_response(
             counter, "tutorial: 'number', menu: 'm', quit 'q': ")
         choice = input(response)
@@ -178,18 +188,18 @@ def tutorial():
             sys.stdout.write('\033[F')
             print(' '*100)
             sys.stdout.write('\033[F')
-            ask(counter+1)
+            _ask(counter+1)
 
         choice = int(choice)
         if choice in TUTORIAL_NAMES:
             sys.stdout.write('\033[F'*(box.num_lines+5))
             sys.stdout.write(f"\n{' '*66}"*(box.num_lines+5))
             sys.stdout.write('\033[F'*(box.num_lines+5))
-            show_tutorial(choice)
+            _show_tutorial(choice)
 
     box = Box(TUTORIAL_NAMES, topic='Choose tutorial ')
     box.print()
-    ask()
+    _ask()
 
 
 if __name__ == '__main__':
