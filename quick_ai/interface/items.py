@@ -28,8 +28,7 @@ def print_in_box(message: str, topic: str = 'Training', color_id: int = 92, max_
     max_width = option.text_size
     if with_header:
         print('+' + '-' * (max_width) + '+')
-        print(f"|\033[{color_id}m{' ' * ((max_width // 2) - len(topic)//2)
-                                  }{topic}{' ' * (max_width - (max_width//2) - len(topic)//2)}\033[0m |")
+        print(f"|\033[{color_id}m{' ' * ((max_width // 2) - len(topic)//2)}{topic}{' ' * (max_width - (max_width//2) - len(topic)//2)}\033[0m |")
         print('+' + '-' * (max_width) + '+')
 
     line_counter = 0
