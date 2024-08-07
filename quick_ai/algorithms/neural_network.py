@@ -1,8 +1,10 @@
+from datasets import *
 from ..base import Model
 import torch
 from torch import nn
 from torch import optim
 from torch.utils.data import DataLoader
+from sklearn.model_selection import train_test_split
 
 
 class NeuralNetwork(Model):
@@ -31,21 +33,21 @@ class NeuralNetwork(Model):
             case _:
                 raise ValueError(f'Loss {loss} not supported')
 
-    def addOptmiizer(self, optimizer: str) -> optim.Optimizer:
+    def addOptimizer(self, optimizer: str, learning_rate) -> optim.Optimizer:
         match optimizer:
             case 'adam':
-                return optim.Adam(self.model.parameters())
+                return optim.Adam(self.model.parameters(), lr=learning_rate)
             case 'sgd':
-                return optim.SGD(self.model.parameters())
+                return optim.SGD(self.model.parameters(), lr=learning_rate)
             case _:
                 raise ValueError(f'Optimizer {optimizer} not supported')
 
-    def __init__(self, input_size: int, output_size: int, hidden_sizes: list[int] = [1], activations: list[str] = ['relu'], loss: str = 'cross-entropy', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000) -> None:
+    def __init__(self, input_size: int, output_size: int, hidden_sizes: list[int], task: str = 'classification', activations: list[str] = ['relu'], loss: str = 'cross-entropy', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001) -> None:
         super().__init__()
         layers = []
-        if len(activations) != len(hidden_sizes)+1:
+        if len(activations) != len(hidden_sizes):
             raise ValueError(
-                'Number of activations must be equal to the number of hidden layers + 1')
+                'Number of activations must be equal to the number of hidden layers')
         if len(hidden_sizes) == 0:
             layers.append(nn.Linear(input_size, output_size))
             layers.append(self.addActivation(activations[0]))
@@ -57,26 +59,46 @@ class NeuralNetwork(Model):
                     layers.append(nn.Linear(hidden_sizes[i-1], hidden_size))
                 layers.append(self.addActivation(activation))
             layers.append(nn.Linear(hidden_sizes[-1], output_size))
-            layers.append(self.addActivation(activations[-1]))
-        self.model = nn.Sequential(*layers)
+        self.task = task
+        self.model = nn.Sequential(*layers).cuda()
         self.criterion = self.addLoss(loss)
-        self.optimizer = self.addOptmiizer(optimizer)
+        self.optimizer = self.addOptimizer(optimizer, learning_rate)
         self.batch_size = batch_size
+        self.epochs = epochs
         self.device = torch.device(
             "cuda" if torch.cuda.is_available() else "cpu")
 
-    def df_to_tensor(self, df):
-        return torch.from_numpy(df.values).float().to(self.device)
+    class DataTargetDataset(torch.utils.data.Dataset):
+        def __init__(self, data, target, device, task):
+            self.device = device
+            self.data = torch.tensor(data.values).float().to(self.device)
+            self.target = torch.tensor(target.values).long().to(self.device) if task == 'classification' else torch.tensor(
+                target.values).float().to(self.device) if task == 'regression' else None
+
+        def __getitem__(self, index):
+            return self.data[index], self.target[index]
+
+        def __len__(self):
+            return len(self.data)
 
     def train(self, data: torch.Tensor, target: torch.Tensor) -> None:
-        train_dataset = self.df_to_tensor(data)
-        test_dataset = self.df_to_tensor(target)
-        train_loader = torch.utils.data.DataLoader(
-            train_dataset, batch_size=self.batch_size, shuffle=True)
-        test_loader = torch.utils.data.DataLoader(
-            test_dataset, batch_size=self.batch_size, shuffle=False)
-        for epoch in range(10):
+        train_data, test_data, train_target, test_target = train_test_split(
+            data, target, test_size=0.2)
+
+        train_dataset = self.DataTargetDataset(
+            train_data, train_target, self.device, self.task)
+        test_dataset = self.DataTargetDataset(
+            test_data, test_target, self.device, self.task)
+
+        train_loader = DataLoader(
+            train_dataset, batch_size=self.batch_size)
+        test_loader = DataLoader(
+            test_dataset, batch_size=self.batch_size)
+        for epoch in range(self.epochs):
             for i, (data, target) in enumerate(train_loader):
+                if self.task == 'regression' and target.ndimension() == 1:
+                    target = target.view(len(target), 1)
+                self.model.train()
                 output = self.model(data)
                 loss = self.criterion(output, target)
                 self.optimizer.zero_grad()
@@ -85,16 +107,63 @@ class NeuralNetwork(Model):
                 if epoch % 10 == 0:
                     print('[%d, %5d] loss: %.3f' %
                           (epoch + 1, i + 1, loss / 100))
-        with torch.no_grad():
-            correct = 0
-            total = 0
-            for data, target in test_loader:
-                output = self.model(data)
-                _, predicted = torch.max(output.data, 1)
-                total += target.size(0)
-                correct += (predicted == target).sum().item()
-            acc = 100.0 * correct / total
-            print('Accuracy on test set:', acc)
+        self.model.eval()
+        with torch.inference_mode():
+            if self.task == 'classification':
+                correct = 0
+                total = 0
+                for data, target in test_loader:
+                    output = self.model(data)
+                    predicted = torch.argmax(output.data, dim=1)
+                    total += target.size(0)
+                    correct += (predicted == target).sum().item()
+                acc = 100.0 * correct / total
+                print('Accuracy on test set:', acc)
+            else:
+                # breakpoint()
+                total_loss = 0
+                for data, target in test_loader:
+                    if target.ndimension() == 1:
+                        target = target.view(len(target), 1)
+                    output = self.model(data)
+                    loss = self.criterion(output, target)
+                    total_loss += loss
+                total_loss /= len(test_loader)
+                print('Error on test set:', total_loss.item())
 
     def predict(self, guess: torch.Tensor) -> torch.Tensor:
-        return self.model(guess)
+        self.model.eval()
+        with torch.inference_mode():
+            return torch.argmax(self.model(torch.tensor(
+                guess.values).float().to(self.device)), dim=1)
+
+
+# print('Iris')
+# data, target = get_iris()
+# model = NeuralNetwork(4, 3, [128, 64], 'classification', ['relu', 'relu'],
+#                       'cross-entropy', 'adam', 32, 100)
+# model.train(data, target)
+#
+# print('Wine')
+# data, target = get_wine()
+# model = NeuralNetwork(13, 3, [128, 64], 'classification', ['relu', 'relu'],
+#                       'cross-entropy', 'adam', 32, 100)
+# model.train(data, target)
+#
+# print('Breast Cancer')
+# data, target = get_breast_cancer()
+# model = NeuralNetwork(30, 2, [128, 64], 'classification', ['relu', 'relu'],
+#                       'cross-entropy', 'adam', 32, 100)
+# model.train(data, target)
+#
+# print('Diabetes')
+# data, target = get_diabetes()
+# model = NeuralNetwork(10, 1, [128, 64], 'regression', [
+#     'relu', 'relu'], 'mse', 'adam', 32, 100)
+# model.train(data, target)
+#
+# print('Linnerud')
+# data, target = get_linnerud()
+# model = NeuralNetwork(3, 3, [128, 64], 'regression', [
+#     'relu', 'relu'], 'mse', 'adam', 32, 100)
+# model.train(data, target)
