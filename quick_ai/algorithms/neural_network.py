@@ -1,3 +1,4 @@
+from datasets import *
 import pandas as pd
 from ..base import Model
 import torch
@@ -5,154 +6,24 @@ from torch import nn
 from torch import optim
 from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
+from typing import List, Tuple
+import logging
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 class NeuralNetwork(Model):
     input_formats = {pd.DataFrame}
     output_formats = {pd.DataFrame | pd.Series}
 
-    def addActivation(self, activation: str) -> nn.Module:
-        match activation:
-            case 'relu':
-                return nn.ReLU()
-            case 'sigmoid':
-                return nn.Sigmoid()
-            case 'tanh':
-                return nn.Tanh()
-            case 'softmax':
-                return nn.Softmax()
-            case 'leaky_relu':
-                return nn.LeakyReLU()
-            case 'elu':
-                return nn.ELU()
-            case 'selu':
-                return nn.SELU()
-            case 'gelu':
-                return nn.GELU()
-            case 'threshold':
-                return nn.Threshold()
-            case 'hardtanh':
-                return nn.Hardtanh()
-            case 'log_sigmoid':
-                return nn.LogSigmoid()
-            case 'softplus':
-                return nn.Softplus()
-            case 'softshrink':
-                return nn.Softshrink()
-            case 'softsign':
-                return nn.Softsign()
-            case 'tanhshrink':
-                return nn.Tanhshrink()
-            case 'rrelu':
-                return nn.RReLU()
-            case 'celu':
-                return nn.CELU()
-            case 'glu':
-                return nn.GLU()
-            case 'silu':
-                return nn.SiLU()
-            case 'mish':
-                return nn.Mish()
-            case 'relu6':
-                return nn.ReLU6()
-            case 'prelu':
-                return nn.PReLU()
-            case 'hardsigmoid':
-                return nn.Hardsigmoid()
-            case 'hardshrink':
-                return nn.Hardshrink()
-            case _:
-                raise ValueError(f'Activation {activation} not supported')
-
-    def addLoss(self, loss: str) -> nn.Module:
-        match loss:
-            case 'cross-entropy':
-                return nn.CrossEntropyLoss()
-            case 'mse':
-                return nn.MSELoss()
-            case 'l1':
-                return nn.L1Loss()
-            case 'nll':
-                return nn.NLLLoss()
-            case 'poisson':
-                return nn.PoissonNLLLoss()
-            case 'kld':
-                return nn.KLDivLoss()
-            case 'bce':
-                return nn.BCELoss()
-            case 'bce_with_logits':
-                return nn.BCEWithLogitsLoss()
-            case 'margin_ranking':
-                return nn.MarginRankingLoss()
-            case 'hinge':
-                return nn.HingeEmbeddingLoss()
-            case 'multi_margin':
-                return nn.MultiMarginLoss()
-            case 'smooth_l1':
-                return nn.SmoothL1Loss()
-            case 'huber':
-                return nn.HuberLoss()
-            case 'cosine':
-                return nn.CosineEmbeddingLoss()
-            case 'multi_label_soft_margin':
-                return nn.MultiLabelSoftMarginLoss()
-            case 'triplet_margin':
-                return nn.TripletMarginLoss()
-            case 'ctc':
-                return nn.CTCLoss()
-            case 'nll_loss2d':
-                return nn.NLLLoss2d()
-            case 'poisson_nll':
-                return nn.PoissonNLLLoss()
-            case _:
-                raise ValueError(f'Loss {loss} not supported')
-
-    def addOptimizer(self, optimizer: str, learning_rate) -> optim.Optimizer:
-        match optimizer:
-            case 'adam':
-                return optim.Adam(self.model.parameters(), lr=learning_rate)
-            case 'sgd':
-                return optim.SGD(self.model.parameters(), lr=learning_rate)
-            case 'adadelta':
-                return optim.Adadelta(self.model.parameters(), lr=learning_rate)
-            case 'adagrad':
-                return optim.Adagrad(self.model.parameters(), lr=learning_rate)
-            case 'adamax':
-                return optim.Adamax(self.model.parameters(), lr=learning_rate)
-            case 'rmsprop':
-                return optim.RMSprop(self.model.parameters(), lr=learning_rate)
-            case 'rprop':
-                return optim.Rprop(self.model.parameters(), lr=learning_rate)
-            case 'lbfgs':
-                return optim.LBFGS(self.model.parameters(), lr=learning_rate)
-            case _:
-                raise ValueError(f'Optimizer {optimizer} not supported')
-
-    def __init__(self, input_size: int, output_size: int, hidden_sizes: list[int], task: str = 'classification', activations: list[str] = ['relu'], loss: str = 'cross-entropy', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001) -> None:
+    def __init__(self, model: nn.Module, loss, optimizer, device, batch_size, epochs) -> None:
         super().__init__()
-        layers = []
-        if len(activations) != len(hidden_sizes):
-            raise ValueError(
-                'Number of activations must be equal to the number of hidden layers')
-        if len(hidden_sizes) == 0:
-            layers.append(nn.Linear(input_size, output_size))
-            layers.append(self.addActivation(activations[0]))
-        else:
-            for i, (hidden_size, activation) in enumerate(zip(hidden_sizes, activations)):
-                if i == 0:
-                    layers.append(nn.Linear(input_size, hidden_size))
-                else:
-                    layers.append(nn.Linear(hidden_sizes[i-1], hidden_size))
-                layers.append(self.addActivation(activation))
-            layers.append(nn.Linear(hidden_sizes[-1], output_size))
-        self.task = task
-        self.model = nn.Sequential(*layers).cuda()
-        self.criterion = self.addLoss(loss)
-        self.optimizer = self.addOptimizer(optimizer, learning_rate)
+        self.model = model
+        self.criterion = loss
+        self.optimizer = optimizer
+        self.device = device
         self.batch_size = batch_size
         self.epochs = epochs
-        self.device = torch.device(
-            "cuda" if torch.cuda.is_available() else "cpu")
 
     class DataTargetDataset(torch.utils.data.Dataset):
         def __init__(self, data, target, device, task):
@@ -167,7 +38,7 @@ class NeuralNetwork(Model):
         def __len__(self):
             return len(self.data)
 
-    def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
+    def setup_loaders(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series, task: str) -> Tuple[DataLoader, DataLoader]:
         train_data, test_data, train_target, test_target = train_test_split(
             data, target, test_size=0.2)
 
@@ -180,13 +51,19 @@ class NeuralNetwork(Model):
             train_dataset, batch_size=self.batch_size)
         test_loader = DataLoader(
             test_dataset, batch_size=self.batch_size)
+        return train_loader, test_loader
+
+
+class NeuralNetworkClassifier(NeuralNetwork):
+    task = 'classification'
+
+    def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
+        train_loader, test_loader = self.setup_loaders(data, target, self.task)
         for epoch in range(self.epochs):
             for i, (data, target) in enumerate(train_loader):
-                if self.task == 'regression' and target.ndimension() == 1:
-                    target = target.view(len(target), 1)
                 self.model.train()
                 output = self.model(data)
-                loss = self.criterion(outppip3 install torch torchvision torchaudiout, target)
+                loss = self.criterion(output, target)
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
@@ -195,74 +72,151 @@ class NeuralNetwork(Model):
                           (epoch + 1, i + 1, loss / 100))
         self.model.eval()
         with torch.inference_mode():
-            if self.task == 'classification':
-                correct = 0
-                total = 0
-                for data, target in test_loader:
-                    output = self.model(data)
-                    predicted = torch.argmax(output.data, dim=1)
-                    total += target.size(0)
-                    correct += (predicted == target).sum().item()
-                acc = 100.0 * correct / total
-                print('Accuracy on test set:', acc)
-            else:
-                total_loss = 0
-                for data, target in test_loader:
-                    if target.ndimension() == 1:
-                        target = target.view(len(target), 1)
-                    output = self.model(data)
-                    loss = self.criterion(output, target)
-                    total_loss += loss
-                total_loss /= len(test_loader)
-                print('Error on test set:', total_loss.item())
+            correct = 0
+            total = 0
+            for data, target in test_loader:
+                output = self.model(data)
+                predicted = torch.argmax(output.data, dim=1)
+                total += target.size(0)
+                correct += (predicted == target).sum().item()
+            acc = 100.0 * correct / total
+            print('Accuracy on test set:', acc)
 
-    def predict(self, guess: pd.DataFrame | pd.Series) -> torch.Tensor:
+    def predict(self, guess: pd.DataFrame) -> pd.DataFrame | pd.Series:
         result = None
         self.model.eval()
         with torch.inference_mode():
-            if self.task == 'classification':
-                result = torch.argmax(self.model(torch.tensor(
-                    guess.values).float().to(self.device)), dim=1)
-            else:
-                result = self.model(torch.tensor(
-                    guess.values).float().to(self.device))
+            result = torch.argmax(self.model(torch.tensor(
+                guess.values).float().to(self.device)), dim=1)
         if result.ndim == 1:
             return pd.Series(result.cpu().numpy())
         else:
             return pd.DataFrame(result.cpu().numpy())
 
-# from datasets import *
+
+class NeuralNetworkRegressor(NeuralNetwork):
+    task = 'regression'
+
+    def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
+        train_loader, test_loader = self.setup_loaders(data, target,self.task)
+        for epoch in range(self.epochs):
+            for i, (data, target) in enumerate(train_loader):
+                if target.ndimension() == 1:
+                    target = target.view(len(target), 1)
+                self.model.train()
+                output = self.model(data)
+                loss = self.criterion(output, target)
+                self.optimizer.zero_grad()
+                loss.backward()
+                self.optimizer.step()
+                if epoch % 10 == 0:
+                    print('[%d, %5d] loss: %.3f' %
+                          (epoch + 1, i + 1, loss / 100))
+        self.model.eval()
+        with torch.inference_mode():
+            total_loss = 0
+            for data, target in test_loader:
+                if target.ndimension() == 1:
+                    target = target.view(len(target), 1)
+                output = self.model(data)
+                loss = self.criterion(output, target)
+                total_loss += loss
+            total_loss /= len(test_loader)
+            print('Error on test set:', total_loss.item())
+
+    def predict(self, guess: pd.DataFrame) -> pd.DataFrame | pd.Series:
+        result = None
+        self.model.eval()
+        with torch.inference_mode():
+            result = self.model(torch.tensor(
+                guess.values).float().to(self.device))
+        if result.ndim == 1:
+            return pd.Series(result.cpu().numpy())
+        else:
+            return pd.DataFrame(result.cpu().numpy())
+
+
+class NNFactory:
+    activations = [nn.ReLU, nn.Sigmoid, nn.Tanh, nn.Softmax, nn.LeakyReLU, nn.ELU, nn.SELU, nn.GELU, nn.Hardtanh, nn.LogSigmoid, nn.Softplus,
+                   nn.Softshrink, nn.Softsign, nn.Tanhshrink, nn.RReLU, nn.CELU, nn.GLU, nn.SiLU, nn.Mish, nn.ReLU6, nn.PReLU, nn.Hardsigmoid, nn.Hardshrink]
+    loss_functions = [nn.CrossEntropyLoss, nn.MSELoss, nn.L1Loss, nn.NLLLoss, nn.PoissonNLLLoss, nn.KLDivLoss, nn.BCELoss, nn.BCEWithLogitsLoss, nn.MarginRankingLoss,
+                      nn.HingeEmbeddingLoss, nn.MultiMarginLoss, nn.SmoothL1Loss, nn.HuberLoss, nn.CosineEmbeddingLoss, nn.MultiLabelSoftMarginLoss, nn.TripletMarginLoss, nn.CTCLoss]
+    optimizers = [optim.Adam, optim.SGD, optim.Adadelta, optim.Adagrad,
+                  optim.Adamax, optim.RMSprop, optim.Rprop, optim.LBFGS]
+
+    def _add_activation(self, activation: str) -> nn.Module:
+        return {activation.__name__.lower(): activation() for activation in self.activations}[activation.lower()]
+
+    def _add_loss(self, loss: str) -> nn.Module:
+        return {loss.__name__.lower(): loss() for loss in self.loss_functions}[loss.lower()]
+
+    def _add_optimizer(self, optimizer: str, learning_rate) -> optim.Optimizer:
+        return {optimizer.__name__.lower(): optimizer(self.model.parameters(), lr=learning_rate)
+                for optimizer in self.optimizers}[optimizer.lower()]
+
+    def create_neural_network(self, input_size: int, output_size: int, hidden_sizes: List[int], task: str = 'classification', activations: List[str] = ['relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001) -> NeuralNetwork:
+        layers = []
+        if len(activations) != len(hidden_sizes):
+            raise ValueError(
+                'Number of activations must be equal to the number of hidden layers')
+        if len(hidden_sizes) == 0:
+            layers.append(nn.Linear(input_size, output_size))
+            layers.append(self._add_activation(activations[0]))
+        else:
+            for i, (hidden_size, activation) in enumerate(zip(hidden_sizes, activations)):
+                if i == 0:
+                    layers.append(nn.Linear(input_size, hidden_size))
+                else:
+                    layers.append(nn.Linear(hidden_sizes[i-1], hidden_size))
+                layers.append(self._add_activation(activation))
+            layers.append(nn.Linear(hidden_sizes[-1], output_size))
+        self.task = task
+        self.model = nn.Sequential(
+            *layers).cuda() if torch.cuda.is_available() else nn.Sequential(*layers)
+        self.criterion = self._add_loss(loss)
+        self.optimizer = self._add_optimizer(optimizer, learning_rate)
+        self.batch_size = batch_size
+        self.epochs = epochs
+        self.device = torch.device(
+            "cuda" if torch.cuda.is_available() else "cpu")
+        if task == 'classification':
+            return NeuralNetworkClassifier(self.model, self.criterion, self.optimizer, self.device, self.batch_size, self.epochs)
+        elif task == 'regression':
+            return NeuralNetworkRegressor(self.model, self.criterion, self.optimizer, self.device, self.batch_size, self.epochs)
+        else:
+            raise ValueError('Invalid task type')
+
+
 # print('Iris')
 # data, target = get_iris()
-# target.map({0: '0', 1: '1', 2: '2'})
-# model = NeuralNetwork(4, 3, [128, 64], 'classification', ['relu', 'relu'],
-#                       'cross-entropy', 'adam', 32, 100)
+# model = NNFactory().create_neural_network(4, 3, [128, 64], 'classification', ['relu', 'relu'],
+#                                           'crossentropyloss', 'adam', 32, 100)
 # model.train(data, target)
 # print(model.predict(data))
 # 
 # print('Wine')
 # data, target = get_wine()
-# model = NeuralNetwork(13, 3, [128, 64], 'classification', ['relu', 'relu'],
-#                       'cross-entropy', 'adam', 32, 100)
+# model = NNFactory().create_neural_network(13, 3, [128, 64], 'classification', ['relu', 'relu'],
+#                                           'crossentropyloss', 'adam', 32, 100)
 # model.train(data, target)
 # 
 # print('Breast Cancer')
 # data, target = get_breast_cancer()
-# model = NeuralNetwork(30, 2, [128, 64], 'classification', ['relu', 'relu'],
-#                       'cross-entropy', 'adam', 32, 100)
+# model = NNFactory().create_neural_network(30, 2, [128, 64], 'classification', ['relu', 'relu'],
+#                                           'crossentropyloss', 'adam', 32, 100)
 # model.train(data, target)
 # print(model.predict(data))
 # 
 # print('Diabetes')
 # data, target = get_diabetes()
-# model = NeuralNetwork(10, 1, [128, 64], 'regression', [
-#     'relu', 'relu'], 'mse', 'adam', 32, 100)
+# model = NNFactory().create_neural_network(10, 1, [128, 64], 'regression', [
+#     'relu', 'relu'], 'mseloss', 'adam', 32, 100)
 # model.train(data, target)
 # print(model.predict(data))
 # 
 # print('Linnerud')
 # data, target = get_linnerud()
-# model = NeuralNetwork(3, 3, [128, 64], 'regression', [
-#     'relu', 'relu'], 'mse', 'adam', 32, 100)
+# model = NNFactory().create_neural_network(3, 3, [128, 64], 'regression', [
+#     'relu', 'relu'], 'mseloss', 'adam', 32, 100)
 # model.train(data, target)
 # print(model.predict(data))
