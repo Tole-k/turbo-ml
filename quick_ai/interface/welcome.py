@@ -105,15 +105,17 @@ def welcome():
         choice = input(response)
         match choice.lower():
             case 'c':
-                sys.stdout.write('\033[F'*(res+5))
-                sys.stdout.write(f"\n{' '*66}"*(res+5))
-                sys.stdout.write('\033[F'*(res+5))
+                sys.stdout.write('\033[F'*(num_lines+5))
+                sys.stdout.write(f"\n{' '*100}"*(num_lines+5))
+                sys.stdout.write('\033[F'*(num_lines+5))
                 choose_option()
             case 'q': quit(0)
             case _:
                 sys.stdout.write('\033[F')
+                sys.stdout.write(f"{' '*100}\n")
+                sys.stdout.write('\033[F')
                 _ask(counter+1)
-    res = print_in_box(WELCOME_MESSAGE, topic='Welcome in Quick AI ')
+    num_lines = print_in_box(WELCOME_MESSAGE, topic='Welcome in Quick AI ')
     _ask(0)
     # TODO: Provide calculations for dataset in this file
     print(
@@ -131,8 +133,20 @@ def load_dataset():
 
 def show_credits():
     """ Function to show credits """
-    print_in_box(CREDITS + '\n' + LOGO, topic='Credits ')
-    quit(0)
+    def _ask(counter: int):
+        response = _choose_response(
+            counter, "Click anything to continue, quit: 'q': ")
+        choice = input(response)
+        match choice.lower():
+            case 'q': quit(0)
+            case _:
+                sys.stdout.write('\033[F'*(num_lines+5))
+                sys.stdout.write(f"\n{' '*66}"*(num_lines+5))
+                sys.stdout.write('\033[F'*(num_lines+5))
+                choose_option()
+
+    num_lines = print_in_box(CREDITS + '\n' + LOGO, topic='Credits ')
+    _ask(0)
 
 
 def tutorial():
@@ -174,28 +188,28 @@ def tutorial():
         response = _choose_response(
             counter, "tutorial: 'number', menu: 'm', quit 'q': ")
         choice = input(response)
+        match choice.lower():
+            case 'q': quit(0)
 
-        if choice.lower() == 'q':
-            quit(0)
+            case 'm':
+                sys.stdout.write('\033[F'*(box.num_lines+5))
+                sys.stdout.write(f"\n{' '*66}"*(box.num_lines+5))
+                sys.stdout.write('\033[F'*(box.num_lines+5))
+                choose_option()
 
-        if choice.lower() == 'm':
-            sys.stdout.write('\033[F'*(box.num_lines+5))
-            sys.stdout.write(f"\n{' '*66}"*(box.num_lines+5))
-            sys.stdout.write('\033[F'*(box.num_lines+5))
-            choose_option()
+            case _:
+                if not choice.isdigit():
+                    sys.stdout.write('\033[F')
+                    print(' '*100)
+                    sys.stdout.write('\033[F')
+                    _ask(counter+1)
 
-        if not choice.isdigit():
-            sys.stdout.write('\033[F')
-            print(' '*100)
-            sys.stdout.write('\033[F')
-            _ask(counter+1)
-
-        choice = int(choice)
-        if choice in TUTORIAL_NAMES:
-            sys.stdout.write('\033[F'*(box.num_lines+5))
-            sys.stdout.write(f"\n{' '*66}"*(box.num_lines+5))
-            sys.stdout.write('\033[F'*(box.num_lines+5))
-            _show_tutorial(choice)
+                choice = int(choice)
+                if choice in TUTORIAL_NAMES:
+                    sys.stdout.write('\033[F'*(box.num_lines+5))
+                    sys.stdout.write(f"\n{' '*66}"*(box.num_lines+5))
+                    sys.stdout.write('\033[F'*(box.num_lines+5))
+                    _show_tutorial(choice)
 
     box = Box(TUTORIAL_NAMES, topic='Choose tutorial ')
     box.print()
