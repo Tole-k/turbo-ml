@@ -8,9 +8,10 @@ from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
 from typing import List, Tuple
 import logging
+from ..utils import option
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=option.log_level)
+
 
 class NeuralNetwork(Model):
     input_formats = {pd.DataFrame}
@@ -59,6 +60,7 @@ class NeuralNetworkClassifier(NeuralNetwork):
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
         train_loader, test_loader = self.setup_loaders(data, target, self.task)
+        logger = logging.getLogger(self.__class__.__name__)
         for epoch in range(self.epochs):
             for i, (data, target) in enumerate(train_loader):
                 self.model.train()
@@ -68,8 +70,8 @@ class NeuralNetworkClassifier(NeuralNetwork):
                 loss.backward()
                 self.optimizer.step()
                 if epoch % 10 == 0:
-                    print('[%d, %5d] loss: %.3f' %
-                          (epoch + 1, i + 1, loss / 100))
+                    logger.info('[%d, %5d] loss: %.3f' %
+                                (epoch + 1, i + 1, loss / 100))
         self.model.eval()
         with torch.inference_mode():
             correct = 0
@@ -80,7 +82,7 @@ class NeuralNetworkClassifier(NeuralNetwork):
                 total += target.size(0)
                 correct += (predicted == target).sum().item()
             acc = 100.0 * correct / total
-            print('Accuracy on test set:', acc)
+            logger.info('Accuracy on test set:', acc)
 
     def predict(self, guess: pd.DataFrame) -> pd.DataFrame | pd.Series:
         result = None
@@ -98,7 +100,8 @@ class NeuralNetworkRegressor(NeuralNetwork):
     task = 'regression'
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
-        train_loader, test_loader = self.setup_loaders(data, target,self.task)
+        train_loader, test_loader = self.setup_loaders(data, target, self.task)
+        logger = logging.getLogger(self.__class__.__name__)
         for epoch in range(self.epochs):
             for i, (data, target) in enumerate(train_loader):
                 if target.ndimension() == 1:
@@ -110,8 +113,8 @@ class NeuralNetworkRegressor(NeuralNetwork):
                 loss.backward()
                 self.optimizer.step()
                 if epoch % 10 == 0:
-                    print('[%d, %5d] loss: %.3f' %
-                          (epoch + 1, i + 1, loss / 100))
+                    logger.info('[%d, %5d] loss: %.3f' %
+                                (epoch + 1, i + 1, loss / 100))
         self.model.eval()
         with torch.inference_mode():
             total_loss = 0
@@ -122,7 +125,7 @@ class NeuralNetworkRegressor(NeuralNetwork):
                 loss = self.criterion(output, target)
                 total_loss += loss
             total_loss /= len(test_loader)
-            print('Error on test set:', total_loss.item())
+            logger.info('Error on test set:', total_loss.item())
 
     def predict(self, guess: pd.DataFrame) -> pd.DataFrame | pd.Series:
         result = None
@@ -187,36 +190,32 @@ class NNFactory:
             raise ValueError('Invalid task type')
 
 
-# print('Iris')
-# data, target = get_iris()
-# model = NNFactory().create_neural_network(4, 3, [128, 64], 'classification', ['relu', 'relu'],
-#                                           'crossentropyloss', 'adam', 32, 100)
-# model.train(data, target)
-# print(model.predict(data))
-# 
-# print('Wine')
-# data, target = get_wine()
-# model = NNFactory().create_neural_network(13, 3, [128, 64], 'classification', ['relu', 'relu'],
-#                                           'crossentropyloss', 'adam', 32, 100)
-# model.train(data, target)
-# 
-# print('Breast Cancer')
-# data, target = get_breast_cancer()
-# model = NNFactory().create_neural_network(30, 2, [128, 64], 'classification', ['relu', 'relu'],
-#                                           'crossentropyloss', 'adam', 32, 100)
-# model.train(data, target)
-# print(model.predict(data))
-# 
-# print('Diabetes')
-# data, target = get_diabetes()
-# model = NNFactory().create_neural_network(10, 1, [128, 64], 'regression', [
-#     'relu', 'relu'], 'mseloss', 'adam', 32, 100)
-# model.train(data, target)
-# print(model.predict(data))
-# 
-# print('Linnerud')
-# data, target = get_linnerud()
-# model = NNFactory().create_neural_network(3, 3, [128, 64], 'regression', [
-#     'relu', 'relu'], 'mseloss', 'adam', 32, 100)
-# model.train(data, target)
-# print(model.predict(data))
+print('Iris')
+data, target = get_iris()
+model = NNFactory().create_neural_network(4, 3, [128, 64], 'classification', ['relu', 'relu'],
+                                          'crossentropyloss', 'adam', 32, 100)
+model.train(data, target)
+print(model.predict(data))
+print('Wine')
+data, target = get_wine()
+model = NNFactory().create_neural_network(13, 3, [128, 64], 'classification', ['relu', 'relu'],
+                                          'crossentropyloss', 'adam', 32, 100)
+model.train(data, target)
+print('Breast Cancer')
+data, target = get_breast_cancer()
+model = NNFactory().create_neural_network(30, 2, [128, 64], 'classification', ['relu', 'relu'],
+                                          'crossentropyloss', 'adam', 32, 100)
+model.train(data, target)
+print(model.predict(data))
+print('Diabetes')
+data, target = get_diabetes()
+model = NNFactory().create_neural_network(10, 1, [128, 64], 'regression', [
+    'relu', 'relu'], 'mseloss', 'adam', 32, 100)
+model.train(data, target)
+print(model.predict(data))
+print('Linnerud')
+data, target = get_linnerud()
+model = NNFactory().create_neural_network(3, 3, [128, 64], 'regression', [
+    'relu', 'relu'], 'mseloss', 'adam', 32, 100)
+model.train(data, target)
+print(model.predict(data))
