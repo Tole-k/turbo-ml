@@ -1,5 +1,4 @@
 import pandas as pd
-from datasets import *
 from ..base import Model
 import torch
 from torch import nn
@@ -187,7 +186,7 @@ class NeuralNetwork(Model):
                     target = target.view(len(target), 1)
                 self.model.train()
                 output = self.model(data)
-                loss = self.criterion(output, target)
+                loss = self.criterion(outppip3 install torch torchvision torchaudiout, target)
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
@@ -232,38 +231,38 @@ class NeuralNetwork(Model):
         else:
             return pd.DataFrame(result.cpu().numpy())
 
-
-print('Iris')
-data, target = get_iris()
-target.map({0: '0', 1: '1', 2: '2'})
-model = NeuralNetwork(4, 3, [128, 64], 'classification', ['relu', 'relu'],
-                      'cross-entropy', 'adam', 32, 100)
-model.train(data, target)
-print(model.predict(data))
-
-print('Wine')
-data, target = get_wine()
-model = NeuralNetwork(13, 3, [128, 64], 'classification', ['relu', 'relu'],
-                      'cross-entropy', 'adam', 32, 100)
-model.train(data, target)
-
-print('Breast Cancer')
-data, target = get_breast_cancer()
-model = NeuralNetwork(30, 2, [128, 64], 'classification', ['relu', 'relu'],
-                      'cross-entropy', 'adam', 32, 100)
-model.train(data, target)
-print(model.predict(data))
-
-print('Diabetes')
-data, target = get_diabetes()
-model = NeuralNetwork(10, 1, [128, 64], 'regression', [
-    'relu', 'relu'], 'mse', 'adam', 32, 100)
-model.train(data, target)
-print(model.predict(data))
-
-print('Linnerud')
-data, target = get_linnerud()
-model = NeuralNetwork(3, 3, [128, 64], 'regression', [
-    'relu', 'relu'], 'mse', 'adam', 32, 100)
-model.train(data, target)
-print(model.predict(data))
+# from datasets import *
+# print('Iris')
+# data, target = get_iris()
+# target.map({0: '0', 1: '1', 2: '2'})
+# model = NeuralNetwork(4, 3, [128, 64], 'classification', ['relu', 'relu'],
+#                       'cross-entropy', 'adam', 32, 100)
+# model.train(data, target)
+# print(model.predict(data))
+# 
+# print('Wine')
+# data, target = get_wine()
+# model = NeuralNetwork(13, 3, [128, 64], 'classification', ['relu', 'relu'],
+#                       'cross-entropy', 'adam', 32, 100)
+# model.train(data, target)
+# 
+# print('Breast Cancer')
+# data, target = get_breast_cancer()
+# model = NeuralNetwork(30, 2, [128, 64], 'classification', ['relu', 'relu'],
+#                       'cross-entropy', 'adam', 32, 100)
+# model.train(data, target)
+# print(model.predict(data))
+# 
+# print('Diabetes')
+# data, target = get_diabetes()
+# model = NeuralNetwork(10, 1, [128, 64], 'regression', [
+#     'relu', 'relu'], 'mse', 'adam', 32, 100)
+# model.train(data, target)
+# print(model.predict(data))
+# 
+# print('Linnerud')
+# data, target = get_linnerud()
+# model = NeuralNetwork(3, 3, [128, 64], 'regression', [
+#     'relu', 'relu'], 'mse', 'adam', 32, 100)
+# model.train(data, target)
+# print(model.predict(data))
