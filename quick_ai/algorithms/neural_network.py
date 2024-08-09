@@ -22,6 +22,46 @@ class NeuralNetwork(Model):
                 return nn.Tanh()
             case 'softmax':
                 return nn.Softmax()
+            case 'leaky_relu':
+                return nn.LeakyReLU()
+            case 'elu':
+                return nn.ELU()
+            case 'selu':
+                return nn.SELU()
+            case 'gelu':
+                return nn.GELU()
+            case 'threshold':
+                return nn.Threshold()
+            case 'hardtanh':
+                return nn.Hardtanh()
+            case 'log_sigmoid':
+                return nn.LogSigmoid()
+            case 'softplus':
+                return nn.Softplus()
+            case 'softshrink':
+                return nn.Softshrink()
+            case 'softsign':
+                return nn.Softsign()
+            case 'tanhshrink':
+                return nn.Tanhshrink()
+            case 'rrelu':
+                return nn.RReLU()
+            case 'celu':
+                return nn.CELU()
+            case 'glu':
+                return nn.GLU()
+            case 'silu':
+                return nn.SiLU()
+            case 'mish':
+                return nn.Mish()
+            case 'relu6':
+                return nn.ReLU6()
+            case 'prelu':
+                return nn.PReLU()
+            case 'hardsigmoid':
+                return nn.Hardsigmoid()
+            case 'hardshrink':
+                return nn.Hardshrink()
             case _:
                 raise ValueError(f'Activation {activation} not supported')
 
@@ -31,6 +71,40 @@ class NeuralNetwork(Model):
                 return nn.CrossEntropyLoss()
             case 'mse':
                 return nn.MSELoss()
+            case 'l1':
+                return nn.L1Loss()
+            case 'nll':
+                return nn.NLLLoss()
+            case 'poisson':
+                return nn.PoissonNLLLoss()
+            case 'kld':
+                return nn.KLDivLoss()
+            case 'bce':
+                return nn.BCELoss()
+            case 'bce_with_logits':
+                return nn.BCEWithLogitsLoss()
+            case 'margin_ranking':
+                return nn.MarginRankingLoss()
+            case 'hinge':
+                return nn.HingeEmbeddingLoss()
+            case 'multi_margin':
+                return nn.MultiMarginLoss()
+            case 'smooth_l1':
+                return nn.SmoothL1Loss()
+            case 'huber':
+                return nn.HuberLoss()
+            case 'cosine':
+                return nn.CosineEmbeddingLoss()
+            case 'multi_label_soft_margin':
+                return nn.MultiLabelSoftMarginLoss()
+            case 'triplet_margin':
+                return nn.TripletMarginLoss()
+            case 'ctc':
+                return nn.CTCLoss()
+            case 'nll_loss2d':
+                return nn.NLLLoss2d()
+            case 'poisson_nll':
+                return nn.PoissonNLLLoss()
             case _:
                 raise ValueError(f'Loss {loss} not supported')
 
@@ -40,6 +114,18 @@ class NeuralNetwork(Model):
                 return optim.Adam(self.model.parameters(), lr=learning_rate)
             case 'sgd':
                 return optim.SGD(self.model.parameters(), lr=learning_rate)
+            case 'adadelta':
+                return optim.Adadelta(self.model.parameters(), lr=learning_rate)
+            case 'adagrad':
+                return optim.Adagrad(self.model.parameters(), lr=learning_rate)
+            case 'adamax':
+                return optim.Adamax(self.model.parameters(), lr=learning_rate)
+            case 'rmsprop':
+                return optim.RMSprop(self.model.parameters(), lr=learning_rate)
+            case 'rprop':
+                return optim.Rprop(self.model.parameters(), lr=learning_rate)
+            case 'lbfgs':
+                return optim.LBFGS(self.model.parameters(), lr=learning_rate)
             case _:
                 raise ValueError(f'Optimizer {optimizer} not supported')
 
@@ -121,7 +207,6 @@ class NeuralNetwork(Model):
                 acc = 100.0 * correct / total
                 print('Accuracy on test set:', acc)
             else:
-                # breakpoint()
                 total_loss = 0
                 for data, target in test_loader:
                     if target.ndimension() == 1:
@@ -147,39 +232,38 @@ class NeuralNetwork(Model):
         else:
             return pd.DataFrame(result.cpu().numpy())
 
-# 
-# print('Iris')
-# data, target = get_iris()
-# target.map({0: '0', 1: '1', 2: '2'})
-# model = NeuralNetwork(4, 3, [128, 64], 'classification', ['relu', 'relu'],
-#                       'cross-entropy', 'adam', 32, 100)
-# model.train(data, target)
-# print(model.predict(data))
-#
-# print('Wine')
-# data, target = get_wine()
-# model = NeuralNetwork(13, 3, [128, 64], 'classification', ['relu', 'relu'],
-#                       'cross-entropy', 'adam', 32, 100)
-# model.train(data, target)
-#
-# print('Breast Cancer')
-# data, target = get_breast_cancer()
-# model = NeuralNetwork(30, 2, [128, 64], 'classification', ['relu', 'relu'],
-#                       'cross-entropy', 'adam', 32, 100)
-# model.train(data, target)
-# print(model.predict(data))
-#
-# print('Diabetes')
-# data, target = get_diabetes()
-# model = NeuralNetwork(10, 1, [128, 64], 'regression', [
-#     'relu', 'relu'], 'mse', 'adam', 32, 100)
-# model.train(data, target)
-# print(model.predict(data))
 
-#
-# print('Linnerud')
-# data, target = get_linnerud()
-# model = NeuralNetwork(3, 3, [128, 64], 'regression', [
-#     'relu', 'relu'], 'mse', 'adam', 32, 100)
-# model.train(data, target)
-# print(model.predict(data))
+print('Iris')
+data, target = get_iris()
+target.map({0: '0', 1: '1', 2: '2'})
+model = NeuralNetwork(4, 3, [128, 64], 'classification', ['relu', 'relu'],
+                      'cross-entropy', 'adam', 32, 100)
+model.train(data, target)
+print(model.predict(data))
+
+print('Wine')
+data, target = get_wine()
+model = NeuralNetwork(13, 3, [128, 64], 'classification', ['relu', 'relu'],
+                      'cross-entropy', 'adam', 32, 100)
+model.train(data, target)
+
+print('Breast Cancer')
+data, target = get_breast_cancer()
+model = NeuralNetwork(30, 2, [128, 64], 'classification', ['relu', 'relu'],
+                      'cross-entropy', 'adam', 32, 100)
+model.train(data, target)
+print(model.predict(data))
+
+print('Diabetes')
+data, target = get_diabetes()
+model = NeuralNetwork(10, 1, [128, 64], 'regression', [
+    'relu', 'relu'], 'mse', 'adam', 32, 100)
+model.train(data, target)
+print(model.predict(data))
+
+print('Linnerud')
+data, target = get_linnerud()
+model = NeuralNetwork(3, 3, [128, 64], 'regression', [
+    'relu', 'relu'], 'mse', 'adam', 32, 100)
+model.train(data, target)
+print(model.predict(data))
