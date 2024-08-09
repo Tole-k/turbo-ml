@@ -70,7 +70,7 @@ class NeuralNetworkClassifier(NeuralNetwork):
                 loss.backward()
                 self.optimizer.step()
                 if epoch % 10 == 0:
-                    logger.info('[%d, %5d] loss: %.3f' %
+                    logger.info(' [%d, %5d] loss: %.3f' %
                                 (epoch + 1, i + 1, loss / 100))
         self.model.eval()
         with torch.inference_mode():
@@ -82,7 +82,7 @@ class NeuralNetworkClassifier(NeuralNetwork):
                 total += target.size(0)
                 correct += (predicted == target).sum().item()
             acc = 100.0 * correct / total
-            logger.info('Accuracy on test set:', acc)
+            logger.info(f' Accuracy on test set: {acc}')
 
     def predict(self, guess: pd.DataFrame) -> pd.DataFrame | pd.Series:
         result = None
@@ -113,7 +113,7 @@ class NeuralNetworkRegressor(NeuralNetwork):
                 loss.backward()
                 self.optimizer.step()
                 if epoch % 10 == 0:
-                    logger.info('[%d, %5d] loss: %.3f' %
+                    logger.info(' [%d, %5d] loss: %.3f' %
                                 (epoch + 1, i + 1, loss / 100))
         self.model.eval()
         with torch.inference_mode():
@@ -125,7 +125,7 @@ class NeuralNetworkRegressor(NeuralNetwork):
                 loss = self.criterion(output, target)
                 total_loss += loss
             total_loss /= len(test_loader)
-            logger.info('Error on test set:', total_loss.item())
+            logger.info(f' Error on test set: {total_loss.item()}')
 
     def predict(self, guess: pd.DataFrame) -> pd.DataFrame | pd.Series:
         result = None
