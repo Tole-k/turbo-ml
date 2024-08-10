@@ -6,7 +6,7 @@ from collections.abc import Iterable
 class RandomGuesser(Model):
     input_formats = {Iterable}
     output_formats = {list[int]}
-    
+
     def __init__(self) -> None:
         super().__init__()
         self.possibilities: list[int] = list()
@@ -17,7 +17,7 @@ class RandomGuesser(Model):
         for value in target:
             if value not in self.mapping:
                 self.mapping[value] = self.mapping_couter
-                self.mapping += 1
+                self.mapping_couter += 1
             self.possibilities.append(self.mapping[value])
 
     def predict(self, guess: Iterable) -> list[int]:
