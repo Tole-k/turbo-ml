@@ -30,6 +30,9 @@ class Forecast:
 class ExhaustiveSearch(Forecast):
     """ Search for the best model by evaluating all models in the list and picking the best one based on the evaluation function """
 
+    def __init__(self) -> None:
+        self.counter = 0
+
     def predict(self, data, target) -> Model:
         best_model: Tuple = (None, -float('inf'))
         for model_cls in get_model_list():
@@ -37,6 +40,7 @@ class ExhaustiveSearch(Forecast):
                 value = evaluate(model_cls, data, target)
                 if value > best_model[1]:
                     best_model = (model_cls, value)
+                self.counter += 1
             except:
                 continue
         return best_model[0]()
