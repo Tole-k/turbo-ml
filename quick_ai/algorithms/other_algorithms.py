@@ -26,6 +26,7 @@ for name, classifier in all_estimators(type_filter='classifier'):
         pass
 
 if __name__ == '__main__':
+    # TODO: remove before release
     from datasets import get_iris
     data, target = get_iris()
     data['target'] = target
