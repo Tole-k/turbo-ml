@@ -1,6 +1,7 @@
+import numpy as np
 import xgboost as xgb
 from ..base import Model
-from typing import Optional
+from typing import Optional, List
 from sklearn.model_selection import train_test_split
 from collections.abc import Iterable
 
@@ -94,10 +95,10 @@ class XGBoostRegressor(Model):
     def predict(self, guess: Iterable[int | float | bool]) -> list[float]:
         return self.clf.predict(guess)
 
-
-# X = np.random.choice([True, False], size=(100, 10))
-# y = np.random.choice([True, False], size=(100))
-# clf = XGBoostRegressor(
-#     tree_method="hist", early_stopping_rounds=2)
-# clf.train(X, y)
-# print(clf.predict(X))
+if __name__ == "__main__":
+    X = np.random.choice([True, False], size=(100, 10))
+    y = np.random.choice([True, False], size=(100))
+    clf = XGBoostRegressor(
+        tree_method="hist", early_stopping_rounds=2)
+    clf.train(X, y)
+    print(clf.predict(X))

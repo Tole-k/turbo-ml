@@ -1,6 +1,8 @@
 import catboost as cb
+import numpy as np
 from ..base import Model
 from collections.abc import Iterable
+from typing import List
 
 
 class CatBoostClassifier(Model):
@@ -77,19 +79,20 @@ class CatBoostRegressor(Model):
         return self.reg.predict(guess)
 
 
-# train_data = np.random.choice([True, False], size=(100, 10))
-# train_labels = np.random.choice([False, True],
-#                                 size=(100))
-# test_data = catboost_pool = cb.Pool(train_data,
-#                                     train_labels)
-# model = CatBoostRegressor(iterations=2,
-#                           depth=2,
-#                           learning_rate=1,
-#                           loss_function='RMSE',
-#                           logging_level='Silent',
-#                           allow_writing_files=False)
-# # train the model
-# model.train(train_data, train_labels)
-# # make the prediction using the resulting model
-# preds_class = model.predict(test_data)
-# print("class = ", preds_class)
+if __name__ == "__main__":
+    train_data = np.random.choice([True, False], size=(100, 10))
+    train_labels = np.random.choice([False, True],
+                                    size=(100))
+    test_data = catboost_pool = cb.Pool(train_data,
+                                        train_labels)
+    model = CatBoostRegressor(iterations=2,
+                              depth=2,
+                              learning_rate=1,
+                              loss_function='RMSE',
+                              logging_level='Silent',
+                              allow_writing_files=False)
+    # train the model
+    model.train(train_data, train_labels)
+    # make the prediction using the resulting model
+    preds_class = model.predict(test_data)
+    print("class = ", preds_class)

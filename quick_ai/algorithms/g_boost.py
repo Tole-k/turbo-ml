@@ -53,10 +53,11 @@ class GBoostRegressor(Model):
         return self.reg.predict(guess)
 
 
-X, y = make_hastie_10_2(random_state=0)
-X_train, X_test = X[:2000], X[2000:]
-y_train, y_test = y[:2000], y[2000:]
-clf = GBoostClassifier(n_estimators=100, learning_rate=1.0,
-                       max_depth=1, random_state=0)
-clf.train(X_train, y_train)
-print(clf.predict(X_test))
+if __name__ == "__main__":
+    X, y = make_hastie_10_2(random_state=0)
+    X_train, X_test = X[:2000], X[2000:]
+    y_train, y_test = y[:2000], y[2000:]
+    clf = GBoostClassifier(n_estimators=100, learning_rate=1.0,
+                           max_depth=1, random_state=0)
+    clf.train(X_train, y_train)
+    print(clf.predict(X_test))

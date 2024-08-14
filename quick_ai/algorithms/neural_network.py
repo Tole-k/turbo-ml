@@ -190,32 +190,33 @@ class NNFactory:
             raise ValueError('Invalid task type')
 
 
-print('Iris')
-data, target = get_iris()
-model = NNFactory().create_neural_network(4, 3, [128, 64], 'classification', ['relu', 'relu'],
-                                          'crossentropyloss', 'adam', 32, 100)
-model.train(data, target)
-print(model.predict(data))
-print('Wine')
-data, target = get_wine()
-model = NNFactory().create_neural_network(13, 3, [128, 64], 'classification', ['relu', 'relu'],
-                                          'crossentropyloss', 'adam', 32, 100)
-model.train(data, target)
-print('Breast Cancer')
-data, target = get_breast_cancer()
-model = NNFactory().create_neural_network(30, 2, [128, 64], 'classification', ['relu', 'relu'],
-                                          'crossentropyloss', 'adam', 32, 100)
-model.train(data, target)
-print(model.predict(data))
-print('Diabetes')
-data, target = get_diabetes()
-model = NNFactory().create_neural_network(10, 1, [128, 64], 'regression', [
-    'relu', 'relu'], 'mseloss', 'adam', 32, 100)
-model.train(data, target)
-print(model.predict(data))
-print('Linnerud')
-data, target = get_linnerud()
-model = NNFactory().create_neural_network(3, 3, [128, 64], 'regression', [
-    'relu', 'relu'], 'mseloss', 'adam', 32, 100)
-model.train(data, target)
-print(model.predict(data))
+if __name__ == '__main__':
+    print('Iris')
+    data, target = get_iris()
+    model = NNFactory().create_neural_network(4, 3, [128, 64], 'classification', ['relu', 'relu'],
+                                              'crossentropyloss', 'adam', 32, 100)
+    model.train(data, target)
+    print(model.predict(data))
+    print('Wine')
+    data, target = get_wine()
+    model = NNFactory().create_neural_network(13, 3, [128, 64], 'classification', ['relu', 'relu'],
+                                              'crossentropyloss', 'adam', 32, 100)
+    model.train(data, target)
+    print('Breast Cancer')
+    data, target = get_breast_cancer()
+    model = NNFactory().create_neural_network(30, 2, [128, 64], 'classification', ['relu', 'relu'],
+                                              'crossentropyloss', 'adam', 32, 100)
+    model.train(data, target)
+    print(model.predict(data))
+    print('Diabetes')
+    data, target = get_diabetes()
+    model = NNFactory().create_neural_network(10, 1, [128, 64], 'regression', [
+        'relu', 'relu'], 'mseloss', 'adam', 32, 100)
+    model.train(data, target)
+    print(model.predict(data))
+    print('Linnerud')
+    data, target = get_linnerud()
+    model = NNFactory().create_neural_network(3, 3, [128, 64], 'regression', [
+        'relu', 'relu'], 'mseloss', 'adam', 32, 100)
+    model.train(data, target)
+    print(model.predict(data))

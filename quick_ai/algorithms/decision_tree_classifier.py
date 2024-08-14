@@ -8,6 +8,22 @@ from collections.abc import Iterable
 class DecisionTreeClassifier(Model):
     input_formats = {Iterable[int | float | bool]}
     output_formats = {list[int], list[str] | list[bool]}
+    hyperparameters = [
+        {"name": "criterion", "type": "categorical",
+            "choices": ["gini", "entropy", "log_loss"]},
+        {"name": "splitter", "type": "categorical",
+            "choices": ["best", "random"]},
+        {"name": "max_depth", "type": "int", "min": 1, "max": 100},
+        {"name": "min_samples_split", "type": "int", "min": 2, "max": 10},
+        {"name": "min_samples_leaf", "type": "int", "min": 1, "max": 10},
+        {"name": "min_weight_fraction_leaf",
+            "type": "float", "min": 0.0, "max": 0.5},
+        {"name": "max_features", "type": "categorical",
+            "choices": ["sqrt", "log2"]},
+        {"name": "max_leaf_nodes", "type": "int", "min": 2, "max": 100},
+        {"name": "min_impurity_decrease", "type": "float", "min": 0.0, "max": 0.5},
+        {"name": "ccp_alpha", "type": "float", "min": 0.0, "max": 0.5},
+    ]
 
     def __init__(
         self,
@@ -17,14 +33,12 @@ class DecisionTreeClassifier(Model):
         min_samples_split: float | int = 2,
         min_samples_leaf: float | int = 1,
         min_weight_fraction_leaf: float = 0.0,
-        max_features: float | int | Literal['auto',
-                                            'sqrt', 'log2'] | None = None,
-        random_state: int | RandomState | None = None,
+        max_features: float | int | Literal['sqrt', 'log2'] | None = None,
         max_leaf_nodes: int | None = None,
         min_impurity_decrease: float = 0.0,
+        random_state: RandomState | int | None = None,
         class_weight: Mapping | str | Sequence[Mapping] | None = None,
         ccp_alpha: float = 0.0,
-        monotonic_cst=None,
     ) -> None:
         super().__init__()
         self.tree = tree.DecisionTreeClassifier(
@@ -39,7 +53,6 @@ class DecisionTreeClassifier(Model):
             class_weight=class_weight,
             random_state=random_state,
             min_impurity_decrease=min_impurity_decrease,
-            # monotonic_cst=monotonic_cst,
             ccp_alpha=ccp_alpha,
         )
 
