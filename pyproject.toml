@@ -3,7 +3,7 @@ name = "quick-ai"
 version = "0.1.0"
 description = ""
 # TODO write a description
-authors = ["Dawid Siera <dawid.siera@gmail.com>", "Anatol Kaczmarek <mail@mail.com>"]
+authors = ["Dawid Siera <dawid.siera@gmail.com>", "Anatol Kaczmarek <anatol.kaczmarek@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
