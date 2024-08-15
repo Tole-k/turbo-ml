@@ -2,31 +2,36 @@ from sklearn import ensemble
 from ..base import Model
 from collections.abc import Iterable
 from sklearn.datasets import make_classification
+from typing import Literal
+from sklearn.base import BaseEstimator
 
 
 class AdaBoostClassifier(Model):
     input_formats = {Iterable[int | float]}
     output_formats = {list[int], list[str]}
+    # TODO: ad estimator hyperparameter
     hyperparameters = [
         {
             "name": "n_estimators",
             "type": "int",
             "min": 1,
             "max": 1000,
+            "optional": False
         },
         {
             "name": "learning_rate",
             "type": "float",
             "min": 0.0,
             "max": 10.0,
+            "optional": False
         }
     ]
 
     def __init__(
         self,
-        estimator=None,
-        n_estimators=50,
-        learning_rate=1.0,
+        estimator: BaseEstimator = None,
+        n_estimators: int = 50,
+        learning_rate: float = 1.0,
         random_state=None,
     ) -> None:
         super().__init__()
@@ -48,32 +53,36 @@ class AdaBoostClassifier(Model):
 class AdaBoostRegressor(Model):
     input_formats = {Iterable[int | float]}
     output_formats = {list[float]}
+    # TODO: ad estimator hyperparameter
     hyperparameters = [
         {
             "name": "n_estimators",
             "type": "int",
             "min": 1,
             "max": 1000,
+            "optional": False
         },
         {
             "name": "learning_rate",
             "type": "float",
             "min": 0.0,
             "max": 10.0,
+            "optional": False
         },
         {
             "name": "loss",
             "type": "categorical",
             "choices": ["linear", "square", "exponential"],
+            "optional": False
         }
     ]
 
     def __init__(
         self,
-        estimator=None,
-        n_estimators=50,
-        learning_rate=1.0,
-        loss='linear',
+        estimator: BaseEstimator = None,
+        n_estimators: int = 50,
+        learning_rate: float = 1.0,
+        loss: Literal["linear", "square", "exponential"] = 'linear',
         random_state=None,
     ) -> None:
         super().__init__()
