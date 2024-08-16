@@ -73,6 +73,21 @@
 #             "min": 1,
 #             "max": 10,
 #             "optional": False
+#         },
+#         {
+#             "conditional": True,
+#             "condition": "cpu/cuda",
+#             "variants": [{
+#                 "name": "device",
+#                 "type": "no_choice",
+#                 "choices": ['CPU'],
+#                 "optional": False
+#             }, {
+#                 "name": "device",
+#                 "type": "no_choice",
+#                 "choices": ['GPU'],
+#                 "optional": False
+#             }]
 #         }
 #     ]
 
@@ -86,7 +101,6 @@
 #                                               'GreedyLogSum', 'MaxLogSum', 'MinEntropy'] = 'GreedyLogSum',
 #                  min_data_in_leaf: int = 1,
 #                  device: Literal['CPU', 'GPU'] = 'CPU',
-#                  devices: List[int] = [0],
 #                  ** options) -> None:
 #         super().__init__()
 #         self.clf = cb.CatBoostClassifier(
@@ -99,7 +113,6 @@
 #             feature_border_type=feature_border_type,
 #             min_data_in_leaf=min_data_in_leaf,
 #             task_type=device,
-#             devices=devices,
 #             **options
 #         )
 
@@ -177,6 +190,21 @@
 #             "min": 1,
 #             "max": 10,
 #             "optional": False
+#         },
+#         {
+#             "conditional": True,
+#             "condition": "cpu/cuda",
+#             "variants": [{
+#                 "name": "device",
+#                 "type": "no_choice",
+#                 "choices": ['CPU'],
+#                 "optional": False
+#             }, {
+#                 "name": "device",
+#                 "type": "no_choice",
+#                 "choices": ['GPU'],
+#                 "optional": False
+#             }]
 #         }
 #     ]
 
