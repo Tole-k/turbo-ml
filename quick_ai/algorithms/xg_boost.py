@@ -214,6 +214,8 @@ class XGBoostClassifier(Model):
         )
 
     def train(self, data: Iterable[int | float | bool], target: Iterable) -> None:
+        self.mapping = {i: j for j, i in enumerate(set(target))}
+        target = target.map(lambda x: self.mapping[x])
         if self.device == 'cuda':
             data = cp.array(data)
             target = cp.array(target)
@@ -227,7 +229,7 @@ class XGBoostClassifier(Model):
     def predict(self, guess: Iterable[int | float | bool]) -> List[int] | List[bool]:
         if self.device == 'cuda':
             guess = cp.array(guess)
-        return self.clf.predict(guess)
+        return np.vectorize(self.mapping.get)(self.clf.predict(guess))
 
 
 class XGBoostRegressor(Model):

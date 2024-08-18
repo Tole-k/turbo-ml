@@ -1,3 +1,7 @@
+import numpy as np
+from datasets import get_iris
+from typing import Any, Dict
+from typing import Literal
 from datasets import *
 import pandas as pd
 from ..base import Model
@@ -9,11 +13,11 @@ from sklearn.model_selection import train_test_split
 from typing import List, Tuple
 import logging
 from ..utils import option
-
+import optuna as opt
 logging.basicConfig(level=option.log_level)
 
 
-class NeuralNetwork(Model):
+class NeuralNetworkBase(Model):
     input_formats = {pd.DataFrame}
     output_formats = {pd.DataFrame | pd.Series}
 
@@ -55,7 +59,7 @@ class NeuralNetwork(Model):
         return train_loader, test_loader
 
 
-class NeuralNetworkClassifier(NeuralNetwork):
+class NeuralNetworkClassifier(NeuralNetworkBase):
     task = 'classification'
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
@@ -96,7 +100,7 @@ class NeuralNetworkClassifier(NeuralNetwork):
             return pd.DataFrame(result.cpu().numpy())
 
 
-class NeuralNetworkRegressor(NeuralNetwork):
+class NeuralNetworkRegressor(NeuralNetworkBase):
     task = 'regression'
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
@@ -114,7 +118,7 @@ class NeuralNetworkRegressor(NeuralNetwork):
                 self.optimizer.step()
                 if epoch % 10 == 0:
                     logger.info(' [%d, %5d] loss: %.3f' %
-                                (epoch + 1, i + 1, loss / 100))
+                                (epoch + 1, i + 1, loss))
         self.model.eval()
         with torch.inference_mode():
             total_loss = 0
@@ -157,14 +161,73 @@ class NNFactory:
         return {optimizer.__name__.lower(): optimizer(self.model.parameters(), lr=learning_rate)
                 for optimizer in self.optimizers}[optimizer.lower()]
 
-    def create_neural_network(self, input_size: int, output_size: int, hidden_sizes: List[int], task: str = 'classification', activations: List[str] = ['relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001) -> NeuralNetwork:
+    @staticmethod
+    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, device='cpu', trials: int = 10) -> Dict[str, Any]:
+        def objective(trial, dataset, task, device):
+            x_train, x_test, y_train, y_test = train_test_split(
+                *dataset, test_size=0.2)
+            trial.set_user_attr('input_size', x_train.shape[1])
+
+            trial.set_user_attr('task', task)
+            trial.set_user_attr('device', device)
+            params = {}
+            params['input_size'] = trial.user_attrs['input_size']
+            if task == 'classification':
+                params['output_size'] = no_classes
+            else:
+                params['output_size'] = no_variables
+            trial.set_user_attr('output_size', params['output_size'])
+            num_hidden_layers = trial.suggest_int(
+                'num_hidden_layers', 0, 10)
+            hidden_sizes = []
+            activations = []
+            for i in range(num_hidden_layers):
+                hidden_sizes.append(trial.suggest_int(
+                    f'hidden_size_{i}', 1, 1000))
+                activations.append(trial.suggest_categorical(
+                    f'activation_{i}', ['relu', 'sigmoid', 'tanh', 'softmax', 'leakyrelu', 'elu', 'selu', 'gelu', 'hardtanh', 'logsigmoid', 'softplus', 'softshrink', 'softsign', 'tanhshrink', 'rrelu', 'celu', 'silu', 'mish', 'relu6', 'prelu', 'hardsigmoid', 'hardshrink']))
+            trial.set_user_attr('hidden_sizes', hidden_sizes)
+            trial.set_user_attr('activations', activations)
+            params['hidden_sizes'] = trial.user_attrs['hidden_sizes']
+            params['activations'] = trial.user_attrs['activations']
+            params['task'] = trial.user_attrs['task']
+            if task == 'classification':  # Loss function optimization removed because it introduced to many incompatible combinations with activation functions and overall nn architecture
+                params['loss'] = 'crossentropyloss'
+            else:
+                params['loss'] = 'mseloss'
+            params['optimizer'] = trial.suggest_categorical(
+                'optimizer', ['adam', 'sgd', 'adadelta', 'adagrad', 'adamax', 'rmsprop', 'rprop'])
+            params['batch_size'] = trial.suggest_int(
+                'batch_size', np.sqrt(len(x_train)), len(x_train))
+            params['epochs'] = trial.suggest_int('epochs', 1, 1000)
+            params['learning_rate'] = trial.suggest_float(
+                'learning_rate', 0.0001, 0.1)
+            params['device'] = trial.user_attrs['device']
+            model = NNFactory().create_neural_network(**params)
+            model.train(x_train, y_train)
+            if task == 'classification':
+                return sum(model.predict(x_test) == y_test.reset_index(drop=True))/len(y_test)
+            else:
+                results = model.predict(x_test)
+                if not isinstance(y_test, pd.Series):
+                    results.columns = y_test.columns
+                    results.index = y_test.index
+                    return np.sum((results-y_test).values**2)/len(y_test)
+                return sum((results-y_test)**2)/len(y_test)
+
+        study = opt.create_study(
+            direction='maximize' if task == 'classification' else 'minimize', study_name='Neural Network Hyperparameter Optimization')
+        study.optimize(lambda trial: objective(
+            trial, dataset, task, device), n_trials=trials)
+        return study.best_params | study.best_trial.user_attrs
+
+    def create_neural_network(self, input_size: int, output_size: int, hidden_sizes: List[int], task: str = 'classification', activations: List[str] = ['relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> NeuralNetworkBase:
         layers = []
         if len(activations) != len(hidden_sizes):
             raise ValueError(
                 'Number of activations must be equal to the number of hidden layers')
         if len(hidden_sizes) == 0:
             layers.append(nn.Linear(input_size, output_size))
-            layers.append(self._add_activation(activations[0]))
         else:
             for i, (hidden_size, activation) in enumerate(zip(hidden_sizes, activations)):
                 if i == 0:
@@ -175,13 +238,12 @@ class NNFactory:
             layers.append(nn.Linear(hidden_sizes[-1], output_size))
         self.task = task
         self.model = nn.Sequential(
-            *layers).cuda() if torch.cuda.is_available() else nn.Sequential(*layers)
+            *layers).cuda() if device == 'cuda' else nn.Sequential(*layers)
         self.criterion = self._add_loss(loss)
         self.optimizer = self._add_optimizer(optimizer, learning_rate)
         self.batch_size = batch_size
         self.epochs = epochs
-        self.device = torch.device(
-            "cuda" if torch.cuda.is_available() else "cpu")
+        self.device = device
         if task == 'classification':
             return NeuralNetworkClassifier(self.model, self.criterion, self.optimizer, self.device, self.batch_size, self.epochs)
         elif task == 'regression':
@@ -190,33 +252,34 @@ class NNFactory:
             raise ValueError('Invalid task type')
 
 
+# For compatibility with general Model class for the sake of hyperparameter tuning
+
+
+class NeuralNetworkModel(Model):
+    input_formats = {pd.DataFrame}
+    output_formats = {pd.DataFrame | pd.Series}
+    factory = NNFactory()
+
+    @staticmethod
+    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, device='cpu', trials=10) -> Dict[str, Any]:
+        return NNFactory.optimize_hyperparameters(dataset, task, no_classes, no_variables, device, trials)
+
+    def __init__(self, input_size: int, output_size: int, hidden_sizes: List[int], task: str = 'classification', activations: List[str] = ['relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> None:
+        super().__init__()
+        self.model = self.factory.create_neural_network(
+            input_size, output_size, hidden_sizes, task, activations, loss, optimizer, batch_size, epochs, learning_rate, device)
+
+    def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
+        self.model.train(data, target)
+
+    def predict(self, guess: pd.DataFrame) -> pd.DataFrame | pd.Series:
+        return self.model.predict(guess)
+
+
 if __name__ == '__main__':
-    print('Iris')
-    data, target = get_iris()
-    model = NNFactory().create_neural_network(4, 3, [128, 64], 'classification', ['relu', 'relu'],
-                                              'crossentropyloss', 'adam', 32, 100)
-    model.train(data, target)
-    print(model.predict(data))
-    print('Wine')
-    data, target = get_wine()
-    model = NNFactory().create_neural_network(13, 3, [128, 64], 'classification', ['relu', 'relu'],
-                                              'crossentropyloss', 'adam', 32, 100)
-    model.train(data, target)
-    print('Breast Cancer')
-    data, target = get_breast_cancer()
-    model = NNFactory().create_neural_network(30, 2, [128, 64], 'classification', ['relu', 'relu'],
-                                              'crossentropyloss', 'adam', 32, 100)
-    model.train(data, target)
-    print(model.predict(data))
-    print('Diabetes')
-    data, target = get_diabetes()
-    model = NNFactory().create_neural_network(10, 1, [128, 64], 'regression', [
-        'relu', 'relu'], 'mseloss', 'adam', 32, 100)
-    model.train(data, target)
-    print(model.predict(data))
-    print('Linnerud')
-    data, target = get_linnerud()
-    model = NNFactory().create_neural_network(3, 3, [128, 64], 'regression', [
-        'relu', 'relu'], 'mseloss', 'adam', 32, 100)
-    model.train(data, target)
-    print(model.predict(data))
+    params = NNFactory.optimize_hyperparameters(
+        get_iris(), 'classification', 'cuda')
+    print(params)
+    model = NNFactory().create_neural_network(**params)
+    model.train(*get_iris())
+    print(model.predict(get_iris()[0]))
