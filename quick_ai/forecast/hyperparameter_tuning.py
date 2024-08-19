@@ -1,6 +1,5 @@
-
 import numpy as np
-from quick_ai.algorithms import DecisionTreeClassifier, NeuralNetworkModel
+from quick_ai.algorithms import NeuralNetworkModel
 import optuna as opt
 from datasets import get_iris, get_diabetes, get_breast_cancer, get_linnerud
 from sklearn.model_selection import train_test_split
@@ -8,7 +7,6 @@ from quick_ai.base import Model
 from typing import Tuple
 import pandas as pd
 from quick_ai.algorithms import AdaBoostClassifier, AdaBoostRegressor, XGBoostClassifier, XGBoostRegressor
-from math import inf
 from typing import Literal
 
 
@@ -37,7 +35,7 @@ class HyperTuner:
                             hyper_param = hyper_param['variants'][0]
                         else:
                             hyper_param = hyper_param['variants'][1]
-            # TODO: more cases to be added if needed
+            # more cases to be added if needed
             if hyper_param['optional'] and trial.suggest_categorical(f"{hyper_param['name']}=None", [True, False]):
                 params[hyper_param['name']] = None
                 continue
@@ -60,7 +58,7 @@ class HyperTuner:
             return np.sum((model.predict(x_test)-y_test).values**2)/len(y_test)
 
     def optimize_hyperparameters(self, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None, device='cpu', trials: int = 10) -> dict:
-        if model == NeuralNetworkModel:
+        if model == NeuralNetworkModel: # Neural Network requires a more specific approach, infeasible to adapt the general function do it's been implemented separately
             return NeuralNetworkModel.optimize_hyperparameters(dataset, task, no_classes, no_variables, device, trials)
         study = opt.create_study(
             direction='maximize' if task == 'classification' else 'minimize')
