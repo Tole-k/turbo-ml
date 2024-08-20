@@ -162,3 +162,5 @@ cython_debug/
 #.idea/
 .venv_2
 .vscode
+
+catboost_info/*

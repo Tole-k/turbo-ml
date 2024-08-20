@@ -1,6 +1,9 @@
 from sklearn import ensemble
 from ..base import Model
 from collections.abc import Iterable
+from sklearn.datasets import make_classification
+from typing import Literal
+from sklearn.base import BaseEstimator
 
 
 class AdaBoostClassifier(Model):
@@ -9,10 +12,9 @@ class AdaBoostClassifier(Model):
 
     def __init__(
         self,
-        estimator=None,
-        n_estimators=50,
-        learning_rate=1.0,
-        algorithm='SAMME.R',
+        estimator: BaseEstimator = None,
+        n_estimators: int = 50,
+        learning_rate: float = 1.0,
         random_state=None,
     ) -> None:
         super().__init__()
@@ -20,7 +22,7 @@ class AdaBoostClassifier(Model):
             estimator=estimator,
             n_estimators=n_estimators,
             learning_rate=learning_rate,
-            algorithm=algorithm,
+            algorithm="SAMME",
             random_state=random_state,
         )
 
@@ -37,15 +39,15 @@ class AdaBoostRegressor(Model):
 
     def __init__(
         self,
-        base_estimator=None,
-        n_estimators=50,
-        learning_rate=1.0,
-        loss='linear',
+        estimator: BaseEstimator = None,
+        n_estimators: int = 50,
+        learning_rate: float = 1.0,
+        loss: Literal["linear", "square", "exponential"] = 'linear',
         random_state=None,
     ) -> None:
         super().__init__()
         self.ada_boost = ensemble.AdaBoostRegressor(
-            base_estimator=base_estimator,
+            estimator=estimator,
             n_estimators=n_estimators,
             learning_rate=learning_rate,
             loss=loss,
@@ -59,9 +61,10 @@ class AdaBoostRegressor(Model):
         return self.ada_boost.predict(guess)
 
 
-# X, y = make_classification(n_samples=1000, n_features=4,
-#                            n_informative=2, n_redundant=0,
-#                            random_state=0, shuffle=False)
-# clf = AdaBoostClassifier(n_estimators=100, algorithm="SAMME", random_state=0)
-# clf.train(X, y)
-# print(clf.predict([[0, 0, 0, 0]]))
+if __name__ == "__main__":
+    X, y = make_classification(n_samples=1000, n_features=4,
+                               n_informative=2, n_redundant=0,
+                               random_state=0, shuffle=False)
+    clf = AdaBoostClassifier(n_estimators=100)
+    clf.train(X, y)
+    print(clf.predict([[0, 0, 0, 0]]))

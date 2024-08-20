@@ -17,14 +17,11 @@ class DecisionTreeClassifier(Model):
         min_samples_split: float | int = 2,
         min_samples_leaf: float | int = 1,
         min_weight_fraction_leaf: float = 0.0,
-        max_features: float | int | Literal['auto',
-                                            'sqrt', 'log2'] | None = None,
-        random_state: int | RandomState | None = None,
+        max_features: float | int | Literal['sqrt', 'log2'] | None = None,
         max_leaf_nodes: int | None = None,
         min_impurity_decrease: float = 0.0,
         class_weight: Mapping | str | Sequence[Mapping] | None = None,
         ccp_alpha: float = 0.0,
-        monotonic_cst=None,
     ) -> None:
         super().__init__()
         self.tree = tree.DecisionTreeClassifier(
@@ -37,9 +34,7 @@ class DecisionTreeClassifier(Model):
             max_features=max_features,
             max_leaf_nodes=max_leaf_nodes,
             class_weight=class_weight,
-            random_state=random_state,
             min_impurity_decrease=min_impurity_decrease,
-            # monotonic_cst=monotonic_cst,
             ccp_alpha=ccp_alpha,
         )
 
