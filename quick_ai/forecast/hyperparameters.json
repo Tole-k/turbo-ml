@@ -1,0 +1,435 @@
+{
+    "RandomGuesser": [],
+    "GBoostClassifier": [
+        {
+            "conditional": true,
+            "condition": "binary/multi",
+            "variants": [
+                {
+                    "name": "loss",
+                    "type": "categorical",
+                    "choices": [
+                        "log_loss",
+                        "exponential"
+                    ],
+                    "optional": false
+                },
+                {
+                    "name": "loss",
+                    "type": "no_choice",
+                    "choices": [
+                        "log_loss"
+                    ],
+                    "optional": false
+                }
+            ]
+        },
+        {
+            "name": "learning_rate",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "n_estimators",
+            "type": "int",
+            "min": 1,
+            "max": 1000,
+            "optional": false
+        },
+        {
+            "name": "subsample",
+            "type": "float",
+            "min": 0.001,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "criterion",
+            "type": "categorical",
+            "choices": [
+                "friedman_mse",
+                "squared_error"
+            ],
+            "optional": false
+        },
+        {
+            "name": "min_samples_split",
+            "type": "int",
+            "min": 2,
+            "max": 100,
+            "optional": false
+        },
+        {
+            "name": "max_depth",
+            "type": "int",
+            "min": 1,
+            "max": 100,
+            "optional": true
+        },
+        {
+            "name": "max_features",
+            "type": "categorical",
+            "choices": [
+                "sqrt",
+                "log2"
+            ],
+            "optional": true
+        },
+        {
+            "name": "n_iter_no_change",
+            "type": "int",
+            "min": 1,
+            "max": 100,
+            "optional": true
+        },
+        {
+            "name": "ccp_alpha",
+            "type": "float",
+            "min": 0.0,
+            "max": 10.0,
+            "optional": false
+        }
+    ],
+    "DecisionTreeClassifier": [
+        {
+            "name": "criterion",
+            "type": "categorical",
+            "choices": [
+                "gini",
+                "entropy",
+                "log_loss"
+            ],
+            "optional": false
+        },
+        {
+            "name": "splitter",
+            "type": "categorical",
+            "choices": [
+                "best",
+                "random"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_depth",
+            "type": "int",
+            "min": 1,
+            "max": 100,
+            "optional": true
+        },
+        {
+            "name": "min_samples_split",
+            "type": "int",
+            "min": 2,
+            "max": 10,
+            "optional": false
+        },
+        {
+            "name": "min_samples_leaf",
+            "type": "int",
+            "min": 1,
+            "max": 10,
+            "optional": false
+        },
+        {
+            "name": "min_weight_fraction_leaf",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.5,
+            "optional": false
+        },
+        {
+            "name": "max_features",
+            "type": "categorical",
+            "choices": [
+                "sqrt",
+                "log2"
+            ],
+            "optional": true
+        },
+        {
+            "name": "max_leaf_nodes",
+            "type": "int",
+            "min": 2,
+            "max": 100,
+            "optional": true
+        },
+        {
+            "name": "min_impurity_decrease",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.5,
+            "optional": false
+        },
+        {
+            "name": "ccp_alpha",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.5,
+            "optional": false
+        }
+    ],
+    "CatBoostClassifier": [
+        {
+            "name": "iterations",
+            "type": "int",
+            "min": 1,
+            "max": 1000,
+            "optional": false
+        },
+        {
+            "name": "learning_rate",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "depth",
+            "type": "int",
+            "min": 1,
+            "max": 16,
+            "optional": false
+        },
+        {
+            "name": "l2_leaf_reg",
+            "type": "float",
+            "min": 0.0,
+            "max": 10.0,
+            "optional": false
+        },
+        {
+            "name": "model_size_reg",
+            "type": "float",
+            "min": 0.0,
+            "max": 10.0,
+            "optional": true
+        },
+        {
+            "conditional": true,
+            "condition": "binary/multi",
+            "variants": [
+                {
+                    "name": "loss_function",
+                    "type": "categorical",
+                    "choices": [
+                        "Logloss",
+                        "CrossEntropy"
+                    ],
+                    "optional": false
+                },
+                {
+                    "name": "loss_function",
+                    "type": "categorical",
+                    "choices": [
+                        "MultiClass",
+                        "MultiClassOneVsAll"
+                    ],
+                    "optional": false
+                }
+            ]
+        },
+        {
+            "name": "feature_border_type",
+            "type": "categorical",
+            "choices": [
+                "Median",
+                "Uniform",
+                "UniformAndQuantiles",
+                "GreedyLogSum",
+                "MaxLogSum",
+                "MinEntropy"
+            ],
+            "optional": false
+        },
+        {
+            "name": "min_data_in_leaf",
+            "type": "int",
+            "min": 1,
+            "max": 10,
+            "optional": false
+        },
+        {
+            "conditional": true,
+            "condition": "cpu/cuda",
+            "variants": [
+                {
+                    "name": "device",
+                    "type": "no_choice",
+                    "choices": [
+                        "CPU"
+                    ],
+                    "optional": false
+                },
+                {
+                    "name": "device",
+                    "type": "no_choice",
+                    "choices": [
+                        "GPU"
+                    ],
+                    "optional": false
+                }
+            ]
+        }
+    ],
+    "AdaBoostClassifier": [
+        {
+            "name": "n_estimators",
+            "type": "int",
+            "min": 1,
+            "max": 1000,
+            "optional": false
+        },
+        {
+            "name": "learning_rate",
+            "type": "float",
+            "min": 0.0,
+            "max": 10.0,
+            "optional": false
+        }
+    ],
+    "AdaBoostRegressor": [
+        {
+            "name": "n_estimators",
+            "type": "int",
+            "min": 1,
+            "max": 1000,
+            "optional": false
+        },
+        {
+            "name": "learning_rate",
+            "type": "float",
+            "min": 0.0,
+            "max": 10.0,
+            "optional": false
+        },
+        {
+            "name": "loss",
+            "type": "categorical",
+            "choices": [
+                "linear",
+                "square",
+                "exponential"
+            ],
+            "optional": false
+        }
+    ],
+    "XGBoostClassifier": [
+        {
+            "name": "n_estimators",
+            "type": "int",
+            "min": 1,
+            "max": 1000,
+            "optional": false
+        },
+        {
+            "name": "learning_rate",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "max_depth",
+            "type": "int",
+            "min": 1,
+            "max": 100,
+            "optional": false
+        },
+        {
+            "name": "subsample",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "colsample_bytree",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "gamma",
+            "type": "float",
+            "min": 0.0,
+            "max": 10.0,
+            "optional": false
+        },
+        {
+            "name": "reg_alpha",
+            "type": "float",
+            "min": 0.0,
+            "max": 10.0,
+            "optional": false
+        },
+        {
+            "name": "reg_lambda",
+            "type": "float",
+            "min": 0.0,
+            "max": 10.0,
+            "optional": false
+        }
+    ],
+    "XGBoostRegressor": [
+        {
+            "name": "n_estimators",
+            "type": "int",
+            "min": 1,
+            "max": 1000,
+            "optional": false
+        },
+        {
+            "name": "learning_rate",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "max_depth",
+            "type": "int",
+            "min": 1,
+            "max": 100,
+            "optional": false
+        },
+        {
+            "name": "subsample",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "colsample_bytree",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "gamma",
+            "type": "float",
+            "min": 0.0,
+            "max": 10.0,
+            "optional": false
+        },
+        {
+            "name": "reg_alpha",
+            "type": "float",
+            "min": 0.0,
+            "max": 10.0,
+            "optional": false
+        },
+        {
+            "name": "reg_lambda",
+            "type": "float",
+            "min": 0.0,
+            "max": 10.0,
+            "optional": false
+        }
+    ]
+}

@@ -6,7 +6,6 @@ from collections.abc import Iterable
 class RandomGuesser(Model):
     input_formats = {Iterable}
     output_formats = {list[int]}
-    hyperparameters = []
 
     def __init__(self) -> None:
         super().__init__()

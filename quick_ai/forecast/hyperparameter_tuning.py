@@ -8,34 +8,39 @@ from typing import Tuple
 import pandas as pd
 from quick_ai.algorithms import AdaBoostClassifier, AdaBoostRegressor, XGBoostClassifier, XGBoostRegressor
 from typing import Literal
+import json
 
 
 class HyperTuner:
+
+    def __init__(self) -> None:
+        self.hyperparameters = json.load(
+            open('quick_ai/forecast/hyperparameters.json'))
+
     @staticmethod
-    def objective(trial: opt.Trial, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None, device='cpu') -> float:
+    def process_conditions(hyper_param: dict, no_classes: int, no_variables: int, device: str) -> dict:
+        if 'conditional' in hyper_param:
+            match hyper_param['condition']:
+                case "binary/multi":
+                    return hyper_param['variants'][not no_classes == 2]
+                case 'single/multi':
+                    return hyper_param['variants'][not no_variables == 1]
+                case 'cpu/cuda':
+                    return hyper_param['variants'][not device == 'cpu']
+                # more cases to be added if needed
+        return hyper_param
+
+    def get_model_hyperparameters(self, model: Model) -> list:
+        return self.hyperparameters[model.__name__]
+
+    def objective(self, trial: opt.Trial, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None, device='cpu') -> float:
         x_train, x_test, y_train, y_test = train_test_split(
             *dataset, test_size=0.2)
-        hyperparams: list = model.hyperparameters
+        hyperparams: list = self.get_model_hyperparameters(model)
         params = {}
         for hyper_param in hyperparams:
-            if 'conditional' in hyper_param:
-                match hyper_param['condition']:
-                    case "binary/multi":  # Depends on the number of classes in target feature
-                        if no_classes == 2:
-                            hyper_param = hyper_param['variants'][0]
-                        else:
-                            hyper_param = hyper_param['variants'][1]
-                    case 'single/multi':  # Depends on the number of target features to be predicted
-                        if no_variables == 1:
-                            hyper_param = hyper_param['variants'][0]
-                        else:
-                            hyper_param = hyper_param['variants'][1]
-                    case 'cpu/cuda':  # Depends on the availability of GPU
-                        if device == 'cpu':
-                            hyper_param = hyper_param['variants'][0]
-                        else:
-                            hyper_param = hyper_param['variants'][1]
-            # more cases to be added if needed
+            hyper_param = self.process_conditions(
+                hyper_param, no_classes, no_variables, device)
             if hyper_param['optional'] and trial.suggest_categorical(f"{hyper_param['name']}=None", [True, False]):
                 params[hyper_param['name']] = None
                 continue
@@ -58,7 +63,7 @@ class HyperTuner:
             return np.sum((model.predict(x_test)-y_test).values**2)/len(y_test)
 
     def optimize_hyperparameters(self, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None, device='cpu', trials: int = 10) -> dict:
-        if model == NeuralNetworkModel: # Neural Network requires a more specific approach, infeasible to adapt the general function do it's been implemented separately
+        if model == NeuralNetworkModel:  # Neural Network requires a more specific approach, infeasible to adapt the general function do it's been implemented separately
             return NeuralNetworkModel.optimize_hyperparameters(dataset, task, no_classes, no_variables, device, trials)
         study = opt.create_study(
             direction='maximize' if task == 'classification' else 'minimize')
@@ -70,48 +75,47 @@ class HyperTuner:
 if __name__ == '__main__':
     tuner = HyperTuner()
     dataset = get_iris()
-    print(type(dataset[1]))
     model = AdaBoostClassifier
     task = 'classification'
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=3, trials=100))
+        model, dataset, task, no_classes=3, trials=10))
     model = NeuralNetworkModel
     task = 'classification'
-    device = 'cuda'
+    device = 'cpu'
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=3, device=device, trials=100))
+        model, dataset, task, no_classes=3, device=device, trials=10))
     dataset = get_diabetes()
     model = AdaBoostRegressor
     task = 'regression'
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=1, trials=100))
+        model, dataset, task, no_variables=1, trials=10))
     model = NeuralNetworkModel
     task = 'regression'
-    device = 'cuda'
+
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=1, device=device, trials=100))
+        model, dataset, task, no_variables=1, device=device, trials=10))
 
     dataset = get_breast_cancer()
     model = XGBoostClassifier
     task = 'classification'
-    device = 'cuda'
+
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=2, device=device, trials=100))
+        model, dataset, task, no_classes=2, device=device, trials=10))
 
     model = NeuralNetworkModel
     task = 'classification'
-    device = 'cuda'
+
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=2, device=device, trials=100))
+        model, dataset, task, no_classes=2, device=device, trials=10))
     dataset = get_linnerud()
     model = XGBoostRegressor
     task = 'regression'
-    device = 'cuda'
+
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=3, device=device, trials=100))
+        model, dataset, task, no_variables=3, device=device, trials=10))
 
     model = NeuralNetworkModel
     task = 'regression'
-    device = 'cuda'
+
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=3, device=device, trials=100))
+        model, dataset, task, no_variables=3, device=device, trials=10))

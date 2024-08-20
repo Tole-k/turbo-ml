@@ -9,23 +9,6 @@ from sklearn.base import BaseEstimator
 class AdaBoostClassifier(Model):
     input_formats = {Iterable[int | float]}
     output_formats = {list[int], list[str]}
-    # TODO: ad estimator hyperparameter
-    hyperparameters = [
-        {
-            "name": "n_estimators",
-            "type": "int",
-            "min": 1,
-            "max": 1000,
-            "optional": False
-        },
-        {
-            "name": "learning_rate",
-            "type": "float",
-            "min": 0.0,
-            "max": 10.0,
-            "optional": False
-        }
-    ]
 
     def __init__(
         self,
@@ -53,29 +36,6 @@ class AdaBoostClassifier(Model):
 class AdaBoostRegressor(Model):
     input_formats = {Iterable[int | float]}
     output_formats = {list[float]}
-    # TODO: ad estimator hyperparameter
-    hyperparameters = [
-        {
-            "name": "n_estimators",
-            "type": "int",
-            "min": 1,
-            "max": 1000,
-            "optional": False
-        },
-        {
-            "name": "learning_rate",
-            "type": "float",
-            "min": 0.0,
-            "max": 10.0,
-            "optional": False
-        },
-        {
-            "name": "loss",
-            "type": "categorical",
-            "choices": ["linear", "square", "exponential"],
-            "optional": False
-        }
-    ]
 
     def __init__(
         self,

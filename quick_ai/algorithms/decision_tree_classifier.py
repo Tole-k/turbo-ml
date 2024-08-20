@@ -8,73 +8,6 @@ from collections.abc import Iterable
 class DecisionTreeClassifier(Model):
     input_formats = {Iterable[int | float | bool]}
     output_formats = {list[int], list[str] | list[bool]}
-    hyperparameters = [
-        {
-            "name": "criterion", 
-            "type": "categorical",
-            "choices": ["gini", "entropy", "log_loss"],
-            "optional": False
-        },
-        {
-            "name": "splitter",
-            "type": "categorical",
-            "choices": ["best", "random"],
-            "optional": False
-        },
-        {
-            "name": "max_depth",
-            "type": "int",
-            "min": 1,
-            "max": 100,
-            "optional": True
-        },
-        {
-            "name": "min_samples_split",
-            "type": "int",
-            "min": 2,
-            "max": 10,
-            "optional": False
-        },
-        {
-            "name": "min_samples_leaf",
-            "type": "int",
-            "min": 1,
-            "max": 10,
-            "optional": False
-        },
-        {
-            "name": "min_weight_fraction_leaf",
-            "type": "float",
-            "min": 0.0, "max": 0.5,
-            "optional": False
-        },
-        {
-            "name": "max_features",
-            "type": "categorical",
-            "choices": ["sqrt", "log2"],
-            "optional": True
-        },
-        {
-            "name": "max_leaf_nodes",
-            "type": "int",
-            "min": 2,
-            "max": 100,
-            "optional": True
-        },
-        {
-            "name": "min_impurity_decrease",
-            "type": "float",
-            "min": 0.0, "max": 0.5,
-            "optional": False
-        },
-        {
-            "name": "ccp_alpha",
-            "type": "float",
-            "min": 0.0,
-            "max": 0.5,
-            "optional": False
-        },
-    ]
 
     def __init__(
         self,
@@ -87,6 +20,7 @@ class DecisionTreeClassifier(Model):
         max_features: float | int | Literal['sqrt', 'log2'] | None = None,
         max_leaf_nodes: int | None = None,
         min_impurity_decrease: float = 0.0,
+        class_weight: Mapping | str | Sequence[Mapping] | None = None,
         ccp_alpha: float = 0.0,
     ) -> None:
         super().__init__()
@@ -99,6 +33,7 @@ class DecisionTreeClassifier(Model):
             min_weight_fraction_leaf=min_weight_fraction_leaf,
             max_features=max_features,
             max_leaf_nodes=max_leaf_nodes,
+            class_weight=class_weight,
             min_impurity_decrease=min_impurity_decrease,
             ccp_alpha=ccp_alpha,
         )
