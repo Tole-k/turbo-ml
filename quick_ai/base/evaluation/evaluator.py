@@ -1,0 +1,99 @@
+from typing import List
+from sklearn.metrics import (
+    accuracy_score, precision_score, recall_score, f1_score,
+    roc_auc_score, mean_squared_error, mean_absolute_error, r2_score
+)
+
+_TWO_ARG = {'accuracy': accuracy_score, 'mse': mean_squared_error, 'mae': mean_absolute_error,
+            'r2': r2_score}
+_WITH_AVG = {'precision': precision_score,
+             'recall': recall_score, 'f1': f1_score}
+_ROC_METRICS = {'roc_auc': roc_auc_score}
+
+
+class BaseEvaluator:
+    def __init__(self, metrics: List[str], weights: List[int] = None, average: str = 'weighted', multi_class: str = 'raise'):
+        """
+        Initialize the EvaluationScore object with customizable evaluation metrics and weights.
+
+        Args:
+        metrics (List[int]): A list of metrics to be computed. Default is None, which uses common classification metrics.
+        weights (List[int]): A list of weights for the metrics. Default is None, which assumes equal weights.
+        average (str): The averaging method for metrics like precision, recall, and F1 score (binary, micro, macro, weighted).
+        multi_class (str): The method to handle multi-class classification ('raise', 'ovr', 'ovo'). Default is 'raise'.
+        """
+        self.metrics = metrics if metrics else [
+            'accuracy', 'precision', 'recall', 'f1']
+
+        if weights and len(weights) != len(self.metrics):
+            raise ValueError(
+                "Length of weights must match the number of metrics")
+        self.weights = weights if weights else [
+            1.0 / len(self.metrics)] * len(self.metrics)
+        assert sum(self.weights) == 1.0, "Weights must sum to 1"
+
+        self.average = average
+        self.multi_class = multi_class
+
+    def __call__(self, y_true, y_pred, y_prob=None):
+        """
+        Calculate and return a single float score, which is the weighted average of the selected metrics.
+
+        Args:
+        y_true (array-like): True labels.
+        y_pred (array-like): Predicted labels.
+        y_prob [optional] (array-like): Probability estimates for positive class (needed for metrics like roc_auc).
+
+        Returns:
+        float: A single float score representing the weighted average of the computed metrics.
+        """
+        total_score = 0.0
+
+        for metric, weight in zip(self.metrics, self.weights):
+            score = self._proper_metric(y_true, y_pred, y_prob, metric)
+            total_score += weight * score
+        return total_score
+
+    def _proper_metric(self, y_true, y_pred, y_prob, metric):
+        if metric in _TWO_ARG:
+            score = _TWO_ARG[metric](y_true, y_pred)
+        elif metric in _WITH_AVG:
+            score = _WITH_AVG[metric](y_true, y_pred, average=self.average)
+        elif metric in _ROC_METRICS:
+            if y_prob is not None:
+                score = _ROC_METRICS[metric](
+                    y_true, y_prob, multi_class=self.multi_class)
+            else:
+                raise ValueError(
+                    "ROC AUC requires probability scores (y_prob)")
+        elif callable(metric):
+            score = metric(y_true, y_pred)
+        else:
+            raise ValueError(f"Unsupported metric: {metric}")
+        return score
+
+
+def get_evaluator() -> BaseEvaluator:
+    metrics = ['accuracy', 'precision', 'recall', 'f1']
+    weights = [0.5, 0.1, 0.2, 0.2]
+    return BaseEvaluator(metrics, weights)
+
+
+if __name__ == "__main__":
+    y_true_bin = [0, 1, 1, 0, 1]
+    y_pred_bin = [0, 1, 1, 1, 1]
+
+    evaluator_bin = get_evaluator()
+    overall_score_bin = evaluator_bin(y_true_bin, y_pred_bin)
+    print(f"Weighted average score (binary): {overall_score_bin}")
+
+    y_true_multi = [0, 1, 2, 1, 0, 2, 2]
+    y_pred_multi = [0, 1, 1, 1, 0, 2, 2]
+    y_prob_multi = [[0.7, 0.2, 0.1], [0.1, 0.6, 0.3], [0.2, 0.5, 0.3],
+                    [0.3, 0.5, 0.2], [0.6, 0.2, 0.2], [0.1, 0.2, 0.7],
+                    [0.2, 0.1, 0.7]]
+
+    evaluator_multi = get_evaluator()
+    overall_score_multi = evaluator_multi(
+        y_true_multi, y_pred_multi, y_prob=y_prob_multi)
+    print(f"Weighted average score (multi-class): {overall_score_multi}")
