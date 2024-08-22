@@ -1,4 +1,4 @@
-from typing import List
+from typing import Dict, List
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, f1_score,
     roc_auc_score, mean_squared_error, mean_absolute_error, r2_score
@@ -35,7 +35,7 @@ class BaseEvaluator:
         self.average = average
         self.multi_class = multi_class
 
-    def __call__(self, y_true, y_pred, y_prob=None):
+    def __call__(self, y_true, y_pred, y_prob=None) -> float:
         """
         Calculate and return a single float score, which is the weighted average of the selected metrics.
 
@@ -62,7 +62,7 @@ class BaseEvaluator:
         elif metric in _ROC_METRICS:
             if y_prob is not None:
                 score = _ROC_METRICS[metric](
-                    y_true, y_prob, multi_class=self.multi_class)
+                    y_true, y_prob, average=self.average, multi_class=self.multi_class)
             else:
                 raise ValueError(
                     "ROC AUC requires probability scores (y_prob)")
@@ -71,6 +71,14 @@ class BaseEvaluator:
         else:
             raise ValueError(f"Unsupported metric: {metric}")
         return score
+
+    def score(self, y_true, y_pred, y_prob=None) -> Dict[str, float]:
+        results = {}
+
+        for metric in self.metrics:
+            score = self._proper_metric(y_true, y_pred, y_prob, metric)
+            results[metric] = score
+        return results
 
 
 def get_evaluator() -> BaseEvaluator:
@@ -86,7 +94,6 @@ if __name__ == "__main__":
     evaluator_bin = get_evaluator()
     overall_score_bin = evaluator_bin(y_true_bin, y_pred_bin)
     print(f"Weighted average score (binary): {overall_score_bin}")
-
     y_true_multi = [0, 1, 2, 1, 0, 2, 2]
     y_pred_multi = [0, 1, 1, 1, 0, 2, 2]
     y_prob_multi = [[0.7, 0.2, 0.1], [0.1, 0.6, 0.3], [0.2, 0.5, 0.3],
