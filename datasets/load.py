@@ -48,6 +48,7 @@ def get_titanic() -> Tuple[pd.DataFrame, pd.Series]:
     titanic = pd.read_csv(StringIO(response.text))
     target = pd.Series(titanic['alive'])
     titanic.drop(columns=['alive'], inplace=True)
+    titanic.drop(columns=['survived'], inplace=True)
     return titanic, target
 
 
