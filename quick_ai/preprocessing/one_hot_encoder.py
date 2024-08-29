@@ -8,8 +8,8 @@ from sklearn.preprocessing import OneHotEncoder
 class OneHotEnc(Preprocessor):
     def __init__(self) -> None:
         super().__init__()
-        self.encoder = OneHotEncoder(dtype=bool)
-        self.target_encoder = OneHotEncoder(dtype=bool)
+        self.encoder = OneHotEncoder(dtype=bool, drop='if_binary')
+        self.target_encoder = OneHotEncoder(dtype=bool, drop='if_binary')
 
     def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
         categorical_cols = data.select_dtypes(
@@ -32,6 +32,8 @@ class OneHotEnc(Preprocessor):
                     np.transpose([target])).toarray(),
                 columns=self.target_encoder.get_feature_names_out(),
             )
+            if target.shape[1] == 1:
+                target = target.squeeze()
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:

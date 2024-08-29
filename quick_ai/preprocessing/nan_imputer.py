@@ -35,14 +35,12 @@ class NanImputer(Preprocessor):
     def fit_transform_target(self, target: pd.Series) -> pd.Series:
         if target.isin([0, 1]).all():
             target = target.astype(bool)
-        if np.issubdtype(target.dtype, np.number):
+        if pd.api.types.is_float_dtype(target):
             target = pd.Series(
                 self.numerical_imputer.fit_transform(
                     np.transpose([target]))[:, 0]
             )
-        elif np.issubdtype(target.dtype, np.object) or np.issubdtype(
-            target.dtype, np.bool_
-        ):
+        else:
             target = pd.Series(
                 self.categorical_imputer.fit_transform(
                     np.transpose([target]))[:, 0]
