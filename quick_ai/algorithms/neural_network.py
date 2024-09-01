@@ -195,6 +195,7 @@ class NNFactory:
                 params['loss'] = 'crossentropyloss'
             else:
                 params['loss'] = 'mseloss'
+            trial.set_user_attr('loss', params['loss'])
             params['optimizer'] = trial.suggest_categorical(
                 'optimizer', ['adam', 'sgd', 'adadelta', 'adagrad', 'adamax', 'rmsprop', 'rprop'])
             params['batch_size'] = trial.suggest_int(
@@ -262,7 +263,19 @@ class NeuralNetworkModel(Model):
 
     @staticmethod
     def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, device='cpu', trials=10) -> Dict[str, Any]:
-        return NNFactory.optimize_hyperparameters(dataset, task, no_classes, no_variables, device, trials)
+        params = NNFactory.optimize_hyperparameters(
+            dataset, task, no_classes, no_variables, device, trials)
+        hidden_sizes = []
+        activations = []
+        for i in range(params['num_hidden_layers']):
+            hidden_sizes.append(params[f'hidden_size_{i}'])
+            activations.append(params[f'activation_{i}'])
+            del params[f'hidden_size_{i}']
+            del params[f'activation_{i}']
+        del params['num_hidden_layers']
+        params['hidden_sizes'] = hidden_sizes
+        params['activations'] = activations
+        return params
 
     def __init__(self, input_size: int, output_size: int, hidden_sizes: List[int], task: str = 'classification', activations: List[str] = ['relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> None:
         super().__init__()
@@ -277,9 +290,9 @@ class NeuralNetworkModel(Model):
 
 
 if __name__ == '__main__':
-    params = NNFactory.optimize_hyperparameters(
-        get_iris(), 'classification', 'cuda')
+    params = NeuralNetworkModel.optimize_hyperparameters(
+        dataset=get_iris(), task='classification', no_classes=3, no_variables=1, device='cuda', trials=10)
     print(params)
-    model = NNFactory().create_neural_network(**params)
+    model = NeuralNetworkModel(**params)
     model.train(*get_iris())
     print(model.predict(get_iris()[0]))

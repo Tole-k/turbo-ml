@@ -2,6 +2,6 @@ from .decision_tree_classifier import DecisionTreeClassifier
 from .random_guessing import RandomGuesser
 from .ada_boost import AdaBoostClassifier, AdaBoostRegressor
 from .g_boost import GBoostClassifier, GBoostRegressor
-from .neural_network import NNFactory, NeuralNetworkModel
+from .neural_network import NeuralNetworkModel
 from .other_algorithms import models
 from .xg_boost import XGBoostClassifier, XGBoostRegressor
