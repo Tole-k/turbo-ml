@@ -53,17 +53,13 @@ class StatisticalParametersExtractor:
             del description['freq']
             description.at['smallest_class'] = column.value_counts().idxmin()
             description.at['smallest_class_freq'] = column.value_counts().min()
-            for index, value in counts.items():
-                description.at[str(index)] = value
-            description.at['nans'] = column.isna().sum()
             return description
 
     def target_description(self):
         return {'task': self.task, 'description': self.describe_plus_plus(self.target, self.task == 'regression')}
 
     def feature_description(self):
-        params = {col: {'type': "continuous" if pd.api.types.is_float_dtype(self.data[col]) else "categorical", 'description': self.describe_plus_plus(
-            self.data[col], pd.api.types.is_float_dtype(self.data[col]))} for col in self.data.columns} | {'num_columns': len(self.data.columns), 'num_rows': len(self.data)}
+        params = {'num_columns': len(self.data.columns), 'num_rows': len(self.data)}
         continous_cols = self.data.select_dtypes(include=[np.number]).columns
         corr_matrix = self.data[continous_cols].corr()
         removed_diag = corr_matrix.mask(
