@@ -1,11 +1,31 @@
+from functools import wraps
 from typing import Dict, List
+from math import exp
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, f1_score,
     roc_auc_score, mean_squared_error, mean_absolute_error, r2_score
 )
+import numpy as np
 
-_TWO_ARG = {'accuracy': accuracy_score, 'mse': mean_squared_error, 'mae': mean_absolute_error,
-            'r2': r2_score}
+
+def normalization(func, technique='rev_exp', t_param: float = 0.1):
+    """ Maps [0, inf) domain into [0, 1), so that highest value becomes the lowest value """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        value = func(*args, **kwargs)
+        if technique == 'rev_exp':
+            return 1 - (value / (value + exp(-t_param * value)))
+        elif technique == 'rev_rev_exp':
+            value = -value + 1
+            return 1 - (value / (value + exp(-t_param * value)))
+        else:
+            raise NotImplementedError(f"""This type of normalization{
+                                      technique}, was not implemented yet""")
+    return wrapper
+
+
+_TWO_ARG = {'accuracy': accuracy_score, 'mse': normalization(mean_squared_error), 'mae': normalization(mean_absolute_error),
+            'r2': normalization(r2_score, technique='rev_rev_exp')}
 _WITH_AVG = {'precision': precision_score,
              'recall': recall_score, 'f1': f1_score}
 _ROC_METRICS = {'roc_auc': roc_auc_score}
@@ -51,10 +71,15 @@ class BaseEvaluator:
 
         for metric, weight in zip(self.metrics, self.weights):
             score = self._proper_metric(y_true, y_pred, y_prob, metric)
+            assert score >= 0 and score <= 1, f'Invalid value encounter in {
+                metric} metric'
             total_score += weight * score
         return total_score
 
     def _proper_metric(self, y_true, y_pred, y_prob, metric):
+        y_true = np.array(y_true)
+        y_pred = np.array(y_pred)
+        y_prob = np.array(y_prob)
         if metric in _TWO_ARG:
             score = _TWO_ARG[metric](y_true, y_pred)
         elif metric in _WITH_AVG:
@@ -94,13 +119,14 @@ if __name__ == "__main__":
     evaluator_bin = get_evaluator()
     overall_score_bin = evaluator_bin(y_true_bin, y_pred_bin)
     print(f"Weighted average score (binary): {overall_score_bin}")
-    y_true_multi = [0, 1, 2, 1, 0, 2, 2]
-    y_pred_multi = [0, 1, 1, 1, 0, 2, 2]
+    y_true_multi = [0, 1, 2, 2, 0, 2, 2]
+    y_pred_multi = [0, 1, 2, 1, 0, 2, 2]
     y_prob_multi = [[0.7, 0.2, 0.1], [0.1, 0.6, 0.3], [0.2, 0.5, 0.3],
                     [0.3, 0.5, 0.2], [0.6, 0.2, 0.2], [0.1, 0.2, 0.7],
                     [0.2, 0.1, 0.7]]
 
     evaluator_multi = get_evaluator()
+    evaluator_multi.metrics[0] = 'r2'
     overall_score_multi = evaluator_multi(
         y_true_multi, y_pred_multi, y_prob=y_prob_multi)
     print(f"Weighted average score (multi-class): {overall_score_multi}")
