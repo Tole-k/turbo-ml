@@ -2,14 +2,15 @@ from typing import Iterable, Tuple
 import numpy as np
 import pandas as pd
 from ..base.preprocess import Preprocessor
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder as sklearnOneHotEncoder
 
 
-class OneHotEnc(Preprocessor):
+class OneHotEncoder(Preprocessor):
     def __init__(self) -> None:
         super().__init__()
-        self.encoder = OneHotEncoder(dtype=bool, drop='if_binary')
-        self.target_encoder = OneHotEncoder(dtype=bool, drop='if_binary')
+        self.encoder = sklearnOneHotEncoder(dtype=bool, drop='if_binary')
+        self.target_encoder = sklearnOneHotEncoder(
+            dtype=bool, drop='if_binary')
 
     def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
         categorical_cols = data.select_dtypes(
@@ -87,7 +88,7 @@ def main():
     print(data)
     print(target)
     print()
-    ohe = OneHotEnc()
+    ohe = OneHotEncoder()
     data = ohe.fit_transform(data)
     print("After OHE:")
     print(data)
