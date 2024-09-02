@@ -1,7 +1,8 @@
+import numpy as np
 import pandas as pd
 from datasets import *
 from quick_ai.preprocessing.normalizer import Normalizer
-from quick_ai.preprocessing.one_hot_encoder import OneHotEnc
+from quick_ai.preprocessing.one_hot_encoder import OneHotEncoder
 from quick_ai.preprocessing.nan_imputer import NanImputer
 
 
@@ -18,8 +19,6 @@ class StatisticalParametersExtractor:
             if pd.api.types.is_float_dtype(self.target):
                 self.task = 'regression'
             else:
-                print(type(self.target))
-                print(type(self.target.nunique()))
                 if self.target.nunique() == 2:
                     self.task = 'binary_classification'
                 else:
@@ -48,6 +47,12 @@ class StatisticalParametersExtractor:
         else:
             description = column.astype('object').describe()
             counts = column.value_counts().to_dict()
+            description.at['biggest_class'] = description.at['top']
+            del description['top']
+            description.at['biggest_class_freq'] = description.at['freq']
+            del description['freq']
+            description.at['smallest_class'] = column.value_counts().idxmin()
+            description.at['smallest_class_freq'] = column.value_counts().min()
             for index, value in counts.items():
                 description.at[str(index)] = value
             description.at['nans'] = column.isna().sum()
@@ -57,7 +62,23 @@ class StatisticalParametersExtractor:
         return {'task': self.task, 'description': self.describe_plus_plus(self.target, self.task == 'regression')}
 
     def feature_description(self):
-        return {col: {'type': "continuous" if pd.api.types.is_float_dtype(self.data[col]) else "categorical", 'description': self.describe_plus_plus(self.data[col], pd.api.types.is_float_dtype(self.data[col]))} for col in self.data.columns}
+        params = {col: {'type': "continuous" if pd.api.types.is_float_dtype(self.data[col]) else "categorical", 'description': self.describe_plus_plus(
+            self.data[col], pd.api.types.is_float_dtype(self.data[col]))} for col in self.data.columns} | {'num_columns': len(self.data.columns), 'num_rows': len(self.data)}
+        continous_cols = self.data.select_dtypes(include=[np.number]).columns
+        corr_matrix = self.data[continous_cols].corr()
+        removed_diag = corr_matrix.mask(
+            np.eye(len(corr_matrix), dtype=bool)).abs()
+        params['number_of_highly_correlated_features'] = int((
+            removed_diag > 0.8).sum().sum())
+        params['highest_correlation'] = float(removed_diag.max().max())
+        params['number_of_lowly_correlated_features'] = int((
+            removed_diag < 0.2).sum().sum())
+        params['lowest_correlation'] = float(removed_diag.min().min())
+        params['highest_eigenvalue'] = float(
+            np.linalg.eigvals(corr_matrix).max())
+        params['lowest_eigenvalue'] = float(
+            np.linalg.eigvals(corr_matrix).min())
+        return params
 
 
 if __name__ == "__main__":
@@ -65,22 +86,5 @@ if __name__ == "__main__":
     extractor = StatisticalParametersExtractor(data, target)
 
     print(extractor.detect_task())
-    print(extractor.target_description())
-    print(extractor.feature_description())
-
-    normalizer = Normalizer()
-    ohe = OneHotEnc()
-    nan_imputer = NanImputer()
-
-    data = nan_imputer.fit_transform(data)
-    data = normalizer.fit_transform(data)
-    data = ohe.fit_transform(data)
-
-    target = nan_imputer.fit_transform_target(target)
-    target = normalizer.fit_transform_target(target)
-    target = ohe.fit_transform_target(target)
-
-    extractor = StatisticalParametersExtractor(data, target)
-    print(extractor.detect_task(one_hot_encoded=True))
     print(extractor.target_description())
     print(extractor.feature_description())
