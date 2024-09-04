@@ -47,6 +47,9 @@ class RegressionDatasetDescription(DatasetDescription):
 
 
 class StatisticalParametersExtractor:
+    high_corr_threshold: float = 0.8
+    low_corr_threshold: float = 0.2
+
     def __init__(
         self, data: pd.DataFrame, target: pd.Series, one_hot_encoded: bool = False
     ):
@@ -86,6 +89,17 @@ class StatisticalParametersExtractor:
         corr_matrix = self.data[continous_cols].corr()
         removed_diag = corr_matrix.mask(
             np.eye(len(corr_matrix), dtype=bool)).abs()
+        num_columns = len(self.data.columns)
+        num_rows = len(self.data)
+        corr_size = removed_diag.shape[0] * (removed_diag.shape[1]-1)
+        percentage_of_high_corr_features = int(
+            (removed_diag > self.high_corr_threshold).sum().sum()) / corr_size
+        highest_correlation = float(removed_diag.max().max())
+        percentage_of_low_corr_features = int(
+            (removed_diag < self.low_corr_threshold).sum().sum()) / corr_size
+        lowest_correlation = float(removed_diag.min().min())
+        highest_eigenvalue = float(np.linalg.eigvals(corr_matrix).max())
+        lowest_eigenvalue = float(np.linalg.eigvals(corr_matrix).min())
         if self.task == "regression":
             description = self.target.describe()
             target_mean = description["mean"]
@@ -112,18 +126,14 @@ class StatisticalParametersExtractor:
                 target_var=target_var,
                 target_skew=target_skew,
                 target_nans=target_nans,
-                num_columns=len(self.data.columns),
-                num_rows=len(self.data),
-                number_of_highly_correlated_features=int(
-                    (removed_diag > 0.8).sum().sum()
-                ),
-                highest_correlation=float(removed_diag.max().max()),
-                number_of_lowly_correlated_features=int(
-                    (removed_diag < 0.2).sum().sum()
-                ),
-                lowest_correlation=float(removed_diag.min().min()),
-                highest_eigenvalue=float(np.linalg.eigvals(corr_matrix).max()),
-                lowest_eigenvalue=float(np.linalg.eigvals(corr_matrix).min()),
+                num_columns=num_columns,
+                num_rows=num_rows,
+                number_of_highly_correlated_features=percentage_of_high_corr_features,
+                highest_correlation=highest_correlation,
+                number_of_lowly_correlated_features=percentage_of_low_corr_features,
+                lowest_correlation=lowest_correlation,
+                highest_eigenvalue=highest_eigenvalue,
+                lowest_eigenvalue=lowest_eigenvalue,
             )
         else:
             description = self.target.astype("object").describe()
@@ -137,18 +147,14 @@ class StatisticalParametersExtractor:
                 biggest_class_freq=biggest_class_freq,
                 smallest_class_freq=smallest_class_freq,
                 target_nans=target_nans,
-                num_columns=len(self.data.columns),
-                num_rows=len(self.data),
-                number_of_highly_correlated_features=int(
-                    (removed_diag > 0.8).sum().sum()
-                ),
-                highest_correlation=float(removed_diag.max().max()),
-                number_of_lowly_correlated_features=int(
-                    (removed_diag < 0.2).sum().sum()
-                ),
-                lowest_correlation=float(removed_diag.min().min()),
-                highest_eigenvalue=float(np.linalg.eigvals(corr_matrix).max()),
-                lowest_eigenvalue=float(np.linalg.eigvals(corr_matrix).min()),
+                num_columns=num_columns,
+                num_rows=num_rows,
+                number_of_highly_correlated_features=percentage_of_high_corr_features,
+                highest_correlation=highest_correlation,
+                number_of_lowly_correlated_features=percentage_of_low_corr_features,
+                lowest_correlation=lowest_correlation,
+                highest_eigenvalue=highest_eigenvalue,
+                lowest_eigenvalue=lowest_eigenvalue,
             )
         return self.dataset_description
 
