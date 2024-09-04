@@ -81,7 +81,7 @@ if __name__ == '__main__':
         model, dataset, task, no_classes=3, trials=10))
     model = NeuralNetworkModel
     task = 'classification'
-    device = 'cpu'
+    device = 'cuda'
     print(tuner.optimize_hyperparameters(
         model, dataset, task, no_classes=3, device=device, trials=10))
     dataset = get_diabetes()
