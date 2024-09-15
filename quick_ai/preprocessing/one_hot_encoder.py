@@ -8,7 +8,7 @@ from sklearn.preprocessing import OneHotEncoder as sklearnOneHotEncoder
 class OneHotEncoder(Preprocessor):
     def __init__(self) -> None:
         super().__init__()
-        self.encoder = sklearnOneHotEncoder(dtype=bool, drop='if_binary')
+        self.encoder = sklearnOneHotEncoder(dtype=bool, drop='if_binary', handle_unknown='ignore')
         self.target_encoder = sklearnOneHotEncoder(
             dtype=bool, drop='if_binary')
 
@@ -101,7 +101,7 @@ def main():
         {
             "A": [1, 2, 3, 4],
             "B": [10, 20, 30, 40],
-            "C": ["a", "a", "a", "a"],
+            "C": ["b", "a", "d", "x"],
             "D": [0, 1, 0, 1],
             "E": [1, 1, 1, 1],
         }
