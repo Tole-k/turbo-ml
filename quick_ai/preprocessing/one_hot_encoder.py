@@ -22,9 +22,9 @@ class OneHotEncoder(Preprocessor):
             columns=self.encoder.get_feature_names_out(),
         )
         self.encoded_cols = encoded_data.columns
-        data.drop(columns=categorical_cols.columns, inplace=True)
-        data[encoded_data.columns] = encoded_data
-        return data
+        result = data.drop(columns=categorical_cols.columns)
+        result[encoded_data.columns] = encoded_data
+        return result
 
     def fit_transform_target(self, target: pd.Series) -> pd.DataFrame | pd.Series:
         if not np.isin(target.dtype, [np.number, bool]):
@@ -84,14 +84,15 @@ def main():
     )
     data = dataset.drop(columns=["target"])
     target = dataset["target"]
+    ohe = OneHotEncoder()
+    result = ohe.fit_transform(data)
     print("Before OHE:")
     print(data)
     print(target)
     print()
-    ohe = OneHotEncoder()
-    data = ohe.fit_transform(data)
+
     print("After OHE:")
-    print(data)
+    print(result)
 
     print()
     data2 = pd.DataFrame(
@@ -107,7 +108,7 @@ def main():
     print("Encoding more data:")
     print(data2)
     print()
-    data = ohe.inverse_transform(data)
+    data = ohe.inverse_transform(result)
     print("Inverse Data:")
     print(data)
     print()
