@@ -13,6 +13,7 @@ class OneHotEncoder(Preprocessor):
             dtype=bool, drop='if_binary')
 
     def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
+        self.column_order = data.columns
         categorical_cols = data.select_dtypes(
             include=["category", object, "string"]
         ).map(lambda x: str(x))
@@ -54,6 +55,7 @@ class OneHotEncoder(Preprocessor):
         )
         data.drop(columns=to_decode.columns, inplace=True)
         data[encoded_data.columns] = encoded_data
+        data = data[self.column_order]
         return data
 
     def transform_target(self, target: pd.Series) -> pd.Series | pd.DataFrame:
