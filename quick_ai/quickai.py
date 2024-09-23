@@ -4,10 +4,11 @@ quickai.py
 This module provides the `QuickAI` class, our main class for out-of-the-box autoML solution.
 It does not provide additional functionalities but it combines other modules to provide a complete solution.
 """
-from typing import Any, Optional
+from typing import Optional
 import pandas as pd
 from .base import Model
-from .forecast import StatisticalParametersExtractor
+from .forecast import StatisticalParametersExtractor, ExhaustiveSearch
+import time
 
 
 class QuickAI:
@@ -40,7 +41,7 @@ class QuickAI:
         model (Model): The machine learning model selected and trained on the dataset.
     """
 
-    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None):
+    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True):
         """
         Initializes the `QuickAI` instance by performing the following steps:
 
@@ -62,6 +63,7 @@ class QuickAI:
             - The `target` parameter is currently required. Automatic target detection is not yet implemented.
             - Model selection and hyperparameter optimization functionalities are placeholders and should be implemented.
         """
+        start_time = time.time()
         if target is None:
             # target = find_target()
             raise NotImplementedError(
@@ -75,23 +77,45 @@ class QuickAI:
             dataset_params = extractor.describe_dataset()
         except Exception:
             raise Exception("Dataset description failed")
-
+        if verbose:
+            print('Dataset parameters found, trying to guess best model')
         try:
-            # = forecast.guess_best_model(dataset_params)
+            guessing = None  # TODO implement model guessing based on dataset parameters
             self.model = None
         except Exception:
             raise Exception("Model optimization failed")
+        model_guessing_time = time.time()
 
+        model_name = self.model.__class__.__name__
+        if verbose:
+            print(f'Model guessed: {model_name}, searching for better model')
         try:
-            # = forecast.find_best_model(dataset, target, dataset_params)
-            self.model = self.model
+            search = ExhaustiveSearch()  # TODO split search engine into guessing and selection
+            self.model = search.predict(data, target_data)
         except Exception:
             print("Trying to find better model failed")
+        model_selection_time = time.time()
 
+        model_name = self.model.__class__.__name__
+        if verbose:
+            print(f"Training {model_name} model")
         try:
             self.model.train(data, target_data)
         except Exception:
             raise Exception("Model training failed")
+        end_time = time.time()
+        times = {
+            'total': end_time - start_time,
+            'guessing': model_guessing_time - start_time,
+            'selection': model_selection_time - model_guessing_time,
+            'training': end_time - model_selection_time
+        }
+        if verbose:
+            print(f"{model_name} model trained successfully")
+            print(f"Model guessing time: {times['guessing']}")
+            print(f"Model selection time: {times['selection']}")
+            print(f"Model training time: {times['training']}")
+            print(f"Total time: {times['total']}")
 
     def _input_check(self, dataset: pd.DataFrame, target: str):
         assert dataset is not None and isinstance(dataset, pd.DataFrame)
