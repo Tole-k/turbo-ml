@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import *
 from quick_ai.base import Model
-from quick_ai.base.model import get_model_list
+from quick_ai.base.model import get_models_list
 
 
 def evaluate(model: Type[Model], data: Any, target: Any) -> float:
@@ -35,7 +35,7 @@ class ExhaustiveSearch(Forecast):
 
     def predict(self, data, target) -> Model:
         best_model: Tuple = (None, -float('inf'))
-        for model_cls in get_model_list():
+        for model_cls in get_models_list():
             try:
                 value = evaluate(model_cls, data, target)
                 if value > best_model[1]:
