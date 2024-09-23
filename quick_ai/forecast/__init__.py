@@ -1,1 +1,2 @@
 from .model_forecast import Forecast, ExhaustiveSearch
+from .dataset_characteristics import StatisticalParametersExtractor
