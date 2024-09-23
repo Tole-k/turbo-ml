@@ -8,11 +8,12 @@ from sklearn.preprocessing import OneHotEncoder as sklearnOneHotEncoder
 class OneHotEncoder(Preprocessor):
     def __init__(self) -> None:
         super().__init__()
-        self.encoder = sklearnOneHotEncoder(dtype=bool, drop='if_binary')
+        self.encoder = sklearnOneHotEncoder(dtype=bool, drop='if_binary', handle_unknown='ignore')
         self.target_encoder = sklearnOneHotEncoder(
             dtype=bool, drop='if_binary')
 
     def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
+        self.column_order = data.columns
         categorical_cols = data.select_dtypes(
             include=["category", object, "string"]
         ).map(lambda x: str(x))
@@ -22,9 +23,9 @@ class OneHotEncoder(Preprocessor):
             columns=self.encoder.get_feature_names_out(),
         )
         self.encoded_cols = encoded_data.columns
-        data.drop(columns=categorical_cols.columns, inplace=True)
-        data[encoded_data.columns] = encoded_data
-        return data
+        result = data.drop(columns=categorical_cols.columns)
+        result[encoded_data.columns] = encoded_data
+        return result
 
     def fit_transform_target(self, target: pd.Series) -> pd.DataFrame | pd.Series:
         if not np.isin(target.dtype, [np.number, bool]):
@@ -54,6 +55,7 @@ class OneHotEncoder(Preprocessor):
         )
         data.drop(columns=to_decode.columns, inplace=True)
         data[encoded_data.columns] = encoded_data
+        data = data[self.column_order]
         return data
 
     def transform_target(self, target: pd.Series) -> pd.Series | pd.DataFrame:
@@ -84,21 +86,22 @@ def main():
     )
     data = dataset.drop(columns=["target"])
     target = dataset["target"]
+    ohe = OneHotEncoder()
+    result = ohe.fit_transform(data)
     print("Before OHE:")
     print(data)
     print(target)
     print()
-    ohe = OneHotEncoder()
-    data = ohe.fit_transform(data)
+
     print("After OHE:")
-    print(data)
+    print(result)
 
     print()
     data2 = pd.DataFrame(
         {
             "A": [1, 2, 3, 4],
             "B": [10, 20, 30, 40],
-            "C": ["a", "a", "a", "a"],
+            "C": ["b", "a", "d", "x"],
             "D": [0, 1, 0, 1],
             "E": [1, 1, 1, 1],
         }
@@ -107,7 +110,7 @@ def main():
     print("Encoding more data:")
     print(data2)
     print()
-    data = ohe.inverse_transform(data)
+    data = ohe.inverse_transform(result)
     print("Inverse Data:")
     print(data)
     print()
