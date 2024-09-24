@@ -92,6 +92,8 @@ class QuickAI:
         try:
             search = ExhaustiveSearch()  # TODO split search engine into guessing and selection
             self.model = search.predict(data, target_data)
+            if verbose:
+                print(f'Looked at {search.counter} models')
         except Exception:
             print("Trying to find better model failed")
         model_selection_time = time.time()

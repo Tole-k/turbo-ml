@@ -28,7 +28,8 @@ class Forecast:
 
 
 class ExhaustiveSearch(Forecast):
-    """ Search for the best model by evaluating all models in the list and picking the best one based on the evaluation function """
+    """ Search for the best model by evaluating all models in the list and picking the best one based on the evaluation function
+    This search ignores HPO steps and focus only on AS based on predefines hyper-parameters"""
 
     def __init__(self) -> None:
         self.counter = 0
