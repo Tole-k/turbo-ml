@@ -683,7 +683,7 @@
             "name": "tol",
             "type": "float",
             "min": 0.0,
-            "max": null,
+            "max": 0.001,
             "optional": false
         },
         {
@@ -807,8 +807,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         },
         {
@@ -901,8 +901,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         }
     ],
@@ -947,8 +947,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         }
     ],
@@ -978,8 +978,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         }
     ],
@@ -1056,7 +1056,7 @@
             "name": "tol",
             "type": "float",
             "min": 0.0,
-            "max": null,
+            "max": 0.001,
             "optional": false
         }
     ],
@@ -1126,8 +1126,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         },
         {
@@ -1257,8 +1257,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         }
     ],
@@ -1398,8 +1398,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         },
         {
@@ -1545,7 +1545,7 @@
             "name": "tol",
             "type": "float",
             "min": 0.0,
-            "max": null,
+            "max": 0.001,
             "optional": false
         }
     ],
@@ -1624,8 +1624,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         },
         {
@@ -1713,8 +1713,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         },
         {
@@ -1746,8 +1746,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         }
     ],
@@ -1940,8 +1940,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         }
     ],
@@ -2155,8 +2155,8 @@
         {
             "name": "tol",
             "type": "float",
-            "min": 0,
-            "max": null,
+            "min": 0.0,
+            "max": 0.001,
             "optional": false
         },
         {
@@ -2259,7 +2259,7 @@
             "name": "tol",
             "type": "float",
             "min": 0.0,
-            "max": null,
+            "max": 0.001,
             "optional": false
         }
     ],
