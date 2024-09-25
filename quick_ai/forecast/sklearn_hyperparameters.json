@@ -124,13 +124,6 @@
             "name": "force_alpha",
             "type": "bool",
             "optional": false
-        },
-        {
-            "name": "min_categories",
-            "type": "int",
-            "min": 1,
-            "max": null,
-            "optional": false
         }
     ],
     "ClassifierChain": [
