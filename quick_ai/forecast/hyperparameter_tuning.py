@@ -15,6 +15,7 @@ import json
 class HyperTuner:
 
     def __init__(self) -> None:
+        opt.logging.set_verbosity(opt.logging.WARNING)
         self.sklearn_hyperparameters = json.load(
             open('quick_ai/forecast/sklearn_hyperparameters.json'))
         self.hyperparameters = json.load(
