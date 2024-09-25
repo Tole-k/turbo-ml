@@ -32,19 +32,16 @@ for name, classifier in all_estimators(type_filter="classifier"):
                     "optional": next((constraint for constraint in constraints if isinstance(constraint, NoneType)), None) is not None
                 })
         elif len(interval_constraints) == 2:
-            subs = []
             for constraint in interval_constraints:
-                subs.append({
-                    "type": 'int' if constraint.type == Integral else 'float',
+                if constraint.type == Integral:
+                    continue
+                hyperparameters[name].append({
+                    "name": param,
+                    "type": 'float',
                     "min": constraint.left,
                     "max": constraint.right,
+                    "optional": next((constraint for constraint in constraints if isinstance(constraint, NoneType)), None) is not None
                 })
-            hyperparameters[name].append({
-                "name": param,
-                "type": "disjoint_interval",
-                "subintervals": subs,
-                "optional": next((constraint for constraint in constraints if isinstance(constraint, NoneType)), None) is not None
-            })
         elif len(interval_constraints) == 1:
             constraint = interval_constraints[0]
             hyperparameters[name].append({
@@ -60,5 +57,5 @@ for name, classifier in all_estimators(type_filter="classifier"):
                 "type": "bool",
                 "optional": next((constraint for constraint in constraints if isinstance(constraint, NoneType)), None) is not None
             })
-with open('quick_ai/forecast/sklearn_hyperparameters.json', 'w') as f:
+with open('quick_ai/forecast/not_overwrite_sklearn_hyperparameters.json', 'w') as f:
     json.dump(hyperparameters, f, indent=4)

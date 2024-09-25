@@ -1,3 +1,4 @@
+from time import sleep
 import numpy as np
 from quick_ai.algorithms import NeuralNetworkModel
 import optuna as opt
@@ -6,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from quick_ai.base import Model
 from typing import Tuple
 import pandas as pd
-from quick_ai.algorithms import AdaBoostClassifier, AdaBoostRegressor, XGBoostClassifier, XGBoostRegressor
+
 from typing import Literal
 import json
 
@@ -34,7 +35,7 @@ class HyperTuner:
 
     def get_model_hyperparameters(self, model: Model) -> list:
         if model.__name__ in self.sklearn_hyperparameters:
-            return self.hyperparameters[model.__name__]
+            return self.sklearn_hyperparameters[model.__name__]
         elif model.__name__ in self.hyperparameters:
             return self.hyperparameters[model.__name__]
         else:
@@ -54,15 +55,20 @@ class HyperTuner:
                 continue
             if hyper_param['type'] == 'no_choice':
                 params[hyper_param['name']] = hyper_param['choices'][0]
+                trial.set_user_attr(
+                    hyper_param['name'], hyper_param['choices'][0])
             if hyper_param['type'] == 'int':
                 params[hyper_param['name']] = trial.suggest_int(
-                    hyper_param['name'], hyper_param['min'], hyper_param['max'])
+                    hyper_param['name'], hyper_param['min'] if hyper_param['min'] is not None else 0, hyper_param['max'] if hyper_param['max'] is not None else 100)
             elif hyper_param['type'] == 'float':
                 params[hyper_param['name']] = trial.suggest_float(
-                    hyper_param['name'], hyper_param['min'], hyper_param['max'])
+                    hyper_param['name'], hyper_param['min'] if hyper_param['min'] is not None else 0, hyper_param['max'] if hyper_param['max'] is not None else 100)
             elif hyper_param['type'] == 'categorical':
                 params[hyper_param['name']] = trial.suggest_categorical(
                     hyper_param['name'], hyper_param['choices'])
+            elif hyper_param['type'] == 'bool':
+                params[hyper_param['name']] = trial.suggest_categorical(
+                    hyper_param['name'], [True, False])
         model = model(**params)
         model.train(x_train, y_train)
         if task == 'classification':
@@ -77,10 +83,12 @@ class HyperTuner:
             direction='maximize' if task == 'classification' else 'minimize')
         study.optimize(lambda trial: self.objective(
             trial, model, dataset, task, no_classes, no_variables, device), n_trials=trials)
-        return study.best_params
+        return study.best_params | study.best_trial.user_attrs
 
 
 if __name__ == '__main__':
+
+    from quick_ai.algorithms import AdaBoostClassifier, AdaBoostRegressor, XGBoostClassifier, XGBoostRegressor
     tuner = HyperTuner()
     dataset = get_iris()
     model = AdaBoostClassifier

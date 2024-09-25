@@ -26,47 +26,22 @@
     ],
     "BaggingClassifier": [
         {
-            "name": "bootstrap",
-            "type": "bool",
-            "optional": false
-        },
-        {
             "name": "bootstrap_features",
             "type": "bool",
             "optional": false
         },
         {
             "name": "max_features",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 1,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0,
-                    "max": 1
-                }
-            ],
+            "type": "float",
+            "min": 0,
+            "max": 1,
             "optional": false
         },
         {
             "name": "max_samples",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 1,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0,
-                    "max": 1
-                }
-            ],
+            "type": "float",
+            "min": 0,
+            "max": 1,
             "optional": false
         },
         {
@@ -78,11 +53,6 @@
         },
         {
             "name": "oob_score",
-            "type": "bool",
-            "optional": false
-        },
-        {
-            "name": "warm_start",
             "type": "bool",
             "optional": false
         }
@@ -168,10 +138,10 @@
             "name": "chain_method",
             "type": "categorical",
             "choices": [
-                "decision_function",
                 "predict_proba",
-                "predict",
-                "predict_log_proba"
+                "predict_log_proba",
+                "decision_function",
+                "predict"
             ],
             "optional": false
         },
@@ -241,9 +211,9 @@
             "name": "criterion",
             "type": "categorical",
             "choices": [
-                "log_loss",
                 "gini",
-                "entropy"
+                "entropy",
+                "log_loss"
             ],
             "optional": false
         },
@@ -258,8 +228,8 @@
             "name": "max_features",
             "type": "categorical",
             "choices": [
-                "sqrt",
-                "log2"
+                "log2",
+                "sqrt"
             ],
             "optional": false
         },
@@ -279,36 +249,16 @@
         },
         {
             "name": "min_samples_leaf",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 1,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
             "name": "min_samples_split",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 2,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
@@ -333,11 +283,10 @@
             "name": "strategy",
             "type": "categorical",
             "choices": [
-                "most_frequent",
-                "uniform",
                 "stratified",
+                "uniform",
                 "prior",
-                "constant"
+                "most_frequent"
             ],
             "optional": false
         }
@@ -362,9 +311,9 @@
             "name": "criterion",
             "type": "categorical",
             "choices": [
-                "log_loss",
                 "gini",
-                "entropy"
+                "entropy",
+                "log_loss"
             ],
             "optional": false
         },
@@ -379,8 +328,8 @@
             "name": "max_features",
             "type": "categorical",
             "choices": [
-                "sqrt",
-                "log2"
+                "log2",
+                "sqrt"
             ],
             "optional": false
         },
@@ -400,36 +349,16 @@
         },
         {
             "name": "min_samples_leaf",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 1,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
             "name": "min_samples_split",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 2,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
@@ -452,7 +381,10 @@
     "ExtraTreesClassifier": [
         {
             "name": "bootstrap",
-            "type": "bool",
+            "type": "no_choice",
+            "choices": [
+                true
+            ],
             "optional": false
         },
         {
@@ -475,9 +407,9 @@
             "name": "criterion",
             "type": "categorical",
             "choices": [
-                "log_loss",
                 "gini",
-                "entropy"
+                "entropy",
+                "log_loss"
             ],
             "optional": false
         },
@@ -492,8 +424,8 @@
             "name": "max_features",
             "type": "categorical",
             "choices": [
-                "sqrt",
-                "log2"
+                "log2",
+                "sqrt"
             ],
             "optional": false
         },
@@ -506,19 +438,9 @@
         },
         {
             "name": "max_samples",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                },
-                {
-                    "type": "int",
-                    "min": 1,
-                    "max": null
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
@@ -530,36 +452,16 @@
         },
         {
             "name": "min_samples_leaf",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 1,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
             "name": "min_samples_split",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 2,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
@@ -597,9 +499,9 @@
             "name": "response_method",
             "type": "categorical",
             "choices": [
+                "auto",
                 "decision_function",
-                "predict_proba",
-                "auto"
+                "predict_proba"
             ],
             "optional": false
         },
@@ -716,8 +618,8 @@
             "name": "max_features",
             "type": "categorical",
             "choices": [
-                "sqrt",
-                "log2"
+                "log2",
+                "sqrt"
             ],
             "optional": false
         },
@@ -737,36 +639,16 @@
         },
         {
             "name": "min_samples_leaf",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 1,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
             "name": "min_samples_split",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 2,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
@@ -931,19 +813,9 @@
         },
         {
             "name": "validation_fraction",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "float",
-                    "min": 0,
-                    "max": 1
-                },
-                {
-                    "type": "int",
-                    "min": 1,
-                    "max": null
-                }
-            ],
+            "type": "float",
+            "min": 0,
+            "max": 1,
             "optional": false
         },
         {
@@ -957,10 +829,10 @@
             "name": "algorithm",
             "type": "categorical",
             "choices": [
-                "brute",
-                "kd_tree",
+                "auto",
                 "ball_tree",
-                "auto"
+                "kd_tree",
+                "brute"
             ],
             "optional": false
         },
@@ -969,41 +841,6 @@
             "type": "int",
             "min": 1,
             "max": null,
-            "optional": false
-        },
-        {
-            "name": "metric",
-            "type": "categorical",
-            "choices": [
-                "yule",
-                "l2",
-                "braycurtis",
-                "minkowski",
-                "sokalsneath",
-                "euclidean",
-                "haversine",
-                "cityblock",
-                "jaccard",
-                "canberra",
-                "manhattan",
-                "seuclidean",
-                "sqeuclidean",
-                "dice",
-                "hamming",
-                "p",
-                "cosine",
-                "infinity",
-                "nan_euclidean",
-                "russellrao",
-                "l1",
-                "correlation",
-                "mahalanobis",
-                "sokalmichener",
-                "precomputed",
-                "chebyshev",
-                "pyfunc",
-                "rogerstanimoto"
-            ],
             "optional": false
         },
         {
@@ -1016,7 +853,7 @@
         {
             "name": "p",
             "type": "float",
-            "min": 0,
+            "min": 1,
             "max": null,
             "optional": false
         },
@@ -1024,8 +861,8 @@
             "name": "weights",
             "type": "categorical",
             "choices": [
-                "uniform",
-                "distance"
+                "distance",
+                "uniform"
             ],
             "optional": false
         }
@@ -1050,14 +887,14 @@
         {
             "name": "max_iter",
             "type": "int",
-            "min": 0,
+            "min": 1,
             "max": null,
             "optional": false
         },
         {
             "name": "n_neighbors",
             "type": "int",
-            "min": 0,
+            "min": 1,
             "max": null,
             "optional": false
         },
@@ -1096,14 +933,14 @@
         {
             "name": "max_iter",
             "type": "int",
-            "min": 0,
+            "min": 1,
             "max": null,
             "optional": false
         },
         {
             "name": "n_neighbors",
             "type": "int",
-            "min": 0,
+            "min": 1,
             "max": null,
             "optional": false
         },
@@ -1117,13 +954,6 @@
     ],
     "LinearDiscriminantAnalysis": [
         {
-            "name": "n_components",
-            "type": "int",
-            "min": 1,
-            "max": null,
-            "optional": false
-        },
-        {
             "name": "shrinkage",
             "type": "no_choice",
             "choices": [
@@ -1136,8 +966,7 @@
             "type": "categorical",
             "choices": [
                 "eigen",
-                "lsqr",
-                "svd"
+                "lsqr"
             ],
             "optional": false
         },
@@ -1192,10 +1021,9 @@
         },
         {
             "name": "loss",
-            "type": "categorical",
+            "type": "no_choice",
             "choices": [
-                "squared_hinge",
-                "hinge"
+                "squared_hinge"
             ],
             "optional": false
         },
@@ -1210,8 +1038,8 @@
             "name": "multi_class",
             "type": "categorical",
             "choices": [
-                "ovr",
-                "crammer_singer"
+                "crammer_singer",
+                "ovr"
             ],
             "optional": false
         },
@@ -1249,11 +1077,6 @@
             "optional": false
         },
         {
-            "name": "dual",
-            "type": "bool",
-            "optional": false
-        },
-        {
             "name": "fit_intercept",
             "type": "bool",
             "optional": false
@@ -1284,18 +1107,8 @@
             "type": "categorical",
             "choices": [
                 "multinomial",
-                "ovr",
-                "auto"
-            ],
-            "optional": false
-        },
-        {
-            "name": "penalty",
-            "type": "categorical",
-            "choices": [
-                "l1",
-                "elasticnet",
-                "l2"
+                "auto",
+                "ovr"
             ],
             "optional": false
         },
@@ -1306,9 +1119,7 @@
                 "saga",
                 "newton-cg",
                 "lbfgs",
-                "sag",
-                "newton-cholesky",
-                "liblinear"
+                "sag"
             ],
             "optional": false
         },
@@ -1331,19 +1142,6 @@
             "type": "int",
             "min": 1,
             "max": null,
-            "optional": false
-        },
-        {
-            "name": "class_weight",
-            "type": "no_choice",
-            "choices": [
-                "balanced"
-            ],
-            "optional": false
-        },
-        {
-            "name": "dual",
-            "type": "bool",
             "optional": false
         },
         {
@@ -1370,18 +1168,8 @@
             "type": "categorical",
             "choices": [
                 "multinomial",
-                "ovr",
-                "auto"
-            ],
-            "optional": false
-        },
-        {
-            "name": "penalty",
-            "type": "categorical",
-            "choices": [
-                "l1",
-                "elasticnet",
-                "l2"
+                "auto",
+                "ovr"
             ],
             "optional": false
         },
@@ -1394,62 +1182,62 @@
             "name": "scoring",
             "type": "categorical",
             "choices": [
-                "f1",
-                "matthews_corrcoef",
-                "roc_auc_ovr",
-                "roc_auc_ovo",
-                "recall",
-                "recall_samples",
-                "max_error",
-                "jaccard_micro",
-                "v_measure_score",
-                "balanced_accuracy",
-                "precision_micro",
-                "explained_variance",
-                "roc_auc_ovo_weighted",
-                "average_precision",
-                "jaccard",
-                "neg_mean_absolute_error",
-                "adjusted_mutual_info_score",
-                "neg_root_mean_squared_log_error",
-                "d2_absolute_error_score",
-                "roc_auc_ovr_weighted",
-                "neg_mean_poisson_deviance",
-                "homogeneity_score",
-                "neg_mean_absolute_percentage_error",
-                "neg_median_absolute_error",
-                "neg_log_loss",
-                "precision",
-                "recall_macro",
-                "positive_likelihood_ratio",
-                "f1_macro",
-                "recall_weighted",
-                "recall_micro",
                 "accuracy",
-                "adjusted_rand_score",
-                "precision_samples",
-                "r2",
-                "top_k_accuracy",
-                "jaccard_weighted",
-                "jaccard_macro",
-                "neg_brier_score",
-                "neg_negative_likelihood_ratio",
-                "f1_micro",
-                "rand_score",
-                "roc_auc",
-                "mutual_info_score",
-                "completeness_score",
-                "neg_mean_gamma_deviance",
-                "precision_macro",
-                "f1_samples",
+                "precision_micro",
                 "jaccard_samples",
-                "neg_mean_squared_error",
-                "f1_weighted",
+                "rand_score",
                 "precision_weighted",
+                "jaccard",
+                "neg_mean_poisson_deviance",
+                "f1",
+                "f1_micro",
+                "recall_weighted",
+                "neg_mean_squared_error",
+                "adjusted_mutual_info_score",
+                "mutual_info_score",
+                "neg_median_absolute_error",
+                "neg_mean_absolute_error",
+                "recall",
                 "neg_root_mean_squared_error",
-                "fowlkes_mallows_score",
+                "v_measure_score",
+                "neg_brier_score",
+                "neg_mean_squared_log_error",
+                "neg_negative_likelihood_ratio",
+                "recall_samples",
+                "d2_absolute_error_score",
+                "jaccard_macro",
+                "positive_likelihood_ratio",
+                "completeness_score",
+                "explained_variance",
+                "precision_samples",
+                "average_precision",
+                "jaccard_micro",
+                "roc_auc_ovo_weighted",
+                "matthews_corrcoef",
+                "top_k_accuracy",
+                "precision",
+                "neg_mean_absolute_percentage_error",
+                "balanced_accuracy",
+                "jaccard_weighted",
+                "adjusted_rand_score",
+                "neg_log_loss",
+                "neg_mean_gamma_deviance",
+                "recall_macro",
+                "recall_micro",
+                "roc_auc",
+                "homogeneity_score",
+                "roc_auc_ovr_weighted",
+                "f1_weighted",
                 "normalized_mutual_info_score",
-                "neg_mean_squared_log_error"
+                "precision_macro",
+                "roc_auc_ovr",
+                "r2",
+                "roc_auc_ovo",
+                "neg_root_mean_squared_log_error",
+                "f1_macro",
+                "f1_samples",
+                "max_error",
+                "fowlkes_mallows_score"
             ],
             "optional": false
         },
@@ -1458,11 +1246,11 @@
             "type": "categorical",
             "choices": [
                 "saga",
-                "newton-cg",
-                "lbfgs",
                 "sag",
                 "newton-cholesky",
-                "liblinear"
+                "newton-cg",
+                "liblinear",
+                "lbfgs"
             ],
             "optional": false
         },
@@ -1479,10 +1267,10 @@
             "name": "activation",
             "type": "categorical",
             "choices": [
-                "logistic",
                 "tanh",
                 "relu",
-                "identity"
+                "identity",
+                "logistic"
             ],
             "optional": false
         },
@@ -1539,8 +1327,8 @@
             "type": "categorical",
             "choices": [
                 "adaptive",
-                "constant",
-                "invscaling"
+                "invscaling",
+                "constant"
             ],
             "optional": false
         },
@@ -1601,9 +1389,9 @@
             "name": "solver",
             "type": "categorical",
             "choices": [
+                "lbfgs",
                 "adam",
-                "sgd",
-                "lbfgs"
+                "sgd"
             ],
             "optional": false
         },
@@ -1697,8 +1485,8 @@
             "name": "decision_function_shape",
             "type": "categorical",
             "choices": [
-                "ovr",
-                "ovo"
+                "ovo",
+                "ovr"
             ],
             "optional": false
         },
@@ -1713,8 +1501,8 @@
             "name": "gamma",
             "type": "categorical",
             "choices": [
-                "scale",
-                "auto"
+                "auto",
+                "scale"
             ],
             "optional": false
         },
@@ -1722,11 +1510,10 @@
             "name": "kernel",
             "type": "categorical",
             "choices": [
-                "linear",
-                "poly",
                 "rbf",
                 "sigmoid",
-                "precomputed"
+                "poly",
+                "linear"
             ],
             "optional": false
         },
@@ -1810,8 +1597,8 @@
             "name": "loss",
             "type": "categorical",
             "choices": [
-                "squared_hinge",
-                "hinge"
+                "hinge",
+                "squared_hinge"
             ],
             "optional": false
         },
@@ -1912,8 +1699,8 @@
             "name": "penalty",
             "type": "categorical",
             "choices": [
-                "l1",
                 "elasticnet",
+                "l1",
                 "l2"
             ],
             "optional": false
@@ -1969,10 +1756,10 @@
             "name": "algorithm",
             "type": "categorical",
             "choices": [
-                "brute",
-                "kd_tree",
+                "auto",
                 "ball_tree",
-                "auto"
+                "kd_tree",
+                "brute"
             ],
             "optional": false
         },
@@ -1980,48 +1767,6 @@
             "name": "leaf_size",
             "type": "int",
             "min": 1,
-            "max": null,
-            "optional": false
-        },
-        {
-            "name": "metric",
-            "type": "categorical",
-            "choices": [
-                "yule",
-                "l2",
-                "braycurtis",
-                "minkowski",
-                "sokalsneath",
-                "euclidean",
-                "haversine",
-                "cityblock",
-                "jaccard",
-                "canberra",
-                "manhattan",
-                "seuclidean",
-                "sqeuclidean",
-                "dice",
-                "hamming",
-                "p",
-                "cosine",
-                "infinity",
-                "nan_euclidean",
-                "russellrao",
-                "l1",
-                "correlation",
-                "mahalanobis",
-                "sokalmichener",
-                "precomputed",
-                "chebyshev",
-                "pyfunc",
-                "rogerstanimoto"
-            ],
-            "optional": false
-        },
-        {
-            "name": "p",
-            "type": "float",
-            "min": 0,
             "max": null,
             "optional": false
         },
@@ -2036,18 +1781,13 @@
             "name": "weights",
             "type": "categorical",
             "choices": [
-                "uniform",
-                "distance"
+                "distance",
+                "uniform"
             ],
             "optional": false
         }
     ],
     "RandomForestClassifier": [
-        {
-            "name": "bootstrap",
-            "type": "bool",
-            "optional": false
-        },
         {
             "name": "ccp_alpha",
             "type": "float",
@@ -2068,9 +1808,9 @@
             "name": "criterion",
             "type": "categorical",
             "choices": [
-                "log_loss",
                 "gini",
-                "entropy"
+                "entropy",
+                "log_loss"
             ],
             "optional": false
         },
@@ -2085,8 +1825,8 @@
             "name": "max_features",
             "type": "categorical",
             "choices": [
-                "sqrt",
-                "log2"
+                "log2",
+                "sqrt"
             ],
             "optional": false
         },
@@ -2099,19 +1839,9 @@
         },
         {
             "name": "max_samples",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                },
-                {
-                    "type": "int",
-                    "min": 1,
-                    "max": null
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
@@ -2123,36 +1853,16 @@
         },
         {
             "name": "min_samples_leaf",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 1,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
             "name": "min_samples_split",
-            "type": "disjoint_interval",
-            "subintervals": [
-                {
-                    "type": "int",
-                    "min": 2,
-                    "max": null
-                },
-                {
-                    "type": "float",
-                    "min": 0.0,
-                    "max": 1.0
-                }
-            ],
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
             "optional": false
         },
         {
@@ -2214,22 +1924,16 @@
             "optional": false
         },
         {
-            "name": "positive",
-            "type": "bool",
-            "optional": false
-        },
-        {
             "name": "solver",
             "type": "categorical",
             "choices": [
-                "saga",
                 "sag",
-                "lbfgs",
-                "auto",
+                "svd",
+                "sparse_cg",
+                "saga",
                 "cholesky",
                 "lsqr",
-                "sparse_cg",
-                "svd"
+                "auto"
             ],
             "optional": false
         },
@@ -2266,72 +1970,67 @@
             "name": "scoring",
             "type": "categorical",
             "choices": [
-                "f1",
-                "matthews_corrcoef",
-                "roc_auc_ovr",
-                "roc_auc_ovo",
-                "recall",
-                "recall_samples",
-                "max_error",
-                "jaccard_micro",
-                "v_measure_score",
-                "balanced_accuracy",
-                "precision_micro",
-                "explained_variance",
-                "roc_auc_ovo_weighted",
-                "average_precision",
-                "jaccard",
-                "neg_mean_absolute_error",
-                "adjusted_mutual_info_score",
-                "neg_root_mean_squared_log_error",
-                "d2_absolute_error_score",
-                "roc_auc_ovr_weighted",
-                "neg_mean_poisson_deviance",
-                "homogeneity_score",
-                "neg_mean_absolute_percentage_error",
-                "neg_median_absolute_error",
-                "neg_log_loss",
-                "precision",
-                "recall_macro",
-                "positive_likelihood_ratio",
-                "f1_macro",
-                "recall_weighted",
-                "recall_micro",
                 "accuracy",
-                "adjusted_rand_score",
-                "precision_samples",
-                "r2",
-                "top_k_accuracy",
-                "jaccard_weighted",
-                "jaccard_macro",
-                "neg_brier_score",
-                "neg_negative_likelihood_ratio",
-                "f1_micro",
-                "rand_score",
-                "roc_auc",
-                "mutual_info_score",
-                "completeness_score",
-                "neg_mean_gamma_deviance",
-                "precision_macro",
-                "f1_samples",
+                "precision_micro",
                 "jaccard_samples",
-                "neg_mean_squared_error",
-                "f1_weighted",
+                "rand_score",
                 "precision_weighted",
+                "jaccard",
+                "neg_mean_poisson_deviance",
+                "f1",
+                "f1_micro",
+                "recall_weighted",
+                "neg_mean_squared_error",
+                "adjusted_mutual_info_score",
+                "mutual_info_score",
+                "neg_median_absolute_error",
+                "neg_mean_absolute_error",
+                "recall",
                 "neg_root_mean_squared_error",
-                "fowlkes_mallows_score",
+                "v_measure_score",
+                "neg_brier_score",
+                "neg_mean_squared_log_error",
+                "neg_negative_likelihood_ratio",
+                "recall_samples",
+                "d2_absolute_error_score",
+                "jaccard_macro",
+                "positive_likelihood_ratio",
+                "completeness_score",
+                "explained_variance",
+                "precision_samples",
+                "average_precision",
+                "jaccard_micro",
+                "roc_auc_ovo_weighted",
+                "matthews_corrcoef",
+                "top_k_accuracy",
+                "precision",
+                "neg_mean_absolute_percentage_error",
+                "balanced_accuracy",
+                "jaccard_weighted",
+                "adjusted_rand_score",
+                "neg_log_loss",
+                "neg_mean_gamma_deviance",
+                "recall_macro",
+                "recall_micro",
+                "roc_auc",
+                "homogeneity_score",
+                "roc_auc_ovr_weighted",
+                "f1_weighted",
                 "normalized_mutual_info_score",
-                "neg_mean_squared_log_error"
+                "precision_macro",
+                "roc_auc_ovr",
+                "r2",
+                "roc_auc_ovo",
+                "neg_root_mean_squared_log_error",
+                "f1_macro",
+                "f1_samples",
+                "max_error",
+                "fowlkes_mallows_score"
             ],
             "optional": false
         },
         {
             "name": "store_cv_results",
-            "type": "bool",
-            "optional": false
-        },
-        {
-            "name": "store_cv_values",
             "type": "bool",
             "optional": false
         }
@@ -2395,8 +2094,8 @@
             "type": "categorical",
             "choices": [
                 "adaptive",
-                "optimal",
                 "constant",
+                "optimal",
                 "invscaling"
             ],
             "optional": false
@@ -2405,14 +2104,14 @@
             "name": "loss",
             "type": "categorical",
             "choices": [
-                "hinge",
-                "huber",
+                "modified_huber",
                 "squared_error",
                 "perceptron",
-                "modified_huber",
-                "epsilon_insensitive",
                 "squared_epsilon_insensitive",
+                "huber",
                 "squared_hinge",
+                "epsilon_insensitive",
+                "hinge",
                 "log_loss"
             ],
             "optional": false
@@ -2435,8 +2134,8 @@
             "name": "penalty",
             "type": "categorical",
             "choices": [
-                "l1",
                 "elasticnet",
+                "l1",
                 "l2"
             ],
             "optional": false
@@ -2482,11 +2181,6 @@
             "optional": false
         },
         {
-            "name": "break_ties",
-            "type": "bool",
-            "optional": false
-        },
-        {
             "name": "cache_size",
             "type": "float",
             "min": 0,
@@ -2512,8 +2206,8 @@
             "name": "decision_function_shape",
             "type": "categorical",
             "choices": [
-                "ovr",
-                "ovo"
+                "ovo",
+                "ovr"
             ],
             "optional": false
         },
@@ -2528,8 +2222,8 @@
             "name": "gamma",
             "type": "categorical",
             "choices": [
-                "scale",
-                "auto"
+                "auto",
+                "scale"
             ],
             "optional": false
         },
@@ -2537,11 +2231,10 @@
             "name": "kernel",
             "type": "categorical",
             "choices": [
-                "linear",
-                "poly",
                 "rbf",
                 "sigmoid",
-                "precomputed"
+                "poly",
+                "linear"
             ],
             "optional": false
         },
@@ -2588,10 +2281,10 @@
             "name": "stack_method",
             "type": "categorical",
             "choices": [
+                "auto",
                 "decision_function",
                 "predict_proba",
-                "predict",
-                "auto"
+                "predict"
             ],
             "optional": false
         }
@@ -2614,9 +2307,9 @@
             "name": "response_method",
             "type": "categorical",
             "choices": [
+                "auto",
                 "decision_function",
-                "predict_proba",
-                "auto"
+                "predict_proba"
             ],
             "optional": false
         },
@@ -2624,62 +2317,62 @@
             "name": "scoring",
             "type": "categorical",
             "choices": [
-                "f1",
-                "matthews_corrcoef",
-                "roc_auc_ovr",
-                "roc_auc_ovo",
-                "recall",
-                "recall_samples",
-                "max_error",
-                "jaccard_micro",
-                "v_measure_score",
-                "balanced_accuracy",
-                "precision_micro",
-                "explained_variance",
-                "roc_auc_ovo_weighted",
-                "average_precision",
-                "jaccard",
-                "neg_mean_absolute_error",
-                "adjusted_mutual_info_score",
-                "neg_root_mean_squared_log_error",
-                "d2_absolute_error_score",
-                "roc_auc_ovr_weighted",
-                "neg_mean_poisson_deviance",
-                "homogeneity_score",
-                "neg_mean_absolute_percentage_error",
-                "neg_median_absolute_error",
-                "neg_log_loss",
-                "precision",
-                "recall_macro",
-                "positive_likelihood_ratio",
-                "f1_macro",
-                "recall_weighted",
-                "recall_micro",
                 "accuracy",
-                "adjusted_rand_score",
-                "precision_samples",
-                "r2",
-                "top_k_accuracy",
-                "jaccard_weighted",
-                "jaccard_macro",
-                "neg_brier_score",
-                "neg_negative_likelihood_ratio",
-                "f1_micro",
-                "rand_score",
-                "roc_auc",
-                "mutual_info_score",
-                "completeness_score",
-                "neg_mean_gamma_deviance",
-                "precision_macro",
-                "f1_samples",
+                "precision_micro",
                 "jaccard_samples",
-                "neg_mean_squared_error",
-                "f1_weighted",
+                "rand_score",
                 "precision_weighted",
+                "jaccard",
+                "neg_mean_poisson_deviance",
+                "f1",
+                "f1_micro",
+                "recall_weighted",
+                "neg_mean_squared_error",
+                "adjusted_mutual_info_score",
+                "mutual_info_score",
+                "neg_median_absolute_error",
+                "neg_mean_absolute_error",
+                "recall",
                 "neg_root_mean_squared_error",
-                "fowlkes_mallows_score",
+                "v_measure_score",
+                "neg_brier_score",
+                "neg_mean_squared_log_error",
+                "neg_negative_likelihood_ratio",
+                "recall_samples",
+                "d2_absolute_error_score",
+                "jaccard_macro",
+                "positive_likelihood_ratio",
+                "completeness_score",
+                "explained_variance",
+                "precision_samples",
+                "average_precision",
+                "jaccard_micro",
+                "roc_auc_ovo_weighted",
+                "matthews_corrcoef",
+                "top_k_accuracy",
+                "precision",
+                "neg_mean_absolute_percentage_error",
+                "balanced_accuracy",
+                "jaccard_weighted",
+                "adjusted_rand_score",
+                "neg_log_loss",
+                "neg_mean_gamma_deviance",
+                "recall_macro",
+                "recall_micro",
+                "roc_auc",
+                "homogeneity_score",
+                "roc_auc_ovr_weighted",
+                "f1_weighted",
                 "normalized_mutual_info_score",
-                "neg_mean_squared_log_error"
+                "precision_macro",
+                "roc_auc_ovr",
+                "r2",
+                "roc_auc_ovo",
+                "neg_root_mean_squared_log_error",
+                "f1_macro",
+                "f1_samples",
+                "max_error",
+                "fowlkes_mallows_score"
             ],
             "optional": false
         },
@@ -2706,8 +2399,8 @@
             "name": "voting",
             "type": "categorical",
             "choices": [
-                "hard",
-                "soft"
+                "soft",
+                "hard"
             ],
             "optional": false
         }
