@@ -8,4 +8,4 @@ class option:
     validation: bool = True  # TODO: change default to False before release
     log_level = logging.WARNING
     blacklist = ['CalibratedClassifierCV',
-                 'AdaBoostClassifier', 'GradientBoostingClassifier', "LogisticRegressionCV", "MLPClassifier", "NuSVC", "Perceptron", "PassiveAggressiveClassifier", "RidgeClassifierCV", "SGDClassifier", "BaggingClassifier", "SVC"]
+                 'AdaBoostClassifier', 'GradientBoostingClassifier', "LogisticRegressionCV", "MLPClassifier", "NuSVC", "Perceptron", "PassiveAggressiveClassifier", "RidgeClassifierCV", "SGDClassifier", "BaggingClassifier", "SVC", "CategoricalNB", "RadiusNeighborsClassifier"]
