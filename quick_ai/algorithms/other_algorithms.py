@@ -1,3 +1,5 @@
+from quick_ai.utils import option
+from datasets import get_iris, get_breast_cancer
 from quick_ai.base import Model
 from sklearn.utils import all_estimators
 from typing import Dict, Type
@@ -27,17 +29,34 @@ for name, classifier in all_estimators(type_filter='classifier'):
 
 if __name__ == '__main__':
     # TODO: remove before release
-    from datasets import get_iris
-    data, target = get_iris()
-    data['target'] = target
-    train_data = data.sample(120)
-    train_target = train_data.pop('target')
-    test_set = data.sample(30)
-    test_target = test_set.pop('target')
-    model = models.get('RandomForestClassifier')()
-    model.train(train_data, train_target)
-    print(model.predict(test_set) == test_target)
-    print(len(models))
-
-    print('-'*50)
-    print(models.keys())
+    # from datasets import get_iris
+    # data, target = get_iris()
+    # data['target'] = target
+    # train_data = data.sample(120)
+    # train_target = train_data.pop('target')
+    # test_set = data.sample(30)
+    # test_target = test_set.pop('target')
+    # model = models.get('RandomForestClassifier')()
+    # model.train(train_data, train_target)
+    # print(model.predict(test_set) == test_target)
+    # print(len(models))
+    # print('-'*50)
+    # print(models.keys())
+    from quick_ai.forecast import HyperTuner, StatisticalParametersExtractor
+    data, target = get_breast_cancer()
+    extractor = StatisticalParametersExtractor(data, target)
+    characteristics = extractor.describe_dataset()
+    print(characteristics)
+    tuner = HyperTuner()
+    for name, model in models.items():
+        if name in option.blacklist:
+            continue
+        print(name)
+        hparams = {}
+        hparams = tuner.optimize_hyperparameters(model, (data, target), 'classification',
+                                                 no_classes=characteristics.num_classes, no_variables=characteristics.target_features, device='cuda', trials=100)
+        print(hparams)
+        model_instance = model(**hparams)
+        model_instance.train(data, target)
+        print(sum(model_instance.predict(data)
+              == target)/len(target))
