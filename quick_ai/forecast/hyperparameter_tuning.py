@@ -14,6 +14,8 @@ import json
 class HyperTuner:
 
     def __init__(self) -> None:
+        self.sklearn_hyperparameters = json.load(
+            open('quick_ai/forecast/sklearn_hyperparameters.json'))
         self.hyperparameters = json.load(
             open('quick_ai/forecast/hyperparameters.json'))
 
@@ -31,7 +33,13 @@ class HyperTuner:
         return hyper_param
 
     def get_model_hyperparameters(self, model: Model) -> list:
-        return self.hyperparameters[model.__name__]
+        if model.__name__ in self.sklearn_hyperparameters:
+            return self.hyperparameters[model.__name__]
+        elif model.__name__ in self.hyperparameters:
+            return self.hyperparameters[model.__name__]
+        else:
+            raise ValueError(
+                f"Model {model.__name__} is not supported for hyperparameter tuning")
 
     def objective(self, trial: opt.Trial, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None, device='cpu') -> float:
         x_train, x_test, y_train, y_test = train_test_split(
