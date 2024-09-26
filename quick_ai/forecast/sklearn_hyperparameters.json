@@ -70,7 +70,7 @@
             "type": "float",
             "min": 0,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "fit_prior",
@@ -152,7 +152,7 @@
             "choices": [
                 "random"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "verbose",
@@ -198,7 +198,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "criterion",
@@ -215,7 +215,7 @@
             "type": "int",
             "min": 1,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_features",
@@ -224,14 +224,14 @@
                 "log2",
                 "sqrt"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_leaf_nodes",
             "type": "int",
             "min": 2,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "min_impurity_decrease",
@@ -298,7 +298,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "criterion",
@@ -315,7 +315,7 @@
             "type": "int",
             "min": 1,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_features",
@@ -324,14 +324,14 @@
                 "log2",
                 "sqrt"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_leaf_nodes",
             "type": "int",
             "min": 2,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "min_impurity_decrease",
@@ -394,7 +394,7 @@
                 "balanced_subsample",
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "criterion",
@@ -411,7 +411,7 @@
             "type": "int",
             "min": 1,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_features",
@@ -420,21 +420,21 @@
                 "log2",
                 "sqrt"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_leaf_nodes",
             "type": "int",
             "min": 2,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_samples",
             "type": "float",
             "min": 0.0,
             "max": 1.0,
-            "optional": false
+            "optional": true
         },
         {
             "name": "min_impurity_decrease",
@@ -486,7 +486,7 @@
         {
             "name": "pos_label",
             "type": "bool",
-            "optional": false
+            "optional": true
         },
         {
             "name": "response_method",
@@ -551,7 +551,7 @@
             "choices": [
                 "fmin_l_bfgs_b"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "warm_start",
@@ -582,7 +582,7 @@
             "choices": [
                 "zero"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "learning_rate",
@@ -592,20 +592,34 @@
             "optional": false
         },
         {
-            "name": "loss",
-            "type": "categorical",
-            "choices": [
-                "exponential",
-                "log_loss"
-            ],
-            "optional": false
+            "conditional": true,
+            "condition": "binary/multi",
+            "variants": [
+                {
+                    "name": "loss",
+                    "type": "categorical",
+                    "choices": [
+                        "log_loss",
+                        "exponential"
+                    ],
+                    "optional": false
+                },
+                {
+                    "name": "loss",
+                    "type": "no_choice",
+                    "choices": [
+                        "log_loss"
+                    ],
+                    "optional": false
+                }
+            ]
         },
         {
             "name": "max_depth",
             "type": "int",
             "min": 1,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_features",
@@ -614,14 +628,14 @@
                 "log2",
                 "sqrt"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_leaf_nodes",
             "type": "int",
             "min": 2,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "min_impurity_decrease",
@@ -663,7 +677,7 @@
             "type": "int",
             "min": 1,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "subsample",
@@ -699,7 +713,7 @@
             "choices": [
                 "from_dtype"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "class_weight",
@@ -707,7 +721,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "early_stopping",
@@ -724,7 +738,7 @@
                 "no_interactions",
                 "pairwise"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "l2_regularization",
@@ -760,7 +774,7 @@
             "type": "int",
             "min": 1,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_features",
@@ -781,7 +795,7 @@
             "type": "int",
             "min": 2,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "min_samples_leaf",
@@ -809,7 +823,7 @@
             "type": "float",
             "min": 0,
             "max": 1,
-            "optional": false
+            "optional": true
         },
         {
             "name": "warm_start",
@@ -841,14 +855,14 @@
             "type": "int",
             "min": 1,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "p",
             "type": "float",
             "min": 1,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "weights",
@@ -857,7 +871,7 @@
                 "distance",
                 "uniform"
             ],
-            "optional": false
+            "optional": true
         }
     ],
     "LabelPropagation": [
@@ -952,7 +966,7 @@
             "choices": [
                 "auto"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "solver",
@@ -990,7 +1004,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "dual",
@@ -1067,7 +1081,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "fit_intercept",
@@ -1086,7 +1100,7 @@
             "type": "float",
             "min": 0,
             "max": 1,
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_iter",
@@ -1232,7 +1246,7 @@
                 "max_error",
                 "fowlkes_mallows_score"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "solver",
@@ -1443,7 +1457,7 @@
             "type": "float",
             "min": 0,
             "max": null,
-            "optional": false
+            "optional": true
         }
     ],
     "NuSVC": [
@@ -1465,7 +1479,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "coef0",
@@ -1574,7 +1588,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "early_stopping",
@@ -1619,7 +1633,7 @@
             "type": "float",
             "min": 0.0,
             "max": 0.001,
-            "optional": false
+            "optional": true
         },
         {
             "name": "validation_fraction",
@@ -1648,7 +1662,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "early_stopping",
@@ -1696,7 +1710,7 @@
                 "l1",
                 "l2"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "shuffle",
@@ -1708,7 +1722,7 @@
             "type": "float",
             "min": 0.0,
             "max": 0.001,
-            "optional": false
+            "optional": true
         },
         {
             "name": "validation_fraction",
@@ -1768,7 +1782,7 @@
             "type": "float",
             "min": 0,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "weights",
@@ -1777,7 +1791,7 @@
                 "distance",
                 "uniform"
             ],
-            "optional": false
+            "optional": true
         }
     ],
     "RandomForestClassifier": [
@@ -1795,7 +1809,7 @@
                 "balanced_subsample",
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "criterion",
@@ -1812,7 +1826,7 @@
             "type": "int",
             "min": 1,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_features",
@@ -1821,21 +1835,21 @@
                 "log2",
                 "sqrt"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_leaf_nodes",
             "type": "int",
             "min": 2,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "max_samples",
             "type": "float",
             "min": 0.0,
             "max": 1.0,
-            "optional": false
+            "optional": true
         },
         {
             "name": "min_impurity_decrease",
@@ -1897,7 +1911,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "copy_X",
@@ -1914,7 +1928,7 @@
             "type": "int",
             "min": 1,
             "max": null,
-            "optional": false
+            "optional": true
         },
         {
             "name": "solver",
@@ -1952,7 +1966,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "fit_intercept",
@@ -2020,7 +2034,7 @@
                 "max_error",
                 "fowlkes_mallows_score"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "store_cv_results",
@@ -2049,7 +2063,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "early_stopping",
@@ -2131,7 +2145,7 @@
                 "l1",
                 "l2"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "power_t",
@@ -2150,7 +2164,7 @@
             "type": "float",
             "min": 0.0,
             "max": 0.001,
-            "optional": false
+            "optional": true
         },
         {
             "name": "validation_fraction",
@@ -2186,7 +2200,7 @@
             "choices": [
                 "balanced"
             ],
-            "optional": false
+            "optional": true
         },
         {
             "name": "coef0",
