@@ -1,2 +1,3 @@
 from .model_forecast import Forecast, ExhaustiveSearch
+from .hyperparameter_tuning import HyperTuner
 from .dataset_characteristics import StatisticalParametersExtractor

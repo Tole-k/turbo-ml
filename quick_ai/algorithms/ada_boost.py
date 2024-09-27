@@ -16,14 +16,15 @@ class AdaBoostClassifier(Model):
         n_estimators: int = 50,
         learning_rate: float = 1.0,
         random_state=None,
+        **options,
     ) -> None:
         super().__init__()
         self.ada_boost = ensemble.AdaBoostClassifier(
             estimator=estimator,
             n_estimators=n_estimators,
             learning_rate=learning_rate,
-            algorithm="SAMME",
             random_state=random_state,
+            **options,
         )
 
     def train(self, data: Iterable[int | float], target: Iterable) -> None:

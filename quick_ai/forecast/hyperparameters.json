@@ -1,6 +1,6 @@
 {
     "RandomGuesser": [],
-    "GBoostClassifier": [
+    "GradientBoostingClassifier": [
         {
             "conditional": true,
             "condition": "binary/multi",
@@ -287,6 +287,14 @@
             "type": "float",
             "min": 0.0,
             "max": 10.0,
+            "optional": false
+        },
+        {
+            "name": "algorithm",
+            "type": "no_choice",
+            "choices": [
+                "SAMME"
+            ],
             "optional": false
         }
     ],
