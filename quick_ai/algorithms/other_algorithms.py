@@ -1,5 +1,4 @@
 from quick_ai.utils import option
-from datasets import get_iris, get_breast_cancer
 from quick_ai.base import Model
 from sklearn.utils import all_estimators
 from typing import Dict, Type
@@ -28,6 +27,7 @@ for name, classifier in all_estimators(type_filter='classifier'):
         pass
 
 if __name__ == '__main__':
+    from datasets import get_iris, get_breast_cancer
     # TODO: remove before release
     # from datasets import get_iris
     # data, target = get_iris()
