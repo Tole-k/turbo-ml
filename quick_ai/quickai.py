@@ -63,13 +63,13 @@ class QuickAI:
             - The `target` parameter is currently required. Automatic target detection is not yet implemented.
             - Model selection and hyperparameter optimization functionalities are placeholders and should be implemented.
         """
+        self.model: Model = None
         start_time = time.time()
         if target is None:
-            # target = find_target()
+            # target = find_target() TODO: to be implemented
             raise NotImplementedError(
                 "Target automatic detection is not implemented yet, provide target column name")
         self._input_check(dataset, target)
-        self.model: Model = None
         target_data = dataset[target]
         data = dataset.drop(columns=[target])
         try:
@@ -79,11 +79,12 @@ class QuickAI:
             raise Exception("Dataset description failed")
         if verbose:
             print('Dataset parameters found, trying to guess best model')
+
         try:
             guessing = None  # TODO implement model guessing based on dataset parameters
             self.model = None
         except Exception:
-            raise Exception("Model optimization failed")
+            raise Exception('Model optimization failed')
         model_guessing_time = time.time()
 
         model_name = self.model.__class__.__name__
@@ -95,8 +96,15 @@ class QuickAI:
             if verbose:
                 print(f'Looked at {search.counter} models')
         except Exception:
-            print("Trying to find better model failed")
+            print('Trying to find better model failed')
         model_selection_time = time.time()
+
+        try:
+            # hpo will be performed here on model class
+            pass
+        except Exception:
+            print('Hyperparameter optimization failed')
+        hpo_time = time.time()
 
         model_name = self.model.__class__.__name__
         if verbose:
@@ -104,20 +112,22 @@ class QuickAI:
         try:
             self.model.train(data, target_data)
         except Exception:
-            raise Exception("Model training failed")
+            raise Exception('Model training failed')
         end_time = time.time()
-        times = {
+        self.times = {
             'total': end_time - start_time,
             'guessing': model_guessing_time - start_time,
-            'selection': model_selection_time - model_guessing_time,
-            'training': end_time - model_selection_time
+            'AS': model_selection_time - model_guessing_time,
+            'HPO': hpo_time - model_selection_time,
+            'training': end_time - hpo_time
         }
         if verbose:
             print(f"{model_name} model trained successfully")
-            print(f"Model guessing time: {times['guessing']}")
-            print(f"Model selection time: {times['selection']}")
-            print(f"Model training time: {times['training']}")
-            print(f"Total time: {times['total']}")
+            print(f"Model guessing time: {self.times['guessing']}")
+            print(f"Model selection time: {self.times['AS']}")
+            print(f"Model HPO time: {self.times['HPO']}")
+            print(f"Model training time: {self.times['training']}")
+            print(f"Total time: {self.times['total']}")
 
     def _input_check(self, dataset: pd.DataFrame, target: str):
         assert dataset is not None and isinstance(dataset, pd.DataFrame)
