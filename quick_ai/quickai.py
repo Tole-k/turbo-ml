@@ -7,6 +7,7 @@ It does not provide additional functionalities but it combines other modules to 
 from typing import Optional
 import pandas as pd
 from .base import Model
+from .algorithms import RandomGuesser as DummyModel
 from .forecast import StatisticalParametersExtractor, ExhaustiveSearch, HyperTuner
 import time
 
@@ -63,7 +64,7 @@ class QuickAI:
             - The `target` parameter is currently required. Automatic target detection is not yet implemented.
             - Model selection and hyperparameter optimization functionalities are placeholders and should be implemented.
         """
-        self.model: Model = None
+        self.model: Model = DummyModel()
         start_time = time.time()
         if target is None:
             # target = find_target() TODO: to be implemented
@@ -81,8 +82,8 @@ class QuickAI:
             print('Dataset parameters found, trying to guess best model')
 
         try:
-            guessing = None  # TODO implement model guessing based on dataset parameters
-            self.model = None
+            # TODO implement model guessing based on dataset parameters
+            self.model = DummyModel()
         except Exception:
             raise Exception('Model optimization failed')
         model_guessing_time = time.time()
