@@ -44,7 +44,7 @@ class GradientBoostingClassifier(Model):
         return self.clf.predict(guess)
 
 
-class GBoostRegressor(Model):
+class GradientBoostingRegressor(Model):
     input_formats = {Iterable[int | float]}
     output_formats = {list[float]}
 
