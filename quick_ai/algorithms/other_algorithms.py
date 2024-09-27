@@ -54,7 +54,7 @@ if __name__ == '__main__':
             print(name)
             hparams = {}
             hparams = tuner.optimize_hyperparameters(model, (data, target), 'classification',
-                                                     no_classes=characteristics.num_classes, no_variables=characteristics.target_features, device='cuda', trials=50)
+                                                     no_classes=characteristics.num_classes, no_variables=characteristics.target_features, device='cuda', trials=10)
             print(hparams)
             model_instance = model(**hparams)
             model_instance.train(data, target)
