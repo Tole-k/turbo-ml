@@ -7,7 +7,7 @@ It does not provide additional functionalities but it combines other modules to 
 from typing import Optional
 import pandas as pd
 from .base import Model
-from .forecast import StatisticalParametersExtractor, ExhaustiveSearch
+from .forecast import StatisticalParametersExtractor, ExhaustiveSearch, HyperTuner
 import time
 
 
@@ -100,8 +100,10 @@ class QuickAI:
         model_selection_time = time.time()
 
         try:
-            # hpo will be performed here on model class
-            pass
+            tuner = HyperTuner()
+            hyperparameters = tuner.optimize_hyperparameters(
+                self.model.__class__, (data, target_data), dataset_params.task)
+            self.model = self.model.__class__(**hyperparameters)
         except Exception:
             print('Hyperparameter optimization failed')
         hpo_time = time.time()
