@@ -87,7 +87,7 @@ class HyperTuner:
         if model == NeuralNetworkModel:  # Neural Network requires a more specific approach, infeasible to adapt the general function do it's been implemented separately
             return NeuralNetworkModel.optimize_hyperparameters(dataset, task, no_classes, no_variables, device, trials)
         study = opt.create_study(
-            direction='maximize' if task == 'classification' else 'minimize')
+            direction='maximize' if task == 'classification' else 'minimize', study_name=model.__name__ + " Hyperparameter Optimization")
         study.optimize(lambda trial: self.objective(
             trial, model, dataset, task, no_classes, no_variables, device), n_trials=trials)
         return self.filter_nones(study.best_params) | study.best_trial.user_attrs
