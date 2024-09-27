@@ -57,6 +57,7 @@ class StatisticalParametersExtractor:
         self.target = target
         self.dataset_description: Optional[DatasetDescription] = None
         self.task: Optional[str]
+        self.task_detailed: Optional[str]
         self.num_target_feature: int
         self.detect_task(one_hot_encoded)
 
@@ -67,21 +68,23 @@ class StatisticalParametersExtractor:
             if pd.api.types.is_float_dtype(self.target):
                 self.task = "regression"
             else:
+                self.task = "classification"
                 if self.target.nunique() == 2:
-                    self.task = "binary_classification"
+                    self.task_detailed = "binary_classification"
                 else:
-                    self.task = "multiclass_classification"
+                    self.task_detailed = "multiclass_classification"
         else:
             if all(map(pd.api.types.is_float_dtype, self.target.dtypes)):
                 self.task = "regression"
             else:
+                self.task = "classification"
                 if not one_hot_encoded:
-                    self.task = "multilabel_classification"
+                    self.task_detailed = "multilabel_classification"
                 else:
                     if any(self.target.sum(axis=1)) > 1:
-                        self.task = "multilabel_classification"
+                        self.task_detailed = "multilabel_classification"
                     else:
-                        self.task = "multiclass_classification"
+                        self.task_detailed = "multiclass_classification"
 
     def describe_dataset(self) -> ClassificationDatasetDescription | RegressionDatasetDescription:
         target_nans = self.target.isna().sum()
