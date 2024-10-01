@@ -4,12 +4,14 @@ quickai.py
 This module provides the `QuickAI` class, our main class for out-of-the-box autoML solution.
 It does not provide additional functionalities but it combines other modules to provide a complete solution.
 """
-from typing import Optional
 import pandas as pd
 from .base import Model
 from .algorithms import RandomGuesser as DummyModel
 from .forecast import StatisticalParametersExtractor, ExhaustiveSearch, HyperTuner
+from typing import Optional
 import time
+import logging
+logging.basicConfig(level=logging.INFO)
 
 
 class QuickAI:
@@ -41,6 +43,8 @@ class QuickAI:
     **Attributes:**
         model (Model): The machine learning model selected and trained on the dataset.
     """
+    logger = logging.getLogger()
+    logger.setLevel('INFO')
 
     def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True):
         """
@@ -64,6 +68,7 @@ class QuickAI:
             - The `target` parameter is currently required. Automatic target detection is not yet implemented.
             - Model selection and hyperparameter optimization functionalities are placeholders and should be implemented.
         """
+        self.logger.info("Initializing QuickAI...")
         self.model: Model = DummyModel()
         start_time = time.time()
         if target is None:
@@ -79,7 +84,8 @@ class QuickAI:
         except Exception:
             raise Exception("Dataset description failed")
         if verbose:
-            print('Dataset parameters found, trying to guess best model')
+            self.logger.info(
+                'Dataset parameters found, trying to guess best model')
 
         try:
             # TODO implement model guessing based on dataset parameters
@@ -90,14 +96,15 @@ class QuickAI:
 
         model_name = self.model.__class__.__name__
         if verbose:
-            print(f'Model guessed: {model_name}, searching for better model')
+            self.logger.info(f'''Model guessed: {
+                model_name}, searching for better model''')
         try:
             search = ExhaustiveSearch()  # TODO split search engine into guessing and selection
             self.model = search.predict(data, target_data)
             if verbose:
-                print(f'Looked at {search.counter} models')
+                self.logger.info(f'Looked at {search.counter} models')
         except Exception:
-            print('Trying to find better model failed')
+            self.logger.info('Trying to find better model failed')
         model_selection_time = time.time()
 
         try:
@@ -106,12 +113,12 @@ class QuickAI:
                 self.model.__class__, (data, target_data), dataset_params.task)
             self.model = self.model.__class__(**hyperparameters)
         except Exception:
-            print('Hyperparameter optimization failed')
+            self.logger.info('Hyperparameter optimization failed')
         hpo_time = time.time()
 
         model_name = self.model.__class__.__name__
         if verbose:
-            print(f"Training {model_name} model")
+            self.logger.info(f"Training {model_name} model")
         try:
             self.model.train(data, target_data)
         except Exception:
@@ -125,12 +132,12 @@ class QuickAI:
             'training': end_time - hpo_time
         }
         if verbose:
-            print(f"{model_name} model trained successfully")
-            print(f"Model guessing time: {self.times['guessing']}")
-            print(f"Model selection time: {self.times['AS']}")
-            print(f"Model HPO time: {self.times['HPO']}")
-            print(f"Model training time: {self.times['training']}")
-            print(f"Total time: {self.times['total']}")
+            self.logger.info(f"{model_name} model trained successfully")
+            self.logger.info(f"Model guessing time: {self.times['guessing']}")
+            self.logger.info(f"Model selection time: {self.times['AS']}")
+            self.logger.info(f"Model HPO time: {self.times['HPO']}")
+            self.logger.info(f"Model training time: {self.times['training']}")
+            self.logger.info(f"Total time: {self.times['total']}")
 
     def _input_check(self, dataset: pd.DataFrame, target: str):
         assert dataset is not None and isinstance(dataset, pd.DataFrame)

@@ -1,4 +1,3 @@
-from time import sleep
 import numpy as np
 from quick_ai.algorithms import NeuralNetworkModel
 import optuna as opt
@@ -10,7 +9,6 @@ import pandas as pd
 from typing import Literal
 import json
 from quick_ai.utils import option
-opt.logging.disable_default_handler()
 
 
 class HyperTuner:
