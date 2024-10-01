@@ -2,7 +2,7 @@ from quick_ai.utils import option
 from quick_ai.base import Model
 from sklearn.utils import all_estimators
 from typing import Dict, Type
-models: Dict[str, Type[Model]] = {}
+sklearn_models: Dict[str, Type[Model]] = {}
 
 
 def _train(self: Model, data, target):
@@ -22,7 +22,7 @@ for name, classifier in all_estimators(type_filter='classifier'):
         classifier_obj = classifier()
         model = type(name, (Model,),
                      {'classifier': classifier, 'train': _train, 'predict': _predict, '__init__': _classifier_init})
-        models[name] = model
+        sklearn_models[name] = model
     except TypeError as e:
         pass
 
@@ -48,13 +48,11 @@ if __name__ == '__main__':
         characteristics = extractor.describe_dataset()
         print(characteristics)
         tuner = HyperTuner()
-        for name, model in models.items():
-            if name in option.blacklist:
-                continue
+        for name, model in sklearn_models.items():
             print(name)
             hparams = {}
             hparams = tuner.optimize_hyperparameters(model, (data, target), 'classification',
-                                                     no_classes=characteristics.num_classes, no_variables=characteristics.target_features, device='cuda', trials=10)
+                                                     no_classes=characteristics.num_classes, no_variables=characteristics.target_features, device='cuda', trials=50)
             print(hparams)
             model_instance = model(**hparams)
             model_instance.train(data, target)
