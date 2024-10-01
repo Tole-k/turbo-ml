@@ -5,7 +5,7 @@ from quick_ai.algorithms import NeuralNetworkModel, XGBoostClassifier, sklearn_m
 from quick_ai.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelEncoder
 from quick_ai.forecast import HyperTuner, StatisticalParametersExtractor
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import minmax_scale
 
 
 def generate_dataset(models, datasets):
@@ -56,9 +56,8 @@ def generate_dataset(models, datasets):
                 scores[model.__name__] = 0
         records.append(description.dict() | scores)
     df = pd.DataFrame.from_records(records)
-    scaler = MinMaxScaler()
     score_columns = [model.__name__ for model in models]
-    df[score_columns] = scaler.fit_transform(df[score_columns])
+    df[score_columns] = minmax_scale(df[score_columns], axis=1)
     df.to_csv("results.csv")
     return df
 
