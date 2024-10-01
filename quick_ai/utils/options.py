@@ -8,7 +8,6 @@ class option:
     text_size: int = 64
     validation: bool = True  # TODO: change default to False before release
     log_level = logging.WARNING
-    blacklist = ['CalibratedClassifierCV', "LogisticRegressionCV", "MLPClassifier", "NuSVC", "Perceptron", "PassiveAggressiveClassifier",
-                 "RidgeClassifierCV", "SGDClassifier", "BaggingClassifier", "SVC", "CategoricalNB", "RadiusNeighborsClassifier"]
+    blacklist = ['CalibratedClassifierCV']
     hyperparameters_declaration_priority: Literal['sklearn',
                                                   'custom'] = 'custom'

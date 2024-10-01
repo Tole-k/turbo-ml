@@ -74,16 +74,22 @@ class HyperTuner:
                 params[hyper_param['name']] = trial.suggest_categorical(
                     hyper_param['name'], [True, False])
         model = model(**params)
-        model.train(x_train, y_train)
-        if task == 'classification':
-            return sum(model.predict(x_test) == y_test)/len(y_test)
-        else:
-            return np.sum((model.predict(x_test)-y_test).values**2)/len(y_test)
+        try:
+            model.train(x_train, y_train)
+            if task == 'classification':
+                return sum(model.predict(x_test) == y_test)/len(y_test)
+            else:
+                return np.sum((model.predict(x_test)-y_test).values**2)/len(y_test)
+        except Exception as e:
+            print(e)
+            raise opt.TrialPruned()
 
     def filter_nones(self, best_params: dict) -> dict:
         return {k: v for k, v in best_params.items() if k[-5:] != '=None'}
 
     def optimize_hyperparameters(self, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None, device='cpu', trials: int = 10) -> dict:
+        if model.__name__ in option.blacklist:
+            return {}
         if model == NeuralNetworkModel:  # Neural Network requires a more specific approach, infeasible to adapt the general function do it's been implemented separately
             return NeuralNetworkModel.optimize_hyperparameters(dataset, task, no_classes, no_variables, device, trials)
         study = opt.create_study(
