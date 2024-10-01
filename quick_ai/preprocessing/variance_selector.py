@@ -7,7 +7,7 @@ from sklearn.feature_selection import VarianceThreshold
 class VarianceSelector():
 
     def fit_transform(
-        self, data: pd.DataFrame, threshold1: float = 0.1, threshold2: float = 0.9
+        self, data: pd.DataFrame, threshold1: float = 0.05, threshold2: float = 0.9
     ) -> pd.DataFrame:
         data = data.apply(lambda x: x.astype(
             bool) if x.isin([0, 1]).all() else x)
@@ -19,9 +19,14 @@ class VarianceSelector():
         ).map(lambda x: str(x))
         cat_cols_left = [col for col in categorical_cols if (
             categorical_cols[col].value_counts(sort=1)[0] / len(categorical_cols[col])) < threshold2]
-        self.variance_threshold.fit(numeric_cols)
-        num_cols_left = self.variance_threshold.get_feature_names_out()
-        self.cols_to_rem = set(cols) - set(cat_cols_left) - set(num_cols_left)
+        self.cols_to_rem = set(cols) - set(cat_cols_left)
+        if not numeric_cols.empty:
+            try:
+                self.variance_threshold.fit(numeric_cols)
+                num_cols_left = self.variance_threshold.get_feature_names_out()
+                self.cols_to_rem -= set(num_cols_left)
+            except ValueError:
+                pass
         data.drop(columns=self.cols_to_rem, inplace=True)
         return data
 
@@ -30,24 +35,25 @@ class VarianceSelector():
         return data
 
 
-dataset = pd.DataFrame(
-    {
-        "A": [0.5, 0.5, 0.5, 0.5],
-        "B": [0.25, 0.25, 0.25, 1],
-        "C": ["c", "c", "c", "d"],
-        "D": [0, 1, 0, 1],
-        "E": ["c", "c", "c", "c"],
-    }
-)
-selector = VarianceSelector()
-print(selector.fit_transform(dataset))
-dataset = pd.DataFrame(
-    {
-        "A": [0.1, 0.2, 0.3, 0.4],
-        "B": [0.25, 0.25, 0.25, 0.25],
-        "C": ["c", "c", "c", "c"],
-        "D": [0, 1, 0, 1],
-        "E": ["c", "c", "c", "d"],
-    }
-)
-print(selector.transform(dataset))
+if __name__ == "__main__":
+    dataset = pd.DataFrame(
+        {
+            "A": [0.5, 0.5, 0.5, 0.5],
+            "B": [0.25, 0.25, 0.25, 1],
+            "C": ["c", "c", "c", "d"],
+            "D": [0, 1, 0, 1],
+            "E": ["c", "c", "c", "c"],
+        }
+    )
+    selector = VarianceSelector()
+    print(selector.fit_transform(dataset))
+    dataset = pd.DataFrame(
+        {
+            "A": [0.1, 0.2, 0.3, 0.4],
+            "B": [0.25, 0.25, 0.25, 0.25],
+            "C": ["c", "c", "c", "c"],
+            "D": [0, 1, 0, 1],
+            "E": ["c", "c", "c", "d"],
+        }
+    )
+    print(selector.transform(dataset))
