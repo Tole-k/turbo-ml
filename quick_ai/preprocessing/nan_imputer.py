@@ -6,7 +6,9 @@ from sklearn.impute import SimpleImputer
 
 class NanImputer(Preprocessor):
     numerical_imputer = SimpleImputer(strategy="mean")
+    numerical_target_imputer = SimpleImputer(strategy="mean")
     categorical_imputer = SimpleImputer(strategy="most_frequent")
+    categorical_target_imputer = SimpleImputer(strategy="most_frequent")
 
     def fit_transform(
         self, data: pd.DataFrame, nan_threshold: float = 1.0
@@ -16,71 +18,85 @@ class NanImputer(Preprocessor):
         data.drop(columns=self.cols_to_drop.index, inplace=True)
         og_cols = data.columns
         data = data.apply(lambda x: x.astype(
-            bool) if x.isin([0, 1]).all() else x)
+            object) if x.isin([0, 1]).all() and not pd.api.types.is_float_dtype(x) else x)
         numerical_cols = data.select_dtypes(include=[np.number])
         categorical_cols = data.select_dtypes(
             include=[object, "category", "string", np.bool_]
         ).map(lambda x: x if pd.isna(x) else str(x))
-        numerical_cols = pd.DataFrame(
-            self.numerical_imputer.fit_transform(numerical_cols),
-            columns=numerical_cols.columns,
-        )
-        categorical_cols = pd.DataFrame(
-            self.categorical_imputer.fit_transform(categorical_cols),
-            columns=categorical_cols.columns,
-        )
-        data = pd.concat([numerical_cols, categorical_cols], axis=1)
+        if not numerical_cols.empty:
+            numerical_cols = pd.DataFrame(
+                self.numerical_imputer.fit_transform(numerical_cols),
+                columns=numerical_cols.columns,
+            )
+        if not categorical_cols.empty:
+            categorical_cols = pd.DataFrame(
+                self.categorical_imputer.fit_transform(categorical_cols),
+                columns=categorical_cols.columns,
+            )
+        data = pd.concat([numerical_cols if not numerical_cols.empty else None,
+                         categorical_cols if not categorical_cols.empty else None], axis=1)
+        data = data.apply(lambda x: x.astype(
+            bool) if x.isin([0, 1]).all() and not pd.api.types.is_float_dtype(x) else x)
         return data[og_cols]
 
     def fit_transform_target(self, target: pd.Series) -> pd.Series:
-        if target.isin([0, 1]).all():
-            target = target.astype(bool)
+        if target.isin([0, 1]).all() and not pd.api.types.is_float_dtype(target):
+            target = target.astype(object)
         if pd.api.types.is_float_dtype(target):
             target = pd.Series(
-                self.numerical_imputer.fit_transform(
+                self.numerical_target_imputer.fit_transform(
                     np.transpose([target]))[:, 0]
             )
         else:
             target = pd.Series(
-                self.categorical_imputer.fit_transform(
+                self.categorical_target_imputer.fit_transform(
                     np.transpose([target]))[:, 0]
             )
+        if target.isin([0, 1]).all() and not pd.api.types.is_float_dtype(target):
+            target = target.astype(bool)
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         data.drop(columns=self.cols_to_drop.index, inplace=True)
         og_cols = data.columns
         data = data.apply(lambda x: x.astype(
-            bool) if x.isin([0, 1]).all() else x)
+            object) if x.isin([0, 1]).all() and not pd.api.types.is_float_dtype(x) else x)
         numerical_cols = data.select_dtypes(include=[np.number])
         categorical_cols = data.select_dtypes(
             include=[object, "category", "string", np.bool_]
         ).map(lambda x: x if x is np.nan else str(x))
-        numerical_cols = pd.DataFrame(
-            self.numerical_imputer.transform(numerical_cols),
-            columns=numerical_cols.columns,
-        )
-        categorical_cols = pd.DataFrame(
-            self.categorical_imputer.transform(categorical_cols),
-            columns=categorical_cols.columns,
-        )
-        data = pd.concat([numerical_cols, categorical_cols], axis=1)
+        if not numerical_cols.empty:
+            numerical_cols = pd.DataFrame(
+                self.numerical_imputer.fit_transform(numerical_cols),
+                columns=numerical_cols.columns,
+            )
+        if not categorical_cols.empty:
+            categorical_cols = pd.DataFrame(
+                self.categorical_imputer.fit_transform(categorical_cols),
+                columns=categorical_cols.columns,
+            )
+
+        data = pd.concat([numerical_cols if not numerical_cols.empty else None,
+                          categorical_cols if not categorical_cols.empty else None], axis=1)
+        data = data.apply(lambda x: x.astype(
+            bool) if x.isin([0, 1]).all() and not pd.api.types.is_float_dtype(x) else x)
         return data[og_cols]
 
     def transform_target(self, target: pd.Series) -> pd.Series:
-        if target.isin([0, 1]).all():
-            target = target.astype(bool)
-        if np.issubdtype(target.dtype, np.number):
+        if target.isin([0, 1]).all() and not pd.api.types.is_float_dtype(target):
+            target = target.astype(object)
+        if pd.api.types.is_float_dtype(target):
             target = pd.Series(
-                self.numerical_imputer.transform(np.transpose([target]))[:, 0]
-            )
-        elif np.issubdtype(target.dtype, np.object) or np.issubdtype(
-            target.dtype, np.bool_
-        ):
-            target = pd.Series(
-                self.categorical_imputer.transform(
+                self.numerical_target_imputer.transform(
                     np.transpose([target]))[:, 0]
             )
+        else:
+            target = pd.Series(
+                self.categorical_target_imputer.transform(
+                    np.transpose([target]))[:, 0]
+            )
+        if target.isin([0, 1]).all() and not pd.api.types.is_float_dtype(target):
+            target = target.astype(bool)
         return target
 
 

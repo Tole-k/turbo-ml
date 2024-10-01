@@ -8,9 +8,9 @@ from sklearn.preprocessing import OneHotEncoder as sklearnOneHotEncoder
 class OneHotEncoder(Preprocessor):
     def __init__(self) -> None:
         super().__init__()
-        self.encoder = sklearnOneHotEncoder(dtype=bool, drop='if_binary', handle_unknown='ignore')
-        self.target_encoder = sklearnOneHotEncoder(
-            dtype=bool, drop='if_binary')
+        self.encoder = sklearnOneHotEncoder(
+            drop='if_binary', handle_unknown='ignore')
+        self.target_encoder = sklearnOneHotEncoder(drop='if_binary')
 
     def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
         self.column_order = data.columns
@@ -68,7 +68,6 @@ class OneHotEncoder(Preprocessor):
         return target
 
     def inverse_transform_target(self, target: pd.DataFrame) -> pd.Series:
-        ohe_columns = target.select_dtypes(include=[bool])
         target = pd.DataFrame(self.target_encoder.inverse_transform(target))
         return target[0]
 
