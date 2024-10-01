@@ -1,5 +1,5 @@
 from typing import Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 import numpy as np
 import pandas as pd
 
@@ -7,6 +7,7 @@ import pandas as pd
 @dataclass
 class DatasetDescription:
     task: str
+    task_detailed: Optional[str]
     target_features: int
     target_nans: int
     num_columns: int
@@ -17,6 +18,10 @@ class DatasetDescription:
     lowest_correlation: float
     highest_eigenvalue: float
     lowest_eigenvalue: float
+    share_of_numerical_features: float
+
+    def dict(self):
+        return asdict(self)
 
 
 @dataclass
@@ -26,7 +31,7 @@ class ClassificationDatasetDescription(DatasetDescription):
     smallest_class_freq: int
 
     def __str__(self):
-        return f"Task: {self.task}\nTarget Features: {self.target_features}\nNumber of Classes: {self.num_classes}\nBiggest Class Frequency: {self.biggest_class_freq}\nSmallest Class Frequency: {self.smallest_class_freq}\nNans: {self.target_nans}\nNumber of Columns: {self.num_columns}\nNumber of Rows: {self.num_rows}\nNumber of Highly Correlated Features: {self.number_of_highly_correlated_features}\nHighest Correlation: {self.highest_correlation}\nNumber of Lowly Correlated Features: {self.number_of_lowly_correlated_features}\nLowest Correlation: {self.lowest_correlation}\nHighest Eigenvalue: {self.highest_eigenvalue}\nLowest Eigenvalue: {self.lowest_eigenvalue}"
+        return f"Task: {self.task}\nDetailed: {self.task_detailed}\nTarget Features: {self.target_features}\nNumber of Classes: {self.num_classes}\nBiggest Class Frequency: {self.biggest_class_freq}\nSmallest Class Frequency: {self.smallest_class_freq}\nNans: {self.target_nans}\nNumber of Columns: {self.num_columns}\nNumber of Rows: {self.num_rows}\nNumber of Highly Correlated Features: {self.number_of_highly_correlated_features}\nHighest Correlation: {self.highest_correlation}\nNumber of Lowly Correlated Features: {self.number_of_lowly_correlated_features}\nLowest Correlation: {self.lowest_correlation}\nHighest Eigenvalue: {self.highest_eigenvalue}\nLowest Eigenvalue: {self.lowest_eigenvalue}\nShare of Numerical Features: {self.share_of_numerical_features}"
 
 
 @dataclass
@@ -43,7 +48,7 @@ class RegressionDatasetDescription(DatasetDescription):
     target_skew: float
 
     def __str__(self):
-        return f"Task: {self.task}\nTarget Features: {self.target_features}\nMean: {self.target_mean}\nStd: {self.target_std}\nMin: {self.target_min}\n25%: {self.target_25}\n50%: {self.target_50}\n75%: {self.target_75}\nMax: {self.target_max}\nMedian: {self.target_median}\nVariance: {self.target_var}\nSkew: {self.target_skew}\nNans: {self.target_nans}\nNumber of Columns: {self.num_columns}\nNumber of Rows: {self.num_rows}\nNumber of Highly Correlated Features: {self.number_of_highly_correlated_features}\nHighest Correlation: {self.highest_correlation}\nNumber of Lowly Correlated Features: {self.number_of_lowly_correlated_features}\nLowest Correlation: {self.lowest_correlation}\nHighest Eigenvalue: {self.highest_eigenvalue}\nLowest Eigenvalue: {self.lowest_eigenvalue}"
+        return f"Task: {self.task}\nDetailed: {self.task_detailed}\nTarget Features: {self.target_features}\nMean: {self.target_mean}\nStd: {self.target_std}\nMin: {self.target_min}\n25%: {self.target_25}\n50%: {self.target_50}\n75%: {self.target_75}\nMax: {self.target_max}\nMedian: {self.target_median}\nVariance: {self.target_var}\nSkew: {self.target_skew}\nNans: {self.target_nans}\nNumber of Columns: {self.num_columns}\nNumber of Rows: {self.num_rows}\nNumber of Highly Correlated Features: {self.number_of_highly_correlated_features}\nHighest Correlation: {self.highest_correlation}\nNumber of Lowly Correlated Features: {self.number_of_lowly_correlated_features}\nLowest Correlation: {self.lowest_correlation}\nHighest Eigenvalue: {self.highest_eigenvalue}\nLowest Eigenvalue: {self.lowest_eigenvalue}\nShare of Numerical Features: {self.share_of_numerical_features}"
 
 
 class StatisticalParametersExtractor:
@@ -88,21 +93,25 @@ class StatisticalParametersExtractor:
 
     def describe_dataset(self) -> ClassificationDatasetDescription | RegressionDatasetDescription:
         target_nans = self.target.isna().sum()
-        continous_cols = self.data.select_dtypes(include=[np.number]).columns
-        corr_matrix = self.data[continous_cols].corr()
+        continuous_cols = self.data.select_dtypes(include=[np.number])
+        corr_matrix = continuous_cols.loc[:, continuous_cols.var() > 0].corr()
         removed_diag = corr_matrix.mask(
             np.eye(len(corr_matrix), dtype=bool)).abs()
         num_columns = len(self.data.columns)
         num_rows = len(self.data)
         corr_size = removed_diag.shape[0] * (removed_diag.shape[1]-1)
         percentage_of_high_corr_features = int(
-            (removed_diag > self.high_corr_threshold).sum().sum()) / corr_size
+            (removed_diag > self.high_corr_threshold).sum().sum()) / corr_size if corr_size > 0 else 0
         highest_correlation = float(removed_diag.max().max())
         percentage_of_low_corr_features = int(
-            (removed_diag < self.low_corr_threshold).sum().sum()) / corr_size
+            (removed_diag < self.low_corr_threshold).sum().sum()) / corr_size if corr_size > 0 else 0
         lowest_correlation = float(removed_diag.min().min())
-        highest_eigenvalue = float(np.linalg.eigvals(corr_matrix).max())
-        lowest_eigenvalue = float(np.linalg.eigvals(corr_matrix).min())
+        highest_eigenvalue = float(np.linalg.eigvals(
+            corr_matrix).max()) if corr_size > 0 else 0
+        lowest_eigenvalue = float(np.linalg.eigvals(
+            corr_matrix).min()) if corr_size > 0 else 0
+        share_of_numerical_features = len(
+            continuous_cols.columns) / num_columns
         if self.task == "regression":
             description = self.target.describe()
             target_mean = description["mean"]
@@ -117,6 +126,7 @@ class StatisticalParametersExtractor:
             target_skew = self.target.skew()
             self.dataset_description = RegressionDatasetDescription(
                 self.task,
+                self.task_detailed,
                 self.num_target_features,
                 target_mean=target_mean,
                 target_std=target_std,
@@ -137,6 +147,7 @@ class StatisticalParametersExtractor:
                 lowest_correlation=lowest_correlation,
                 highest_eigenvalue=highest_eigenvalue,
                 lowest_eigenvalue=lowest_eigenvalue,
+                share_of_numerical_features=share_of_numerical_features,
             )
         else:
             description = self.target.astype("object").describe()
@@ -145,6 +156,7 @@ class StatisticalParametersExtractor:
             smallest_class_freq = self.target.value_counts().min()/len(self.target)
             self.dataset_description = ClassificationDatasetDescription(
                 self.task,
+                self.task_detailed,
                 self.num_target_features,
                 num_classes=num_classes,
                 biggest_class_freq=biggest_class_freq,
@@ -158,6 +170,7 @@ class StatisticalParametersExtractor:
                 lowest_correlation=lowest_correlation,
                 highest_eigenvalue=highest_eigenvalue,
                 lowest_eigenvalue=lowest_eigenvalue,
+                share_of_numerical_features=share_of_numerical_features,
             )
         return self.dataset_description
 
@@ -165,6 +178,6 @@ class StatisticalParametersExtractor:
 if __name__ == "__main__":
     from datasets import *
 
-    data, target = get_titanic()
+    data, target = get_iris()
     extractor = StatisticalParametersExtractor(data, target)
     print(extractor.describe_dataset())
