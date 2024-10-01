@@ -1792,6 +1792,14 @@
                 "uniform"
             ],
             "optional": true
+        },
+        {
+            "name": "outlier_label",
+            "type": "no_choice",
+            "choices": [
+                "most_frequent"
+            ],
+            "optional": false
         }
     ],
     "RandomForestClassifier": [
