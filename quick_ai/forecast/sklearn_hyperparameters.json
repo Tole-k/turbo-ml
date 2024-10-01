@@ -1,0 +1,2415 @@
+{
+    "AdaBoostClassifier": [
+        {
+            "name": "algorithm",
+            "type": "categorical",
+            "choices": [
+                "SAMME.R",
+                "SAMME"
+            ],
+            "optional": false
+        },
+        {
+            "name": "learning_rate",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "n_estimators",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        }
+    ],
+    "BaggingClassifier": [
+        {
+            "name": "bootstrap_features",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "max_features",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "max_samples",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "n_estimators",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "oob_score",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "BernoulliNB": [
+        {
+            "name": "alpha",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "binarize",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "fit_prior",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "force_alpha",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "CalibratedClassifierCV": [
+        {
+            "name": "cv",
+            "type": "no_choice",
+            "choices": [
+                "prefit"
+            ],
+            "optional": false
+        },
+        {
+            "name": "ensemble",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "method",
+            "type": "categorical",
+            "choices": [
+                "sigmoid",
+                "isotonic"
+            ],
+            "optional": false
+        }
+    ],
+    "CategoricalNB": [
+        {
+            "name": "alpha",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "fit_prior",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "force_alpha",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "ClassifierChain": [
+        {
+            "name": "chain_method",
+            "type": "categorical",
+            "choices": [
+                "predict_proba",
+                "predict_log_proba",
+                "decision_function",
+                "predict"
+            ],
+            "optional": false
+        },
+        {
+            "name": "cv",
+            "type": "no_choice",
+            "choices": [
+                "prefit"
+            ],
+            "optional": false
+        },
+        {
+            "name": "order",
+            "type": "no_choice",
+            "choices": [
+                "random"
+            ],
+            "optional": true
+        },
+        {
+            "name": "verbose",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "ComplementNB": [
+        {
+            "name": "alpha",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "fit_prior",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "force_alpha",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "norm",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "DecisionTreeClassifier": [
+        {
+            "name": "ccp_alpha",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "criterion",
+            "type": "categorical",
+            "choices": [
+                "gini",
+                "entropy",
+                "log_loss"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_depth",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "max_features",
+            "type": "categorical",
+            "choices": [
+                "log2",
+                "sqrt"
+            ],
+            "optional": true
+        },
+        {
+            "name": "max_leaf_nodes",
+            "type": "int",
+            "min": 2,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "min_impurity_decrease",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "min_samples_leaf",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "min_samples_split",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "min_weight_fraction_leaf",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.5,
+            "optional": false
+        },
+        {
+            "name": "splitter",
+            "type": "categorical",
+            "choices": [
+                "best",
+                "random"
+            ],
+            "optional": false
+        }
+    ],
+    "DummyClassifier": [
+        {
+            "name": "strategy",
+            "type": "categorical",
+            "choices": [
+                "stratified",
+                "uniform",
+                "prior",
+                "most_frequent"
+            ],
+            "optional": false
+        }
+    ],
+    "ExtraTreeClassifier": [
+        {
+            "name": "ccp_alpha",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "criterion",
+            "type": "categorical",
+            "choices": [
+                "gini",
+                "entropy",
+                "log_loss"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_depth",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "max_features",
+            "type": "categorical",
+            "choices": [
+                "log2",
+                "sqrt"
+            ],
+            "optional": true
+        },
+        {
+            "name": "max_leaf_nodes",
+            "type": "int",
+            "min": 2,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "min_impurity_decrease",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "min_samples_leaf",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "min_samples_split",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "min_weight_fraction_leaf",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.5,
+            "optional": false
+        },
+        {
+            "name": "splitter",
+            "type": "categorical",
+            "choices": [
+                "best",
+                "random"
+            ],
+            "optional": false
+        }
+    ],
+    "ExtraTreesClassifier": [
+        {
+            "name": "bootstrap",
+            "type": "no_choice",
+            "choices": [
+                true
+            ],
+            "optional": false
+        },
+        {
+            "name": "ccp_alpha",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "categorical",
+            "choices": [
+                "balanced_subsample",
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "criterion",
+            "type": "categorical",
+            "choices": [
+                "gini",
+                "entropy",
+                "log_loss"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_depth",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "max_features",
+            "type": "categorical",
+            "choices": [
+                "log2",
+                "sqrt"
+            ],
+            "optional": true
+        },
+        {
+            "name": "max_leaf_nodes",
+            "type": "int",
+            "min": 2,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "max_samples",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": true
+        },
+        {
+            "name": "min_impurity_decrease",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "min_samples_leaf",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "min_samples_split",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "min_weight_fraction_leaf",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.5,
+            "optional": false
+        },
+        {
+            "name": "n_estimators",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "oob_score",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "warm_start",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "FixedThresholdClassifier": [
+        {
+            "name": "pos_label",
+            "type": "bool",
+            "optional": true
+        },
+        {
+            "name": "response_method",
+            "type": "categorical",
+            "choices": [
+                "auto",
+                "decision_function",
+                "predict_proba"
+            ],
+            "optional": false
+        },
+        {
+            "name": "threshold",
+            "type": "no_choice",
+            "choices": [
+                "auto"
+            ],
+            "optional": false
+        }
+    ],
+    "GaussianNB": [
+        {
+            "name": "var_smoothing",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        }
+    ],
+    "GaussianProcessClassifier": [
+        {
+            "name": "copy_X_train",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "max_iter_predict",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "multi_class",
+            "type": "categorical",
+            "choices": [
+                "one_vs_one",
+                "one_vs_rest"
+            ],
+            "optional": false
+        },
+        {
+            "name": "n_restarts_optimizer",
+            "type": "int",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "optimizer",
+            "type": "no_choice",
+            "choices": [
+                "fmin_l_bfgs_b"
+            ],
+            "optional": true
+        },
+        {
+            "name": "warm_start",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "GradientBoostingClassifier": [
+        {
+            "name": "ccp_alpha",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "criterion",
+            "type": "categorical",
+            "choices": [
+                "friedman_mse",
+                "squared_error"
+            ],
+            "optional": false
+        },
+        {
+            "name": "init",
+            "type": "no_choice",
+            "choices": [
+                "zero"
+            ],
+            "optional": true
+        },
+        {
+            "name": "learning_rate",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "conditional": true,
+            "condition": "binary/multi",
+            "variants": [
+                {
+                    "name": "loss",
+                    "type": "categorical",
+                    "choices": [
+                        "log_loss",
+                        "exponential"
+                    ],
+                    "optional": false
+                },
+                {
+                    "name": "loss",
+                    "type": "no_choice",
+                    "choices": [
+                        "log_loss"
+                    ],
+                    "optional": false
+                }
+            ]
+        },
+        {
+            "name": "max_depth",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "max_features",
+            "type": "categorical",
+            "choices": [
+                "log2",
+                "sqrt"
+            ],
+            "optional": true
+        },
+        {
+            "name": "max_leaf_nodes",
+            "type": "int",
+            "min": 2,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "min_impurity_decrease",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "min_samples_leaf",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "min_samples_split",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "min_weight_fraction_leaf",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.5,
+            "optional": false
+        },
+        {
+            "name": "n_estimators",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "n_iter_no_change",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "subsample",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        },
+        {
+            "name": "validation_fraction",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "warm_start",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "HistGradientBoostingClassifier": [
+        {
+            "name": "categorical_features",
+            "type": "no_choice",
+            "choices": [
+                "from_dtype"
+            ],
+            "optional": true
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "early_stopping",
+            "type": "no_choice",
+            "choices": [
+                "auto"
+            ],
+            "optional": false
+        },
+        {
+            "name": "interaction_cst",
+            "type": "categorical",
+            "choices": [
+                "no_interactions",
+                "pairwise"
+            ],
+            "optional": true
+        },
+        {
+            "name": "l2_regularization",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "learning_rate",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "loss",
+            "type": "no_choice",
+            "choices": [
+                "log_loss"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_bins",
+            "type": "int",
+            "min": 2,
+            "max": 255,
+            "optional": false
+        },
+        {
+            "name": "max_depth",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "max_features",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "max_leaf_nodes",
+            "type": "int",
+            "min": 2,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "min_samples_leaf",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "n_iter_no_change",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        },
+        {
+            "name": "validation_fraction",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": true
+        },
+        {
+            "name": "warm_start",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "KNeighborsClassifier": [
+        {
+            "name": "algorithm",
+            "type": "categorical",
+            "choices": [
+                "auto",
+                "ball_tree",
+                "kd_tree",
+                "brute"
+            ],
+            "optional": false
+        },
+        {
+            "name": "leaf_size",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "n_neighbors",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "p",
+            "type": "float",
+            "min": 1,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "weights",
+            "type": "categorical",
+            "choices": [
+                "distance",
+                "uniform"
+            ],
+            "optional": true
+        }
+    ],
+    "LabelPropagation": [
+        {
+            "name": "gamma",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "kernel",
+            "type": "categorical",
+            "choices": [
+                "knn",
+                "rbf"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "n_neighbors",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        }
+    ],
+    "LabelSpreading": [
+        {
+            "name": "alpha",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "gamma",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "kernel",
+            "type": "categorical",
+            "choices": [
+                "knn",
+                "rbf"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "n_neighbors",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        }
+    ],
+    "LinearDiscriminantAnalysis": [
+        {
+            "name": "shrinkage",
+            "type": "no_choice",
+            "choices": [
+                "auto"
+            ],
+            "optional": true
+        },
+        {
+            "name": "solver",
+            "type": "categorical",
+            "choices": [
+                "eigen",
+                "lsqr"
+            ],
+            "optional": false
+        },
+        {
+            "name": "store_covariance",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        }
+    ],
+    "LinearSVC": [
+        {
+            "name": "C",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "dual",
+            "type": "no_choice",
+            "choices": [
+                "auto"
+            ],
+            "optional": false
+        },
+        {
+            "name": "fit_intercept",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "intercept_scaling",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "loss",
+            "type": "no_choice",
+            "choices": [
+                "squared_hinge"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "multi_class",
+            "type": "categorical",
+            "choices": [
+                "crammer_singer",
+                "ovr"
+            ],
+            "optional": false
+        },
+        {
+            "name": "penalty",
+            "type": "categorical",
+            "choices": [
+                "l1",
+                "l2"
+            ],
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        }
+    ],
+    "LogisticRegression": [
+        {
+            "name": "C",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "fit_intercept",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "intercept_scaling",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "l1_ratio",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": true
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "multi_class",
+            "type": "categorical",
+            "choices": [
+                "multinomial",
+                "auto",
+                "ovr"
+            ],
+            "optional": false
+        },
+        {
+            "name": "solver",
+            "type": "categorical",
+            "choices": [
+                "saga",
+                "newton-cg",
+                "lbfgs",
+                "sag"
+            ],
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        },
+        {
+            "name": "warm_start",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "LogisticRegressionCV": [
+        {
+            "name": "Cs",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "fit_intercept",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "intercept_scaling",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "multi_class",
+            "type": "categorical",
+            "choices": [
+                "multinomial",
+                "auto",
+                "ovr"
+            ],
+            "optional": false
+        },
+        {
+            "name": "refit",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "scoring",
+            "type": "categorical",
+            "choices": [
+                "accuracy",
+                "precision_micro",
+                "jaccard_samples",
+                "rand_score",
+                "precision_weighted",
+                "jaccard",
+                "neg_mean_poisson_deviance",
+                "f1",
+                "f1_micro",
+                "recall_weighted",
+                "neg_mean_squared_error",
+                "adjusted_mutual_info_score",
+                "mutual_info_score",
+                "neg_median_absolute_error",
+                "neg_mean_absolute_error",
+                "recall",
+                "neg_root_mean_squared_error",
+                "v_measure_score",
+                "neg_brier_score",
+                "neg_mean_squared_log_error",
+                "neg_negative_likelihood_ratio",
+                "recall_samples",
+                "d2_absolute_error_score",
+                "jaccard_macro",
+                "positive_likelihood_ratio",
+                "completeness_score",
+                "explained_variance",
+                "precision_samples",
+                "average_precision",
+                "jaccard_micro",
+                "roc_auc_ovo_weighted",
+                "matthews_corrcoef",
+                "top_k_accuracy",
+                "precision",
+                "neg_mean_absolute_percentage_error",
+                "balanced_accuracy",
+                "jaccard_weighted",
+                "adjusted_rand_score",
+                "neg_log_loss",
+                "neg_mean_gamma_deviance",
+                "recall_macro",
+                "recall_micro",
+                "roc_auc",
+                "homogeneity_score",
+                "roc_auc_ovr_weighted",
+                "f1_weighted",
+                "normalized_mutual_info_score",
+                "precision_macro",
+                "roc_auc_ovr",
+                "r2",
+                "roc_auc_ovo",
+                "neg_root_mean_squared_log_error",
+                "f1_macro",
+                "f1_samples",
+                "max_error",
+                "fowlkes_mallows_score"
+            ],
+            "optional": true
+        },
+        {
+            "name": "solver",
+            "type": "categorical",
+            "choices": [
+                "saga",
+                "sag",
+                "newton-cholesky",
+                "newton-cg",
+                "liblinear",
+                "lbfgs"
+            ],
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        }
+    ],
+    "MLPClassifier": [
+        {
+            "name": "activation",
+            "type": "categorical",
+            "choices": [
+                "tanh",
+                "relu",
+                "identity",
+                "logistic"
+            ],
+            "optional": false
+        },
+        {
+            "name": "alpha",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "batch_size",
+            "type": "no_choice",
+            "choices": [
+                "auto"
+            ],
+            "optional": false
+        },
+        {
+            "name": "beta_1",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "beta_2",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "early_stopping",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "epsilon",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "hidden_layer_sizes",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "learning_rate",
+            "type": "categorical",
+            "choices": [
+                "adaptive",
+                "invscaling",
+                "constant"
+            ],
+            "optional": false
+        },
+        {
+            "name": "learning_rate_init",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "max_fun",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "momentum",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "n_iter_no_change",
+            "type": "no_choice",
+            "choices": [
+                Infinity
+            ],
+            "optional": false
+        },
+        {
+            "name": "nesterovs_momentum",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "power_t",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "shuffle",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "solver",
+            "type": "categorical",
+            "choices": [
+                "lbfgs",
+                "adam",
+                "sgd"
+            ],
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        },
+        {
+            "name": "validation_fraction",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "warm_start",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "MultiOutputClassifier": [],
+    "MultinomialNB": [
+        {
+            "name": "alpha",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "fit_prior",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "force_alpha",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "NearestCentroid": [
+        {
+            "name": "metric",
+            "type": "categorical",
+            "choices": [
+                "euclidean",
+                "manhattan"
+            ],
+            "optional": false
+        },
+        {
+            "name": "shrink_threshold",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": true
+        }
+    ],
+    "NuSVC": [
+        {
+            "name": "break_ties",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "cache_size",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "coef0",
+            "type": "float",
+            "min": null,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "decision_function_shape",
+            "type": "categorical",
+            "choices": [
+                "ovo",
+                "ovr"
+            ],
+            "optional": false
+        },
+        {
+            "name": "degree",
+            "type": "int",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "gamma",
+            "type": "categorical",
+            "choices": [
+                "auto",
+                "scale"
+            ],
+            "optional": false
+        },
+        {
+            "name": "kernel",
+            "type": "categorical",
+            "choices": [
+                "rbf",
+                "sigmoid",
+                "poly",
+                "linear"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": -1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "nu",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "probability",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "shrinking",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        }
+    ],
+    "OneVsOneClassifier": [],
+    "OneVsRestClassifier": [],
+    "OutputCodeClassifier": [
+        {
+            "name": "code_size",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        }
+    ],
+    "PassiveAggressiveClassifier": [
+        {
+            "name": "C",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "average",
+            "type": "int",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "early_stopping",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "fit_intercept",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "loss",
+            "type": "categorical",
+            "choices": [
+                "hinge",
+                "squared_hinge"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "n_iter_no_change",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "shuffle",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": true
+        },
+        {
+            "name": "validation_fraction",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "warm_start",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "Perceptron": [
+        {
+            "name": "alpha",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "early_stopping",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "eta0",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "fit_intercept",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "l1_ratio",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "n_iter_no_change",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "penalty",
+            "type": "categorical",
+            "choices": [
+                "elasticnet",
+                "l1",
+                "l2"
+            ],
+            "optional": true
+        },
+        {
+            "name": "shuffle",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": true
+        },
+        {
+            "name": "validation_fraction",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "warm_start",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "QuadraticDiscriminantAnalysis": [
+        {
+            "name": "reg_param",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "store_covariance",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        }
+    ],
+    "RadiusNeighborsClassifier": [
+        {
+            "name": "algorithm",
+            "type": "categorical",
+            "choices": [
+                "auto",
+                "ball_tree",
+                "kd_tree",
+                "brute"
+            ],
+            "optional": false
+        },
+        {
+            "name": "leaf_size",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "radius",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "weights",
+            "type": "categorical",
+            "choices": [
+                "distance",
+                "uniform"
+            ],
+            "optional": true
+        }
+    ],
+    "RandomForestClassifier": [
+        {
+            "name": "ccp_alpha",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "categorical",
+            "choices": [
+                "balanced_subsample",
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "criterion",
+            "type": "categorical",
+            "choices": [
+                "gini",
+                "entropy",
+                "log_loss"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_depth",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "max_features",
+            "type": "categorical",
+            "choices": [
+                "log2",
+                "sqrt"
+            ],
+            "optional": true
+        },
+        {
+            "name": "max_leaf_nodes",
+            "type": "int",
+            "min": 2,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "max_samples",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": true
+        },
+        {
+            "name": "min_impurity_decrease",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "min_samples_leaf",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "min_samples_split",
+            "type": "float",
+            "min": 0.0,
+            "max": 1.0,
+            "optional": false
+        },
+        {
+            "name": "min_weight_fraction_leaf",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.5,
+            "optional": false
+        },
+        {
+            "name": "n_estimators",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "oob_score",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "warm_start",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "RidgeClassifier": [
+        {
+            "name": "alpha",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "copy_X",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "fit_intercept",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": true
+        },
+        {
+            "name": "solver",
+            "type": "categorical",
+            "choices": [
+                "sag",
+                "svd",
+                "sparse_cg",
+                "saga",
+                "cholesky",
+                "lsqr",
+                "auto"
+            ],
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        }
+    ],
+    "RidgeClassifierCV": [
+        {
+            "name": "alphas",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "fit_intercept",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "scoring",
+            "type": "categorical",
+            "choices": [
+                "accuracy",
+                "precision_micro",
+                "jaccard_samples",
+                "rand_score",
+                "precision_weighted",
+                "jaccard",
+                "neg_mean_poisson_deviance",
+                "f1",
+                "f1_micro",
+                "recall_weighted",
+                "neg_mean_squared_error",
+                "adjusted_mutual_info_score",
+                "mutual_info_score",
+                "neg_median_absolute_error",
+                "neg_mean_absolute_error",
+                "recall",
+                "neg_root_mean_squared_error",
+                "v_measure_score",
+                "neg_brier_score",
+                "neg_mean_squared_log_error",
+                "neg_negative_likelihood_ratio",
+                "recall_samples",
+                "d2_absolute_error_score",
+                "jaccard_macro",
+                "positive_likelihood_ratio",
+                "completeness_score",
+                "explained_variance",
+                "precision_samples",
+                "average_precision",
+                "jaccard_micro",
+                "roc_auc_ovo_weighted",
+                "matthews_corrcoef",
+                "top_k_accuracy",
+                "precision",
+                "neg_mean_absolute_percentage_error",
+                "balanced_accuracy",
+                "jaccard_weighted",
+                "adjusted_rand_score",
+                "neg_log_loss",
+                "neg_mean_gamma_deviance",
+                "recall_macro",
+                "recall_micro",
+                "roc_auc",
+                "homogeneity_score",
+                "roc_auc_ovr_weighted",
+                "f1_weighted",
+                "normalized_mutual_info_score",
+                "precision_macro",
+                "roc_auc_ovr",
+                "r2",
+                "roc_auc_ovo",
+                "neg_root_mean_squared_log_error",
+                "f1_macro",
+                "f1_samples",
+                "max_error",
+                "fowlkes_mallows_score"
+            ],
+            "optional": true
+        },
+        {
+            "name": "store_cv_results",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "SGDClassifier": [
+        {
+            "name": "alpha",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "average",
+            "type": "int",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "early_stopping",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "epsilon",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "eta0",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "fit_intercept",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "l1_ratio",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "learning_rate",
+            "type": "categorical",
+            "choices": [
+                "adaptive",
+                "constant",
+                "optimal",
+                "invscaling"
+            ],
+            "optional": false
+        },
+        {
+            "name": "loss",
+            "type": "categorical",
+            "choices": [
+                "modified_huber",
+                "squared_error",
+                "perceptron",
+                "squared_epsilon_insensitive",
+                "huber",
+                "squared_hinge",
+                "epsilon_insensitive",
+                "hinge",
+                "log_loss"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "n_iter_no_change",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "penalty",
+            "type": "categorical",
+            "choices": [
+                "elasticnet",
+                "l1",
+                "l2"
+            ],
+            "optional": true
+        },
+        {
+            "name": "power_t",
+            "type": "float",
+            "min": null,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "shuffle",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": true
+        },
+        {
+            "name": "validation_fraction",
+            "type": "float",
+            "min": 0,
+            "max": 1,
+            "optional": false
+        },
+        {
+            "name": "warm_start",
+            "type": "bool",
+            "optional": false
+        }
+    ],
+    "SVC": [
+        {
+            "name": "C",
+            "type": "float",
+            "min": 0.0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "cache_size",
+            "type": "float",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "class_weight",
+            "type": "no_choice",
+            "choices": [
+                "balanced"
+            ],
+            "optional": true
+        },
+        {
+            "name": "coef0",
+            "type": "float",
+            "min": null,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "decision_function_shape",
+            "type": "categorical",
+            "choices": [
+                "ovo",
+                "ovr"
+            ],
+            "optional": false
+        },
+        {
+            "name": "degree",
+            "type": "int",
+            "min": 0,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "gamma",
+            "type": "categorical",
+            "choices": [
+                "auto",
+                "scale"
+            ],
+            "optional": false
+        },
+        {
+            "name": "kernel",
+            "type": "categorical",
+            "choices": [
+                "rbf",
+                "sigmoid",
+                "poly",
+                "linear"
+            ],
+            "optional": false
+        },
+        {
+            "name": "max_iter",
+            "type": "int",
+            "min": -1,
+            "max": null,
+            "optional": false
+        },
+        {
+            "name": "probability",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "shrinking",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "tol",
+            "type": "float",
+            "min": 0.0,
+            "max": 0.001,
+            "optional": false
+        }
+    ],
+    "StackingClassifier": [
+        {
+            "name": "cv",
+            "type": "no_choice",
+            "choices": [
+                "prefit"
+            ],
+            "optional": false
+        },
+        {
+            "name": "passthrough",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "stack_method",
+            "type": "categorical",
+            "choices": [
+                "auto",
+                "decision_function",
+                "predict_proba",
+                "predict"
+            ],
+            "optional": false
+        }
+    ],
+    "TunedThresholdClassifierCV": [
+        {
+            "name": "cv",
+            "type": "no_choice",
+            "choices": [
+                "prefit"
+            ],
+            "optional": false
+        },
+        {
+            "name": "refit",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "response_method",
+            "type": "categorical",
+            "choices": [
+                "auto",
+                "decision_function",
+                "predict_proba"
+            ],
+            "optional": false
+        },
+        {
+            "name": "scoring",
+            "type": "categorical",
+            "choices": [
+                "accuracy",
+                "precision_micro",
+                "jaccard_samples",
+                "rand_score",
+                "precision_weighted",
+                "jaccard",
+                "neg_mean_poisson_deviance",
+                "f1",
+                "f1_micro",
+                "recall_weighted",
+                "neg_mean_squared_error",
+                "adjusted_mutual_info_score",
+                "mutual_info_score",
+                "neg_median_absolute_error",
+                "neg_mean_absolute_error",
+                "recall",
+                "neg_root_mean_squared_error",
+                "v_measure_score",
+                "neg_brier_score",
+                "neg_mean_squared_log_error",
+                "neg_negative_likelihood_ratio",
+                "recall_samples",
+                "d2_absolute_error_score",
+                "jaccard_macro",
+                "positive_likelihood_ratio",
+                "completeness_score",
+                "explained_variance",
+                "precision_samples",
+                "average_precision",
+                "jaccard_micro",
+                "roc_auc_ovo_weighted",
+                "matthews_corrcoef",
+                "top_k_accuracy",
+                "precision",
+                "neg_mean_absolute_percentage_error",
+                "balanced_accuracy",
+                "jaccard_weighted",
+                "adjusted_rand_score",
+                "neg_log_loss",
+                "neg_mean_gamma_deviance",
+                "recall_macro",
+                "recall_micro",
+                "roc_auc",
+                "homogeneity_score",
+                "roc_auc_ovr_weighted",
+                "f1_weighted",
+                "normalized_mutual_info_score",
+                "precision_macro",
+                "roc_auc_ovr",
+                "r2",
+                "roc_auc_ovo",
+                "neg_root_mean_squared_log_error",
+                "f1_macro",
+                "f1_samples",
+                "max_error",
+                "fowlkes_mallows_score"
+            ],
+            "optional": false
+        },
+        {
+            "name": "store_cv_results",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "thresholds",
+            "type": "int",
+            "min": 1,
+            "max": null,
+            "optional": false
+        }
+    ],
+    "VotingClassifier": [
+        {
+            "name": "flatten_transform",
+            "type": "bool",
+            "optional": false
+        },
+        {
+            "name": "voting",
+            "type": "categorical",
+            "choices": [
+                "soft",
+                "hard"
+            ],
+            "optional": false
+        }
+    ]
+}

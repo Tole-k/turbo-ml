@@ -5,7 +5,7 @@ from collections.abc import Iterable
 from typing import Literal
 
 
-class GBoostClassifier(Model):
+class GradientBoostingClassifier(Model):
     input_formats = {Iterable[int | float]}
     output_formats = {list[int], list[str]}
 
@@ -44,7 +44,7 @@ class GBoostClassifier(Model):
         return self.clf.predict(guess)
 
 
-class GBoostRegressor(Model):
+class GradientBoostingRegressor(Model):
     input_formats = {Iterable[int | float]}
     output_formats = {list[float]}
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     X, y = make_hastie_10_2(random_state=0)
     X_train, X_test = X[:2000], X[2000:]
     y_train, y_test = y[:2000], y[2000:]
-    clf = GBoostClassifier(n_estimators=100, learning_rate=1.0,
-                           max_depth=1, random_state=0)
+    clf = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0,
+                                     max_depth=1, random_state=0)
     clf.train(X_train, y_train)
     print(clf.predict(X_test))
