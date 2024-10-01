@@ -40,7 +40,7 @@ class ExhaustiveSearch(Forecast):
         best_model: Tuple = (None, -float('inf'))
         models = get_models_list().copy()
         random.shuffle(models)
-        for model_cls in models():
+        for model_cls in models:
             try:
                 value = evaluate(model_cls, data, target)
                 if math.isinf(value):  # Ignoring inf values
