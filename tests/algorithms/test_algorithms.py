@@ -41,7 +41,7 @@ def test_decision_tree():
 
 
 def test_gboost():
-    model = GBoostClassifier()
+    model = GradientBoostingClassifier()
     AlgorithmTesting._baseline_test(model)
     AlgorithmTesting._existence_test(model)
 
