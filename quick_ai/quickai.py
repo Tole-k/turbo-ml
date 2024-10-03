@@ -159,7 +159,7 @@ class QuickAI:
 
     def __call__(self, X: pd.DataFrame) -> pd.Series:
         """
-        Generates predictions using the trained model. Call methd is just wrapper for predict method.
+        Generates predictions using the trained model. Call method is just wrapper for predict method.
 
         Args:
             X (pd.DataFrame): A DataFrame containing the input features for prediction.
