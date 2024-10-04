@@ -14,7 +14,8 @@ from typing import List, Tuple
 import logging
 from ..utils import option
 import optuna as opt
-logging.basicConfig(level=option.log_level)
+logging.basicConfig(
+    level=option.dev_mode_logging if option.dev_mode else option.user_mode_logging)
 
 
 class NeuralNetworkBase(Model):

@@ -15,7 +15,8 @@ from quick_ai.utils import option
 class HyperTuner:
 
     def __init__(self) -> None:
-        # opt.logging.set_verbosity(opt.logging.WARNING)
+        opt.logging.set_verbosity(
+            verbosity=option.dev_mode_logging if option.dev_mode else option.user_mode_logging)
         self.sklearn_hyperparameters = json.load(
             open('quick_ai/forecast/sklearn_hyperparameters.json'))
         self.hyperparameters = json.load(
