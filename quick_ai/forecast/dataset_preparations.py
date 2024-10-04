@@ -1,3 +1,4 @@
+from typing import List
 import pandas as pd
 from datasets import get_iris, get_wine, get_breast_cancer, get_digits, get_adult, get_tips, get_titanic
 # get_heart_disease loads incorrectly
@@ -12,9 +13,8 @@ from pydataset import data
 def generate_dataset(models, datasets):
     records = []
     for dataset in datasets:
-        print(dataset.__name__)
         data_train, data_test, target_train, target_test = train_test_split(
-            *dataset(), test_size=0.2)
+            *dataset, test_size=0.2)
         for preprocessor in [NanImputer, Normalizer]:
             print(data_train)
             print(target_train)
@@ -59,17 +59,25 @@ def generate_dataset(models, datasets):
     df = pd.DataFrame.from_records(records)
     score_columns = [model.__name__ for model in models]
     df[score_columns] = minmax_scale(df[score_columns], axis=1)
-    df.to_csv("results.csv")
+    df.to_csv("extended_results.csv")
     return df
 
 
 ALL_MODELS = [NeuralNetworkModel, XGBoostClassifier] + \
     list(sklearn_models.values())
 
-ALL_DATASETS = [get_iris, get_wine, get_breast_cancer,
-                get_digits, get_titanic]
-
 PY_DATASETS = [data(id) for id in data()['dataset_id']]
 
-print([print(dataset.columns) for dataset in PY_DATASETS])
+
+def adapt_pydatasets(datasets: List[pd.DataFrame]):
+    for dataset in datasets:
+        if 'object' in dataset.dtypes.to_numpy():
+            categorical_column = dataset.select_dtypes(
+                include='object').iloc[:, 0]
+            dataset.drop(categorical_column.name, axis=1, inplace=True)
+            yield dataset, categorical_column
+
+
+ALL_DATASETS = [get_iris(), get_wine(), get_breast_cancer(),
+                get_digits(), get_titanic()] + list(adapt_pydatasets(PY_DATASETS))
 generate_dataset(ALL_MODELS, ALL_DATASETS)
