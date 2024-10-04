@@ -6,6 +6,7 @@ from quick_ai.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelE
 from quick_ai.forecast import HyperTuner, StatisticalParametersExtractor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import minmax_scale
+from pydataset import data
 
 
 def generate_dataset(models, datasets):
@@ -68,4 +69,7 @@ ALL_MODELS = [NeuralNetworkModel, XGBoostClassifier] + \
 ALL_DATASETS = [get_iris, get_wine, get_breast_cancer,
                 get_digits, get_titanic]
 
+PY_DATASETS = [data(id) for id in data()['dataset_id']]
+
+print([print(dataset.columns) for dataset in PY_DATASETS])
 generate_dataset(ALL_MODELS, ALL_DATASETS)
