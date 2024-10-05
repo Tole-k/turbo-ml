@@ -12,6 +12,12 @@ from pydataset import data
 
 def generate_dataset(models, datasets):
     for dataset in datasets:
+        if isinstance(dataset, tuple):
+            name = dataset[1]
+            dataset = dataset[0]
+        if callable(dataset):
+            name = dataset.__name__
+            dataset = dataset()
         data_train, data_test, target_train, target_test = train_test_split(
             *dataset, test_size=0.2)
         for preprocessor in [NanImputer, Normalizer]:
@@ -57,8 +63,13 @@ def generate_dataset(models, datasets):
                 print(e)
                 print(0)
                 scores[model.__name__] = 0
-        record = {**description.dict(), **scores}
+        description_dict = description.dict()
+        description_dict['name'] = name
+        record = {**description_dict, **scores}
         df = pd.DataFrame([record])
+        names = df['name']
+        df.drop('name', axis=1, inplace=True)
+        df.insert(0, 'name', names)
         score_columns = [model.__name__ for model in models]
         df[score_columns] = minmax_scale(df[score_columns], axis=1)
         df.to_csv("results.csv", mode='a', header=False, index=False)
@@ -67,17 +78,21 @@ def generate_dataset(models, datasets):
 ALL_MODELS = [NeuralNetworkModel, XGBoostClassifier] + \
     list(sklearn_models.values())
 
-PY_DATASETS = [data(id) for id in data()['dataset_id']]
+PY_DATASETS = [(data(id), name) for id, name in zip(
+    data()['dataset_id'], data()['title'])]
 
 
 def adapt_pydatasets(datasets: List[pd.DataFrame]):
     for dataset in datasets:
+        name = dataset[1]
+        dataset = dataset[0]
         if 'object' in dataset.dtypes.to_numpy():
             categorical_column = dataset.select_dtypes(
-                include='object').iloc[:, 0]
+                include='object').iloc[:, -1]
             dataset.drop(categorical_column.name, axis=1, inplace=True)
-            yield dataset, categorical_column
+            yield ((dataset, categorical_column), name)
 
 
-ALL_DATASETS = list(adapt_pydatasets(PY_DATASETS))
+ALL_DATASETS = [get_iris, get_wine, get_breast_cancer, get_digits, get_adult,
+                get_tips, get_titanic] + list(adapt_pydatasets(PY_DATASETS))
 generate_dataset(ALL_MODELS, ALL_DATASETS)
