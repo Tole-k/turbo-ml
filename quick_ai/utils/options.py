@@ -7,7 +7,7 @@ class option:
     # TODO: change default to auto-adjustem based on terminal size before release
     text_size: int = 64
     validation: bool = True  # TODO: change default to False before release
-    dev_mode = True
+    dev_mode = False
     dev_mode_logging = logging.INFO
     user_mode_logging = logging.ERROR
     blacklist = ['CalibratedClassifierCV']
