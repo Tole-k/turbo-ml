@@ -8,7 +8,8 @@ from sklearn.preprocessing import OneHotEncoder as sklearnOneHotEncoder
 class OneHotEncoder(Preprocessor):
     def __init__(self) -> None:
         super().__init__()
-        self.encoder = sklearnOneHotEncoder(dtype=bool, drop='if_binary', handle_unknown='ignore')
+        self.encoder = sklearnOneHotEncoder(
+            dtype=bool, drop='if_binary', handle_unknown='ignore')
         self.target_encoder = sklearnOneHotEncoder(
             dtype=bool, drop='if_binary')
 
@@ -28,14 +29,14 @@ class OneHotEncoder(Preprocessor):
         return result
 
     def fit_transform_target(self, target: pd.Series) -> pd.DataFrame | pd.Series:
-        if not np.isin(target.dtype, [np.number, bool]):
-            target = pd.DataFrame(
-                self.target_encoder.fit_transform(
-                    np.transpose([target])).toarray(),
-                columns=self.target_encoder.get_feature_names_out(),
-            )
-            if target.shape[1] == 1:
-                target = target.squeeze()
+        # if not np.isin(target.dtype, [np.number, bool]):
+        #     target = pd.DataFrame(
+        #         self.target_encoder.fit_transform(
+        #             np.transpose([target])).toarray(),
+        #         columns=self.target_encoder.get_feature_names_out(),
+        #     )
+        #     if target.shape[1] == 1:
+        #         target = target.squeeze()
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
@@ -59,18 +60,19 @@ class OneHotEncoder(Preprocessor):
         return data
 
     def transform_target(self, target: pd.Series) -> pd.Series | pd.DataFrame:
-        if not np.isin(target.dtype, [np.number, bool]):
-            target = pd.DataFrame(
-                self.target_encoder.transform(
-                    np.transpose([target])).toarray(),
-                columns=self.target_encoder.get_feature_names_out(),
-            )
+        # if not np.isin(target.dtype, [np.number, bool]):
+        #     target = pd.DataFrame(
+        #         self.target_encoder.transform(
+        #             np.transpose([target])).toarray(),
+        #         columns=self.target_encoder.get_feature_names_out(),
+        #     )
         return target
 
     def inverse_transform_target(self, target: pd.DataFrame) -> pd.Series:
-        ohe_columns = target.select_dtypes(include=[bool])
-        target = pd.DataFrame(self.target_encoder.inverse_transform(target))
-        return target[0]
+        # ohe_columns = target.select_dtypes(include=[bool])
+        # target = pd.DataFrame(self.target_encoder.inverse_transform(target))
+        # return target[0]
+        return target
 
 
 def main():
