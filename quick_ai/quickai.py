@@ -168,7 +168,8 @@ class QuickAI:
             pd.Series: A Series containing the predicted values.
         """
         self.preprocessor.transform(X)
-        return self.model.predict(X)
+        result = self.model.predict(X)
+        return result  # TODO: inverse transform target
 
     def __call__(self, X: pd.DataFrame) -> pd.Series:
         """
