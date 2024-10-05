@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import *
 from quick_ai.base import Model
-from quick_ai.base.model import get_model_list
+from quick_ai.base.model import get_models_list
 import random
 import math
 
@@ -38,7 +38,7 @@ class ExhaustiveSearch(Forecast):
 
     def predict(self, data, target) -> Model:
         best_model: Tuple = (None, -float('inf'))
-        models = get_model_list().copy()
+        models = get_models_list().copy()
         random.shuffle(models)
         for model_cls in models:
             try:

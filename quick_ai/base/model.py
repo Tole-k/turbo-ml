@@ -58,7 +58,7 @@ class Model(metaclass=ModelMetaclass):
             pickle.dump(self, file)
 
 
-def get_model_list() -> List[Type[Model]]:
+def get_models_list() -> List[Type[Model]]:
     return __ALL_MODELS__
 
 
