@@ -2,6 +2,8 @@ from abc import abstractmethod
 from typing import *
 from quick_ai.base import Model
 from quick_ai.base.model import get_model_list
+import random
+import math
 
 
 def evaluate(model: Type[Model], data: Any, target: Any) -> float:
@@ -28,16 +30,21 @@ class Forecast:
 
 
 class ExhaustiveSearch(Forecast):
-    """ Search for the best model by evaluating all models in the list and picking the best one based on the evaluation function """
+    """ Search for the best model by evaluating all models in the list and picking the best one based on the evaluation function
+    This search ignores HPO steps and focus only on AS based on predefined hyper-parameters"""
 
     def __init__(self) -> None:
         self.counter = 0
 
     def predict(self, data, target) -> Model:
         best_model: Tuple = (None, -float('inf'))
-        for model_cls in get_model_list():
+        models = get_model_list().copy()
+        random.shuffle(models)
+        for model_cls in models:
             try:
                 value = evaluate(model_cls, data, target)
+                if math.isinf(value):  # Ignoring inf values
+                    continue
                 if value > best_model[1]:
                     best_model = (model_cls, value)
                 self.counter += 1

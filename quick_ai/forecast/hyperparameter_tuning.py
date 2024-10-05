@@ -1,4 +1,3 @@
-from time import sleep
 import numpy as np
 from quick_ai.algorithms import NeuralNetworkModel
 import optuna as opt
