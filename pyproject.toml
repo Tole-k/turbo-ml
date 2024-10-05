@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "quick-ai"
 version = "0.1.0"
-description = ""
-# TODO write a description
+description = "Auto ML library for automated model selection using pre-trained neural networks"
+readme = "README.md"
 authors = ["Dawid Siera <dawid.siera@gmail.com>", "Anatol Kaczmarek <anatol.kaczmarek@gmail.com>"]
 
 [tool.poetry.dependencies]
