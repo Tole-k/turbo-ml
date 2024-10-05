@@ -8,6 +8,7 @@ import pandas as pd
 from .base import Model
 from .algorithms import RandomGuesser as DummyModel
 from .forecast import StatisticalParametersExtractor, ExhaustiveSearch, HyperTuner
+from .preprocessing import sota_preprocessor
 from typing import Optional
 import time
 import logging
@@ -79,6 +80,14 @@ class QuickAI:
         target_data = dataset[target]
         data = dataset.drop(columns=[target])
         try:
+            self.preprocessor = sota_preprocessor()
+            data = self.preprocessor.fit_transform(data)
+            target_data = self.preprocessor.fit_transform_target(target_data)
+        except Exception:
+            raise Exception("Preprocessing failed")
+        if verbose:
+            self.logger.info('Preprocessing completed')
+        try:
             extractor = StatisticalParametersExtractor(data, target_data)
             dataset_params = extractor.describe_dataset()
         except Exception:
@@ -86,6 +95,7 @@ class QuickAI:
         if verbose:
             self.logger.info(
                 'Dataset parameters found, trying to guess best model')
+        data_operations = time.time()
 
         try:
             # TODO implement model guessing based on dataset parameters
@@ -126,13 +136,15 @@ class QuickAI:
         end_time = time.time()
         self.times = {
             'total': end_time - start_time,
-            'guessing': model_guessing_time - start_time,
+            'data_ops': data_operations - start_time,
+            'guessing': model_guessing_time - data_operations,
             'AS': model_selection_time - model_guessing_time,
             'HPO': hpo_time - model_selection_time,
             'training': end_time - hpo_time
         }
         if verbose:
             self.logger.info(f"{model_name} model trained successfully")
+            self.logger.info(f"Data operations time: {self.times['data_ops']}")
             self.logger.info(f"Model guessing time: {self.times['guessing']}")
             self.logger.info(f"Model selection time: {self.times['AS']}")
             self.logger.info(f"Model HPO time: {self.times['HPO']}")
@@ -155,6 +167,7 @@ class QuickAI:
         Returns:
             pd.Series: A Series containing the predicted values.
         """
+        self.preprocessor.transform(X)
         return self.model.predict(X)
 
     def __call__(self, X: pd.DataFrame) -> pd.Series:
