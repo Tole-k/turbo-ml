@@ -168,7 +168,7 @@ class TurboML:
         Returns:
             pd.Series: A Series containing the predicted values.
         """
-        self.preprocessor.transform(X)
+        X = self.preprocessor.transform(X)
         result = self.model.predict(X)
         return result  # TODO: inverse transform target
 
