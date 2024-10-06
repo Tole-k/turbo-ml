@@ -5,16 +5,17 @@ This module provides the `QuickAI` class, our main class for out-of-the-box auto
 It does not provide additional functionalities but it combines other modules to provide a complete solution.
 """
 import pandas as pd
-from .base import Model
+from .base import Model, __ALL_MODELS__
 from .algorithms import RandomGuesser as DummyModel
-from .forecast import StatisticalParametersExtractor, ExhaustiveSearch, HyperTuner
+from .forecast import StatisticalParametersExtractor, HyperTuner, ExhaustiveSearch, MetaModelGuesser
+from .preprocessing import sota_preprocessor
 from typing import Optional
 import time
 import logging
 logging.basicConfig(level=logging.INFO)
 
 
-class QuickAI:
+class TurboML:
     """
     The `QuickAI` class provides an out-of-the-box AutoML solution that automatically
     selects and trains the best machine learning model for a given dataset. It handles
@@ -79,6 +80,14 @@ class QuickAI:
         target_data = dataset[target]
         data = dataset.drop(columns=[target])
         try:
+            self.preprocessor = sota_preprocessor()
+            data = self.preprocessor.fit_transform(data)
+            target_data = self.preprocessor.fit_transform_target(target_data)
+        except Exception:
+            raise Exception("Preprocessing failed")
+        if verbose:
+            self.logger.info('Preprocessing completed')
+        try:
             extractor = StatisticalParametersExtractor(data, target_data)
             dataset_params = extractor.describe_dataset()
         except Exception:
@@ -86,10 +95,11 @@ class QuickAI:
         if verbose:
             self.logger.info(
                 'Dataset parameters found, trying to guess best model')
+        data_operations = time.time()
 
         try:
-            # TODO implement model guessing based on dataset parameters
-            self.model = DummyModel()
+            guesser = MetaModelGuesser()
+            self.model = guesser.predict(dataset_params)
         except Exception:
             raise Exception('Model optimization failed')
         model_guessing_time = time.time()
@@ -97,14 +107,15 @@ class QuickAI:
         model_name = self.model.__class__.__name__
         if verbose:
             self.logger.info(f'''Model guessed: {
-                model_name}, searching for better model''')
-        try:
-            search = ExhaustiveSearch()  # TODO split search engine into guessing and selection
-            self.model = search.predict(data, target_data)
-            if verbose:
-                self.logger.info(f'Looked at {search.counter} models')
-        except Exception:
-            self.logger.info('Trying to find better model failed')
+                model_name}, searching for better model (Currently disabled, unless guessing model is DummyModel)''')
+        if isinstance(self.model.__class__, DummyModel):
+            try:
+                search = ExhaustiveSearch()  # TODO split search engine into guessing and selection
+                self.model = search.predict(data, target_data)
+                if verbose:
+                    self.logger.info(f'Looked at {search.counter} models')
+            except Exception:
+                self.logger.info('Trying to find better model failed')
         model_selection_time = time.time()
 
         try:
@@ -126,13 +137,15 @@ class QuickAI:
         end_time = time.time()
         self.times = {
             'total': end_time - start_time,
-            'guessing': model_guessing_time - start_time,
+            'data_ops': data_operations - start_time,
+            'guessing': model_guessing_time - data_operations,
             'AS': model_selection_time - model_guessing_time,
             'HPO': hpo_time - model_selection_time,
             'training': end_time - hpo_time
         }
         if verbose:
             self.logger.info(f"{model_name} model trained successfully")
+            self.logger.info(f"Data operations time: {self.times['data_ops']}")
             self.logger.info(f"Model guessing time: {self.times['guessing']}")
             self.logger.info(f"Model selection time: {self.times['AS']}")
             self.logger.info(f"Model HPO time: {self.times['HPO']}")
@@ -155,11 +168,13 @@ class QuickAI:
         Returns:
             pd.Series: A Series containing the predicted values.
         """
-        return self.model.predict(X)
+        self.preprocessor.transform(X)
+        result = self.model.predict(X)
+        return result  # TODO: inverse transform target
 
     def __call__(self, X: pd.DataFrame) -> pd.Series:
         """
-        Generates predictions using the trained model. Call methd is just wrapper for predict method.
+        Generates predictions using the trained model. Call method is just wrapper for predict method.
 
         Args:
             X (pd.DataFrame): A DataFrame containing the input features for prediction.

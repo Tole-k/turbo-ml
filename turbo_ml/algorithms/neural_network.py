@@ -1,8 +1,6 @@
 import numpy as np
-from datasets import get_iris
 from typing import Any, Dict
 from typing import Literal
-from datasets import *
 import pandas as pd
 from ..base import Model
 import torch
@@ -14,7 +12,8 @@ from typing import List, Tuple
 import logging
 from ..utils import option
 import optuna as opt
-logging.basicConfig(level=option.log_level)
+logging.basicConfig(
+    level=option.dev_mode_logging if option.dev_mode else option.user_mode_logging)
 
 
 class NeuralNetworkBase(Model):
@@ -185,7 +184,7 @@ class NNFactory:
             activations = []
             for i in range(num_hidden_layers):
                 hidden_sizes.append(trial.suggest_int(
-                    f'hidden_size_{i}', 1, 1000))
+                    f'hidden_size_{i}', 1, 100))
                 activations.append(trial.suggest_categorical(
                     f'activation_{i}', ['relu', 'sigmoid', 'tanh', 'softmax', 'leakyrelu', 'elu', 'selu', 'gelu', 'hardtanh', 'logsigmoid', 'softplus', 'softshrink', 'softsign', 'tanhshrink', 'rrelu', 'celu', 'silu', 'mish', 'relu6', 'prelu', 'hardsigmoid', 'hardshrink']))
             trial.set_user_attr('hidden_sizes', hidden_sizes)
@@ -202,7 +201,7 @@ class NNFactory:
                 'optimizer', ['adam', 'sgd', 'adadelta', 'adagrad', 'adamax', 'rmsprop', 'rprop'])
             params['batch_size'] = trial.suggest_int(
                 'batch_size', np.sqrt(len(x_train)), len(x_train))
-            params['epochs'] = trial.suggest_int('epochs', 1, 1000)
+            params['epochs'] = trial.suggest_int('epochs', 10, 1000)
             params['learning_rate'] = trial.suggest_float(
                 'learning_rate', 0.0001, 0.1)
             params['device'] = trial.user_attrs['device']

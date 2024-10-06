@@ -13,45 +13,49 @@ class Normalizer(Preprocessor):
 
     def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
         data = data.apply(lambda x: x.astype(
-            bool) if x.isin([0, 1]).all() else x)
-        data = data.apply(lambda x: x.astype(
-            bool) if x.isin([0, 1]).all() else x)
+            bool) if x.isin([0, 1]).all() and not pd.api.types.is_float_dtype(x) else x)
+        numeric_cols = data.select_dtypes(include=[np.number])
+        if not numeric_cols.size:
+            return data
         normalized_numeric_cols = pd.DataFrame(self.scaler.fit_transform(
-            data.select_dtypes(include=[np.number])), columns=self.scaler.get_feature_names_out())
+            numeric_cols), columns=self.scaler.get_feature_names_out())
         data = data.apply(
             lambda x: normalized_numeric_cols[x.name] if x.name in normalized_numeric_cols.columns else x)
         return data
 
     def fit_transform_target(self, target: pd.Series) -> pd.Series:
-        if target.isin([0, 1]).all():
+        if target.isin([0, 1]).all() and not pd.api.types.is_float_dtype(target):
             target = target.astype(bool)
-        if np.issubdtype(target.dtype, np.number):
+        if pd.api.types.is_float_dtype(target):
             target = pd.Series(self.target_scaler.fit_transform(
                 np.transpose([target]))[:, 0])
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         data = data.apply(lambda x: x.astype(
-            bool) if x.isin([0, 1]).all() else x)
+            bool) if x.isin([0, 1]).all() and not pd.api.types.is_float_dtype(x) else x)
+        numeric_cols = data.select_dtypes(include=[np.number])
+        if not numeric_cols.size:
+            return data
         normalized_numeric_cols = pd.DataFrame(
-            self.scaler.transform(data.select_dtypes(include=[np.number])),
-            columns=self.scaler.get_feature_names_out(),
+            self.scaler.transform(numeric_cols),
+            columns=self.scaler.get_feature_names_out()
         )
         return data.apply(
             lambda x: normalized_numeric_cols[x.name] if x.name in normalized_numeric_cols.columns else x
         )
 
     def transform_target(self, target: pd.Series) -> pd.Series:
-        if target.isin([0, 1]).all():
+        if target.isin([0, 1]).all() and not pd.api.types.is_float_dtype(target):
             target = target.astype(bool)
-        if np.issubdtype(target.dtype, np.number):
+        if pd.api.types.is_float_dtype(target):
             target = self.target_scaler.transform(np.transpose([target]))
         return target
 
     def inverse_transform_target(self, target: pd.Series) -> pd.Series:
         if target.isin([0, 1]).all():
             target = target.astype(bool)
-        if np.issubdtype(target.dtype, np.number):
+        if pd.api.types.is_float_dtype(target):
             target = self.target_scaler.inverse_transform(
                 np.transpose([target]))
         return np.transpose(target)[0]

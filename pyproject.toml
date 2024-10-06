@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "quick-ai"
-version = "0.1.0"
-description = ""
-# TODO write a description
+name = "turbo-ml"
+version = "0.1.1"
+description = "Auto ML library for automated model selection using pre-trained neural networks"
+readme = "README.md"
 authors = ["Dawid Siera <dawid.siera@gmail.com>", "Anatol Kaczmarek <anatol.kaczmarek@gmail.com>"]
 
 [tool.poetry.dependencies]
@@ -16,4 +16,4 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [project.scripts]
-quick_ai = "quick_ai.__main__:main"
+turbo_ml = "turbo_ml.__main__:main"

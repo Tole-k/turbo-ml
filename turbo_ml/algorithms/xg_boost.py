@@ -4,7 +4,6 @@ from ..base import Model
 from typing import Optional, List, Literal
 from sklearn.model_selection import train_test_split
 from collections.abc import Iterable
-from datasets import get_iris, get_diabetes
 
 
 class XGBoostClassifier(Model):

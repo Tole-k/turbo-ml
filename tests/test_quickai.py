@@ -1,4 +1,4 @@
-from quick_ai import QuickAI
+from turbo_ml import TurboML
 from datasets import get_iris
 
 import pandas as pd
@@ -15,7 +15,7 @@ def test_happypath():
     dataset.drop(random.index, inplace=True)
     test = random['target']
     random.drop('target', axis=1, inplace=True)
-    quickai = QuickAI(dataset=dataset, target='target')
+    quickai = TurboML(dataset=dataset, target='target')
     result = quickai(random)
     assert result is not None
     assert len(result) == len(test)

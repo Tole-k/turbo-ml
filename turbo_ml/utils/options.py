@@ -7,8 +7,9 @@ class option:
     # TODO: change default to auto-adjustem based on terminal size before release
     text_size: int = 64
     validation: bool = True  # TODO: change default to False before release
-    log_level = logging.WARNING
-    blacklist = ['CalibratedClassifierCV', "LogisticRegressionCV", "MLPClassifier", "NuSVC", "Perceptron", "PassiveAggressiveClassifier",
-                 "RidgeClassifierCV", "SGDClassifier", "BaggingClassifier", "SVC", "CategoricalNB", "RadiusNeighborsClassifier"]
+    dev_mode = False
+    dev_mode_logging = logging.INFO
+    user_mode_logging = logging.ERROR
+    blacklist = ['CalibratedClassifierCV']
     hyperparameters_declaration_priority: Literal['sklearn',
                                                   'custom'] = 'custom'
