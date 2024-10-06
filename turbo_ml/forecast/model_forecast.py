@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import *
-from quick_ai.base import Model
-from quick_ai.base.model import get_models_list
+from turbo_ml.base import Model
+from turbo_ml.base.model import get_models_list
 import random
 import math
 

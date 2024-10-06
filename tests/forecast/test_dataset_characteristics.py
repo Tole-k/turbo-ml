@@ -1,4 +1,4 @@
-from quick_ai.forecast.dataset_characteristics import StatisticalParametersExtractor, DatasetDescription
+from turbo_ml.forecast.dataset_characteristics import StatisticalParametersExtractor, DatasetDescription
 from datasets import get_iris, get_breast_cancer
 
 

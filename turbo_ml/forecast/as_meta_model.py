@@ -1,10 +1,10 @@
 import pickle
 import matplotlib.pyplot as plt
 import torch.utils.data as data_utils
-from quick_ai.forecast.dataset_characteristics import StatisticalParametersExtractor
-from quick_ai.algorithms.neural_network import NeuralNetworkModel
+from turbo_ml.forecast.dataset_characteristics import StatisticalParametersExtractor
+from turbo_ml.algorithms.neural_network import NeuralNetworkModel
 import pandas as pd
-from quick_ai.preprocessing import sota_preprocessor
+from turbo_ml.preprocessing import sota_preprocessor
 import torch
 from torch import nn
 from torch import optim

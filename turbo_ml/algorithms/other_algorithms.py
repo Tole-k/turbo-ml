@@ -1,5 +1,5 @@
-from quick_ai.utils import option
-from quick_ai.base import Model
+from turbo_ml.utils import option
+from turbo_ml.base import Model
 from sklearn.utils import all_estimators
 from typing import Dict, Type
 sklearn_models: Dict[str, Type[Model]] = {}
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     # print(len(models))
     # print('-'*50)
     # print(models.keys())
-    from quick_ai.forecast import HyperTuner, StatisticalParametersExtractor
+    from turbo_ml.forecast import HyperTuner, StatisticalParametersExtractor
     for data, target in [get_breast_cancer(), get_iris()]:
         extractor = StatisticalParametersExtractor(data, target)
         characteristics = extractor.describe_dataset()

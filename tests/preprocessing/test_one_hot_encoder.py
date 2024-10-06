@@ -1,5 +1,5 @@
 import pandas as pd
-from quick_ai.preprocessing.one_hot_encoder import OneHotEncoder
+from turbo_ml.preprocessing.one_hot_encoder import OneHotEncoder
 
 BASE_DATAFRAME = pd.DataFrame(
     {

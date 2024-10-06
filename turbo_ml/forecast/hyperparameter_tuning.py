@@ -1,13 +1,13 @@
 import numpy as np
-from quick_ai.algorithms import NeuralNetworkModel
+from turbo_ml.algorithms import NeuralNetworkModel
 import optuna as opt
 from sklearn.model_selection import train_test_split
-from quick_ai.base import Model
+from turbo_ml.base import Model
 from typing import Tuple
 import pandas as pd
 from typing import Literal
 import json
-from quick_ai.utils import option
+from turbo_ml.utils import option
 
 
 class HyperTuner:
@@ -16,9 +16,9 @@ class HyperTuner:
         opt.logging.set_verbosity(
             verbosity=option.dev_mode_logging if option.dev_mode else option.user_mode_logging)
         self.sklearn_hyperparameters = json.load(
-            open('quick_ai/forecast/sklearn_hyperparameters.json'))
+            open('turbo_ml/forecast/sklearn_hyperparameters.json'))
         self.hyperparameters = json.load(
-            open('quick_ai/forecast/hyperparameters.json'))
+            open('turbo_ml/forecast/hyperparameters.json'))
 
     @staticmethod
     def process_conditions(hyper_param: dict, no_classes: int, no_variables: int, device: str) -> dict:
@@ -100,7 +100,7 @@ class HyperTuner:
 
 if __name__ == '__main__':
 
-    from quick_ai.algorithms import AdaBoostClassifier, AdaBoostRegressor, XGBoostClassifier, XGBoostRegressor
+    from turbo_ml.algorithms import AdaBoostClassifier, AdaBoostRegressor, XGBoostClassifier, XGBoostRegressor
     tuner = HyperTuner()
     dataset = get_iris()
     model = AdaBoostClassifier

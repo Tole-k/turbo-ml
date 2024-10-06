@@ -15,7 +15,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
-class QuickAI:
+class TurboML:
     """
     The `QuickAI` class provides an out-of-the-box AutoML solution that automatically
     selects and trains the best machine learning model for a given dataset. It handles

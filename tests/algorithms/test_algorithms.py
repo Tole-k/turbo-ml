@@ -1,5 +1,5 @@
-from quick_ai.base.model import Model, get_models_list
-from quick_ai.algorithms import *
+from turbo_ml.base.model import Model, get_models_list
+from turbo_ml.algorithms import *
 from datasets import get_iris
 
 
