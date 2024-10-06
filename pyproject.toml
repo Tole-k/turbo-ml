@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "turbo-ml"
-version = "0.1.1"
+version = "0.1.2"
 description = "Auto ML library for automated model selection using pre-trained neural networks"
 readme = "README.md"
 authors = ["Dawid Siera <dawid.siera@gmail.com>", "Anatol Kaczmarek <anatol.kaczmarek@gmail.com>"]

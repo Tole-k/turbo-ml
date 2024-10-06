@@ -39,13 +39,13 @@ pip install turbo-ml
 Here's how you can get started with Turbo-ML in just a few lines of code:
 
 ```python
-from trubo_ml import TurboML
+from turbo_ml import TurboML
 import pandas as pd
 # Initialize TurboML with your dataset
-turboML = TurboML(pd.from_csv('classified/data.csv'), target='target')
+turboML = TurboML(pd.read_csv('classified/data.csv'), target='target')
 
 # Make predictions
-predictions = turboML.predict(pd.from_csv('not/classified/data.csv'))
+predictions = turboML.predict(pd.read_csv('not/classified/data.csv'))
 ```
 
 ## Usage
