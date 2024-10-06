@@ -1,12 +1,6 @@
 from turbo_ml import TurboML
 from datasets import get_iris
 
-import pandas as pd
-
-
-import pandas as pd
-import numpy as np
-
 
 def test_happypath():
     dataset, target = get_iris()
