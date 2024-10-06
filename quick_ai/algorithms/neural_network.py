@@ -1,8 +1,6 @@
 import numpy as np
-from datasets import get_iris
 from typing import Any, Dict
 from typing import Literal
-from datasets import *
 import pandas as pd
 from ..base import Model
 import torch

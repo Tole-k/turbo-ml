@@ -1,7 +1,6 @@
 import numpy as np
 from quick_ai.algorithms import NeuralNetworkModel
 import optuna as opt
-from datasets import get_iris, get_diabetes, get_breast_cancer, get_linnerud
 from sklearn.model_selection import train_test_split
 from quick_ai.base import Model
 from typing import Tuple
