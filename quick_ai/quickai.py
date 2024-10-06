@@ -5,9 +5,10 @@ This module provides the `QuickAI` class, our main class for out-of-the-box auto
 It does not provide additional functionalities but it combines other modules to provide a complete solution.
 """
 import pandas as pd
-from .base import Model
+from .base import Model, __ALL_MODELS__
 from .algorithms import RandomGuesser as DummyModel
 from .forecast import StatisticalParametersExtractor, ExhaustiveSearch, HyperTuner
+from .forecast.as_meta_model import main as meta_model_search
 from .preprocessing import sota_preprocessor
 from typing import Optional
 import time
@@ -97,11 +98,34 @@ class QuickAI:
                 'Dataset parameters found, trying to guess best model')
         data_operations = time.time()
 
-        try:
-            # TODO implement model guessing based on dataset parameters
-            self.model = DummyModel()
-        except Exception:
-            raise Exception('Model optimization failed')
+        # try:
+        # TODO implement model guessing based on dataset parameters
+        import torch
+        meta_model = meta_model_search()
+        frame = pd.DataFrame([dataset_params.dict()])
+        PARAMETERS = ["name", "task", "task_detailed", "target_features", "target_nans", "num_columns", "num_rows", "number_of_highly_correlated_features", "highest_correlation",
+                      "number_of_lowly_correlated_features", "lowest_correlation", "highest_eigenvalue", "lowest_eigenvalue", "share_of_numerical_features", "num_classes", "biggest_class_freq", "smallest_class_freq"]
+
+        Models = ["NeuralNetworkModel", "XGBoostClassifier", "AdaBoostClassifier", "BaggingClassifier", "BernoulliNB", "CalibratedClassifierCV", "CategoricalNB", "ComplementNB", "DecisionTreeClassifier", "DummyClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "GaussianNB", "GaussianProcessClassifier", "GradientBoostingClassifier", "HistGradientBoostingClassifier", "KNeighborsClassifier",
+                  "LabelPropagation", "LabelSpreading", "LinearDiscriminantAnalysis", "LinearSVC", "LogisticRegression", "LogisticRegressionCV", "MLPClassifier", "MultinomialNB", "NearestCentroid", "NuSVC", "PassiveAggressiveClassifier", "Perceptron", "QuadraticDiscriminantAnalysis", "RadiusNeighborsClassifier", "RandomForestClassifier", "RidgeClassifier", "RidgeClassifierCV", "SGDClassifier", "SVC"]
+        frame.drop(columns=['task'], axis=1, inplace=True)
+        preprocessor = sota_preprocessor()
+        pre_frame = preprocessor.fit_transform(frame)
+        import torch.utils.data as data_utils
+
+        train = torch.tensor(pre_frame.values.astype(
+            'float32'))
+        with torch.no_grad():
+            model_values = meta_model(train)[0]
+        model_list = [float(i) for i in model_values]
+        best = model_list.index(max(model_list))
+        model_name = Models[best]
+        str_to_model = {model.__name__: model for model in __ALL_MODELS__}
+        best_model = str_to_model[model_name]
+
+        self.model = best_model()
+        # except Exception:
+        #     raise Exception('Model optimization failed')
         model_guessing_time = time.time()
 
         model_name = self.model.__class__.__name__
@@ -109,10 +133,11 @@ class QuickAI:
             self.logger.info(f'''Model guessed: {
                 model_name}, searching for better model''')
         try:
-            search = ExhaustiveSearch()  # TODO split search engine into guessing and selection
-            self.model = search.predict(data, target_data)
-            if verbose:
-                self.logger.info(f'Looked at {search.counter} models')
+            # search = ExhaustiveSearch()  # TODO split search engine into guessing and selection
+            # self.model = search.predict(data, target_data)
+            # if verbose:
+            #     self.logger.info(f'Looked at {search.counter} models')
+            pass
         except Exception:
             self.logger.info('Trying to find better model failed')
         model_selection_time = time.time()
