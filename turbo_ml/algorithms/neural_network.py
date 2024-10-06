@@ -290,7 +290,13 @@ class NeuralNetworkModel(Model):
         return self.model.predict(guess)
 
 
+def __main__imports__():
+    from datasets import get_iris
+    return get_iris
+
+
 if __name__ == '__main__':
+    get_iris = __main__imports__()
     params = NeuralNetworkModel.optimize_hyperparameters(
         dataset=get_iris(), task='classification', no_classes=3, no_variables=1, device='cuda', trials=10)
     print(params)

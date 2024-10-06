@@ -155,7 +155,13 @@ class XGBoostRegressor(Model):
         return self.clf.predict(guess)
 
 
+def __main__imports__():
+    from datasets import get_iris, get_diabetes
+    return get_iris, get_diabetes
+
+
 if __name__ == "__main__":
+    get_iris, get_diabetes = __main__imports__()
     x_train, x_test, y_train, y_test = train_test_split(
         *get_iris(), test_size=0.2)
     clf = XGBoostClassifier(booster='dart', device='cuda', learning_rate=0.1, max_depth=3, subsample=0.5, sampling_method='gradient_based', colsample_bytree=0.5, colsample_bynode=0.5,

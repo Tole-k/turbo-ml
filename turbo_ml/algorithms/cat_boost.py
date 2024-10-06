@@ -1,5 +1,4 @@
 from sklearn.model_selection import train_test_split
-from datasets import get_iris
 import catboost as cb
 from ..base import Model
 from collections.abc import Iterable
@@ -80,7 +79,13 @@ class CatBoostRegressor(Model):
         return self.reg.predict(guess)
 
 
+def __main_imports__():
+    from datasets import get_iris
+    return get_iris
+
+
 if __name__ == "__main__":
+    get_iris = __main_imports__()
     train_data, test_data, train_labels, test_labels = train_test_split(
         *get_iris())
     model = CatBoostClassifier(loss_function='MultiClass')

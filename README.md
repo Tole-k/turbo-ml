@@ -1,6 +1,6 @@
-# QuickAI
+# Turbo-ML
 
-**QuickAI** is an out-of-the-box AutoML solution designed to simplify the machine learning workflow. With minimal user input, QuickAI automates model selection, hyperparameter optimization, and provides a trained machine learning model ready for deployment.
+**Turbo-ML** is an out-of-the-box AutoML solution designed to simplify the machine learning workflow. With minimal user input, Turbo-ML automates model selection, hyperparameter optimization, and provides a trained machine learning model ready for deployment.
 
 ## Table of Contents
 
@@ -17,42 +17,42 @@
 
 ## Features
 
-- **Automatic Model Selection**: Chooses the best algorithm based on data characteristics.
+- **Automatic Model Selection**: Chooses the best algorithm based on data characteristics with pre-trained neural network.
 - **Hyperparameter Optimization**: Utilizes Optuna for efficient hyperparameter tuning.
 - **Data Preprocessing**: Handles missing values, categorical encoding, and feature scaling automatically.
 - **Interactive Interface**: User-friendly terminal interface with tutorials and step-by-step guidance.
 - **Extensibility**: Modular architecture allows for easy customization and extension.
 - **Compatibility**: Supports a wide range of algorithms from scikit-learn, CatBoost, XGBoost, and more.
 
-## Installation (Not available yet)
+## Installation
 
 QuickAI is available on PyPI. You can install it using `pip`:
 
 ```bash
-pip install quickai
+pip install turbo-ml
 ```
 
-> **Note**: For the latest features and updates, you might want to install from the test PyPI or the GitHub repository.
+> **Note**: For the latest features and updates, you might want to install from the GitHub repository.
 
-## Quick Start (Not available yet)
+## Quick Start
 
-Here's how you can get started with QuickAI in just a few lines of code:
+Here's how you can get started with Turbo-ML in just a few lines of code:
 
 ```python
-from quick_ai import QuickAI
-
-# Initialize QuickAI with your dataset
-model = QuickAI(data='path/to/your/data.csv', target='target_column')
+from trubo_ml import TurboML
+import pandas as pd
+# Initialize TurboML with your dataset
+turboML = TurboML(pd.from_csv('classified/data.csv'), target='target')
 
 # Make predictions
-predictions = model.predict('not/classified/data.csv')
+predictions = turboML.predict(pd.from_csv('not/classified/data.csv'))
 ```
 
 ## Usage
 
 ### Data Preprocessing
 
-QuickAI automatically preprocesses your data to make it suitable for machine learning algorithms.
+TurboML automatically preprocesses your data to make it suitable for machine learning algorithms.
 
 - Handles missing values with appropriate imputation methods.
 - Encodes categorical variables using techniques like One-Hot Encoding.
@@ -86,7 +86,7 @@ We welcome contributions from the community!
 
 ## License
 
-QuickAI is licensed under the [GNU General Public License v3.0](LICENSE).
+Turbo-ML is licensed under the [GNU General Public License v3.0](LICENSE).
 
 ---
 
