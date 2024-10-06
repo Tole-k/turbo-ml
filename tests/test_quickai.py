@@ -9,12 +9,12 @@ def test_happypath():
     dataset.drop(random.index, inplace=True)
     test = random['target']
     random.drop('target', axis=1, inplace=True)
-    quickai = TurboML(dataset=dataset, target='target')
-    result = quickai(random)
+    truboml = TurboML(dataset=dataset, target='target')
+    result = truboml(random)
     assert result is not None
     assert len(result) == len(test)
     assert all(i in target for i in result)
-    assert quickai.model.__class__.__name__ != 'RandomGuesser'
+    assert truboml.model.__class__.__name__ != 'RandomGuesser'
 
 
 if __name__ == '__main__':
