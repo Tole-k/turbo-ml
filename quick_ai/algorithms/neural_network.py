@@ -66,6 +66,7 @@ class NeuralNetworkClassifier(NeuralNetworkBase):
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
         train_loader, test_loader = self.setup_loaders(data, target, self.task)
         logger = logging.getLogger(self.__class__.__name__)
+        logger.setLevel(option.log_level)
         for epoch in range(self.epochs):
             for i, (data, target) in enumerate(train_loader):
                 self.model.train()
@@ -107,6 +108,7 @@ class NeuralNetworkRegressor(NeuralNetworkBase):
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
         train_loader, test_loader = self.setup_loaders(data, target, self.task)
         logger = logging.getLogger(self.__class__.__name__)
+        logger.setLevel(option.log_level)
         for epoch in range(self.epochs):
             for i, (data, target) in enumerate(train_loader):
                 if target.ndimension() == 1:

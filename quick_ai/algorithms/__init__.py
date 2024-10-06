@@ -5,3 +5,4 @@ from .g_boost import GradientBoostingClassifier, GradientBoostingRegressor
 from .neural_network import NeuralNetworkModel
 from .other_algorithms import sklearn_models
 from .xg_boost import XGBoostClassifier, XGBoostRegressor
+__IMPORT_VARIABLE__ = None

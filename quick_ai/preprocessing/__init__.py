@@ -4,3 +4,4 @@ from .one_hot_encoder import OneHotEncoder
 from .standardizer import Standardizer
 from .variance_selector import VarianceSelector
 from .label_encoder import LabelEncoder
+from .sota import sota_preprocessor
