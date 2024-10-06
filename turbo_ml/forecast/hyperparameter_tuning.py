@@ -98,8 +98,13 @@ class HyperTuner:
         return self.filter_nones(study.best_params) | study.best_trial.user_attrs
 
 
-if __name__ == '__main__':
+def __main_import__():
+    from datasets import get_iris, get_diabetes, get_breast_cancer, get_linnerud
+    return get_iris, get_diabetes, get_breast_cancer, get_linnerud
 
+
+if __name__ == '__main__':
+    get_iris, get_diabetes, get_breast_cancer, get_linnerud = __main_import__()
     from turbo_ml.algorithms import AdaBoostClassifier, AdaBoostRegressor, XGBoostClassifier, XGBoostRegressor
     tuner = HyperTuner()
     dataset = get_iris()
