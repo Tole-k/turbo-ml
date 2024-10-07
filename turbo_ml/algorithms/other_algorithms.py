@@ -1,4 +1,4 @@
-from turbo_ml.utils import option
+from turbo_ml.utils import options
 from turbo_ml.base import Model
 from sklearn.utils import all_estimators
 from typing import Dict, Type
@@ -52,7 +52,7 @@ if __name__ == '__main__':
             print(name)
             hparams = {}
             hparams = tuner.optimize_hyperparameters(model, (data, target), 'classification',
-                                                     no_classes=characteristics.num_classes, no_variables=characteristics.target_features, device='cuda', trials=50)
+                                                     no_classes=characteristics.num_classes, no_variables=characteristics.target_features, device=options.device, trials=50, thread_num=options.threads)
             print(hparams)
             model_instance = model(**hparams)
             model_instance.train(data, target)

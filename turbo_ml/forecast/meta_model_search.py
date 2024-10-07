@@ -31,7 +31,8 @@ class Best_Model(nn.Module):
 class MetaModelGuesser(Forecast):
     """ Search for the best meta model for a given dataset and model """
 
-    def __init__(self):
+    def __init__(self, device='cpu'):
+        self.device = device
         self._meta_model = self._load_meta_model()
 
     def predict(self, dataset_params: DatasetDescription):
@@ -41,9 +42,10 @@ class MetaModelGuesser(Forecast):
         pre_frame = preprocessor.fit_transform(frame)
 
         train = torch.tensor(pre_frame.values.astype(
-            'float32'))
-        with torch.no_grad():
-            model_values = self._meta_model(train)[0]
+            'float32')).to(self.device)
+        self._meta_model.eval()
+        with torch.inference_mode():
+            model_values = self._meta_model(train).cpu()[0]
         model_list = [float(i) for i in model_values]
         best = model_list.index(max(model_list))
         model_name = __MODELS__[best]
@@ -52,7 +54,7 @@ class MetaModelGuesser(Forecast):
         return best_model()
 
     def _load_meta_model(self):
-        model = Best_Model(15, 36)
+        model = Best_Model(15, 36).to(self.device)
         model.load_state_dict(torch.load(
             str(__file__)[:-20] + 'model.pth'))
         return model

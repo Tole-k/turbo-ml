@@ -1,7 +1,7 @@
 """
 Module containing helpful pre-defined items for the QuickAI interface.
 """
-from ..utils import option
+from ..utils import options
 import sys
 import textwrap
 
@@ -25,10 +25,11 @@ class Box:
 
 
 def print_in_box(message: str, topic: str = 'Training', color_id: int = 92, max_width=40, with_header: bool = True) -> int:
-    max_width = option.text_size
+    max_width = options.text_size
     if with_header:
         print('+' + '-' * (max_width) + '+')
-        print(f"|\033[{color_id}m{' ' * ((max_width // 2) - len(topic)//2)}{topic}{' ' * (max_width - (max_width//2) - len(topic)//2)}\033[0m |")
+        print(f"|\033[{color_id}m{' ' * ((max_width // 2) - len(topic)//2)
+                                  }{topic}{' ' * (max_width - (max_width//2) - len(topic)//2)}\033[0m |")
         print('+' + '-' * (max_width) + '+')
 
     line_counter = 0
@@ -48,7 +49,7 @@ class Bar:
     def __init__(self, max_tick=100, with_header=True):
         self._tick = 0
         self.max_tick = max_tick
-        width = option.text_size
+        width = options.text_size
         if with_header:
             print('+' + '-' * width + '+')
         print('|[' + ' ' * (width-2) + ']|')
@@ -62,7 +63,7 @@ class Bar:
             self.update(self._tick + 1, 'loading')
 
     def update(self, tick, message=None):
-        width = option.text_size
+        width = options.text_size
         self._tick = tick
         sys.stdout.write("\033[F")
         sys.stdout.write("\033[F")
