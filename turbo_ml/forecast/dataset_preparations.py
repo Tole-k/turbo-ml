@@ -9,8 +9,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import minmax_scale
 from pydataset import data
 
+from turbo_ml.utils import options
 
-def generate_dataset(models, datasets):
+
+def generate_dataset(models, datasets, optuna_trials=10, device='cpu', threads=1, path='results.csv'):
     for dataset in datasets:
         if isinstance(dataset, tuple):
             name = dataset[1]
@@ -42,7 +44,7 @@ def generate_dataset(models, datasets):
             tuner = HyperTuner()
             try:
                 params = tuner.optimize_hyperparameters(model, (data_train, target_train), description.task,
-                                                        description.num_classes, description.target_features, device='cuda', trials=10)
+                                                        description.num_classes, description.target_features, device, optuna_trials, threads)
             except Exception as e:
                 print(e)
                 params = {}
@@ -72,7 +74,7 @@ def generate_dataset(models, datasets):
         df.insert(0, 'name', names)
         score_columns = [model.__name__ for model in models]
         df[score_columns] = minmax_scale(df[score_columns], axis=1)
-        df.to_csv("results.csv", mode='a', header=False, index=False)
+        df.to_csv(path, mode='a', header=False, index=False)
 
 
 ALL_MODELS = [NeuralNetworkModel, XGBoostClassifier] + \
@@ -95,4 +97,7 @@ def adapt_pydatasets(datasets: List[pd.DataFrame]):
 
 ALL_DATASETS = [get_iris, get_wine, get_breast_cancer, get_digits, get_adult,
                 get_tips, get_titanic] + list(adapt_pydatasets(PY_DATASETS))
-generate_dataset(ALL_MODELS, ALL_DATASETS)
+
+if __name__ == '__main__':
+    generate_dataset(ALL_MODELS, ALL_DATASETS, optuna_trials=10,
+                     device=options.device, threads=options.threads, path='results2.csv')
