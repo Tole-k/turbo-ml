@@ -2,7 +2,7 @@ import pickle
 from .process import Process
 from .model import Model
 from typing import List, Iterable, Any, Optional
-from ..utils import option
+from ..utils import options
 
 
 class Workflow:
@@ -45,7 +45,7 @@ class WorkflowModel(Model):
 
     def train(self, data: Iterable, target: Iterable) -> None:
         for process in self.workflow:
-            if self.validator and option.validation:
+            if self.validator and options.validation:
                 try:
                     process.tr_validation(data, target)
                 except Exception as e:
@@ -55,7 +55,7 @@ class WorkflowModel(Model):
 
     def predict(self, guess: Any) -> List:
         for process in self.workflow:
-            if self.validator and option.validation:
+            if self.validator and options.validation:
                 try:
                     process.pr_validation(guess)
                 except Exception as e:
