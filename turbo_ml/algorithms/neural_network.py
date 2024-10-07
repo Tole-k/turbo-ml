@@ -10,10 +10,10 @@ from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
 from typing import List, Tuple
 import logging
-from ..utils import option
+from ..utils import options
 import optuna as opt
 logging.basicConfig(
-    level=option.dev_mode_logging if option.dev_mode else option.user_mode_logging)
+    level=options.dev_mode_logging if options.dev_mode else options.user_mode_logging)
 
 
 class NeuralNetworkBase(Model):
@@ -64,29 +64,24 @@ class NeuralNetworkClassifier(NeuralNetworkBase):
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
         train_loader, test_loader = self.setup_loaders(data, target, self.task)
         logger = logging.getLogger(self.__class__.__name__)
-        logger.setLevel(option.log_level)
+        logger.setLevel(
+            options.dev_mode_logging if options.dev_mode else options.user_mode_logging)
         for epoch in range(self.epochs):
-            for i, (data, target) in enumerate(train_loader):
-                self.model.train()
+            self.model.train()
+            for data, target in train_loader:
+                self.optimizer.zero_grad()
                 output = self.model(data)
                 loss = self.criterion(output, target)
-                self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
-                if epoch % 10 == 0:
-                    logger.info(' [%d, %5d] loss: %.3f' %
-                                (epoch + 1, i + 1, loss / 100))
-        self.model.eval()
-        with torch.inference_mode():
-            correct = 0
-            total = 0
-            for data, target in test_loader:
-                output = self.model(data)
-                predicted = torch.argmax(output.data, dim=1)
-                total += target.size(0)
-                correct += (predicted == target).sum().item()
-            acc = 100.0 * correct / total
-            logger.info(f' Accuracy on test set: {acc}')
+            self.model.eval()
+            with torch.inference_mode():
+                for i, (data, target) in enumerate(test_loader):
+                    output = self.model(data)
+                    loss = self.criterion(output, target)
+                    if epoch % 100 == 0:
+                        logger.info(' [%d, %5d] loss: %.3f' %
+                                    (epoch + 1, i + 1, loss))
 
     def predict(self, guess: pd.DataFrame) -> pd.DataFrame | pd.Series:
         result = None
@@ -106,31 +101,26 @@ class NeuralNetworkRegressor(NeuralNetworkBase):
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
         train_loader, test_loader = self.setup_loaders(data, target, self.task)
         logger = logging.getLogger(self.__class__.__name__)
-        logger.setLevel(option.log_level)
+        logger.setLevel(
+            options.dev_mode_logging if options.dev_mode else options.user_mode_logging)
         for epoch in range(self.epochs):
-            for i, (data, target) in enumerate(train_loader):
+            self.model.train()
+            for data, target in train_loader:
+                self.optimizer.zero_grad()
                 if target.ndimension() == 1:
                     target = target.view(len(target), 1)
-                self.model.train()
                 output = self.model(data)
                 loss = self.criterion(output, target)
-                self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
-                if epoch % 10 == 0:
-                    logger.info(' [%d, %5d] loss: %.3f' %
-                                (epoch + 1, i + 1, loss))
-        self.model.eval()
-        with torch.inference_mode():
-            total_loss = 0
-            for data, target in test_loader:
-                if target.ndimension() == 1:
-                    target = target.view(len(target), 1)
-                output = self.model(data)
-                loss = self.criterion(output, target)
-                total_loss += loss
-            total_loss /= len(test_loader)
-            logger.info(f' Error on test set: {total_loss.item()}')
+            self.model.eval()
+            with torch.inference_mode():
+                for i, (data, target) in enumerate(test_loader):
+                    output = self.model(data)
+                    loss = self.criterion(output, target)
+                    if epoch % 100 == 0:
+                        logger.info(' [%d, %5d] loss: %.3f' %
+                                    (epoch + 1, i + 1, loss))
 
     def predict(self, guess: pd.DataFrame) -> pd.DataFrame | pd.Series:
         result = None
@@ -163,7 +153,7 @@ class NNFactory:
                 for optimizer in self.optimizers}[optimizer.lower()]
 
     @staticmethod
-    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, device='cpu', trials: int = 10) -> Dict[str, Any]:
+    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, device='cpu', trials: int = 100) -> Dict[str, Any]:
         def objective(trial, dataset, task, device):
             x_train, x_test, y_train, y_test = train_test_split(
                 *dataset, test_size=0.2)
@@ -171,6 +161,7 @@ class NNFactory:
 
             trial.set_user_attr('task', task)
             trial.set_user_attr('device', device)
+            trial.set_user_attr('epochs', 1000)
             params = {}
             params['input_size'] = trial.user_attrs['input_size']
             if task == 'classification':
@@ -200,10 +191,10 @@ class NNFactory:
             params['optimizer'] = trial.suggest_categorical(
                 'optimizer', ['adam', 'sgd', 'adadelta', 'adagrad', 'adamax', 'rmsprop', 'rprop'])
             params['batch_size'] = trial.suggest_int(
-                'batch_size', np.sqrt(len(x_train)), len(x_train))
-            params['epochs'] = trial.suggest_int('epochs', 10, 1000)
+                'batch_size', np.log2(len(x_train)), np.sqrt(len(x_train)))
+            params['epochs'] = trial.user_attrs['epochs']
             params['learning_rate'] = trial.suggest_float(
-                'learning_rate', 0.0001, 0.1)
+                'learning_rate', 0.0001, 0.01)
             params['device'] = trial.user_attrs['device']
             model = NNFactory().create_neural_network(**params)
             model.train(x_train, y_train)
@@ -240,7 +231,7 @@ class NNFactory:
             layers.append(nn.Linear(hidden_sizes[-1], output_size))
         self.task = task
         self.model = nn.Sequential(
-            *layers).cuda() if device == 'cuda' else nn.Sequential(*layers)
+            *layers).to(device)
         self.criterion = self._add_loss(loss)
         self.optimizer = self._add_optimizer(optimizer, learning_rate)
         self.batch_size = batch_size
@@ -263,7 +254,7 @@ class NeuralNetworkModel(Model):
     factory = NNFactory()
 
     @staticmethod
-    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, device='cpu', trials=10) -> Dict[str, Any]:
+    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, device='cpu', trials=100) -> Dict[str, Any]:
         params = NNFactory.optimize_hyperparameters(
             dataset, task, no_classes, no_variables, device, trials)
         hidden_sizes = []
@@ -298,7 +289,7 @@ def __main__imports__():
 if __name__ == '__main__':
     get_iris = __main__imports__()
     params = NeuralNetworkModel.optimize_hyperparameters(
-        dataset=get_iris(), task='classification', no_classes=3, no_variables=1, device='cuda', trials=10)
+        dataset=get_iris(), task='classification', no_classes=3, no_variables=1, device=options.device)
     print(params)
     model = NeuralNetworkModel(**params)
     model.train(*get_iris())
