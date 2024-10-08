@@ -1,4 +1,5 @@
 # Turbo-ML
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/Turbo-ML)](https://pypi.org/project/Turbo-ML/)
 
 **Turbo-ML** is an out-of-the-box AutoML solution designed to simplify the machine learning workflow. With minimal user input, Turbo-ML automates model selection, hyperparameter optimization, and provides a trained machine learning model ready for deployment.
 
