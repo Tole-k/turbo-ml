@@ -1,9 +1,9 @@
 import os
 from functools import cache
-from .model_forecast import Forecast
+from ..forecast.model_forecast import Forecast
 from ..preprocessing import sota_preprocessor
 from ..base import __ALL_MODELS__
-from .dataset_characteristics import DatasetDescription
+from ..forecast.dataset_characteristics import DatasetDescription
 import pandas as pd
 import torch
 import torch.nn as nn

@@ -1,4 +1,3 @@
-import pickle
 import matplotlib.pyplot as plt
 import torch.utils.data as data_utils
 from turbo_ml.forecast.dataset_characteristics import StatisticalParametersExtractor
