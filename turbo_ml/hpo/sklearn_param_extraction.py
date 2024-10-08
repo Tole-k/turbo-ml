@@ -60,5 +60,5 @@ for name, classifier in all_estimators(type_filter="classifier"):
                 "type": "bool",
                 "optional": none_constraint is not None
             })
-with open('turbo_ml/forecast/not_overwrite_sklearn_hyperparameters.json', 'w') as f:
+with open('turbo_ml/hpo/not_overwrite_sklearn_hyperparameters.json', 'w') as f:
     json.dump(hyperparameters, f, indent=4)
