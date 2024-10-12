@@ -113,7 +113,6 @@ def welcome():
                 _ask(counter+1)
     num_lines = print_in_box(WELCOME_MESSAGE, topic='Welcome in Turbo-ML ')
     _ask(0)
-    # TODO: Provide calculations for dataset in this file
     print(f"""Now there should be calculations for dataset in file {
           __DATASET_PATH}""")
 

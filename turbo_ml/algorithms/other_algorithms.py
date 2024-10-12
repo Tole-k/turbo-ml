@@ -28,7 +28,6 @@ for name, classifier in all_estimators(type_filter='classifier'):
 
 if __name__ == '__main__':
     from datasets import get_iris, get_breast_cancer
-    # TODO: remove before release
     # from datasets import get_iris
     # data, target = get_iris()
     # data['target'] = target
@@ -42,7 +41,7 @@ if __name__ == '__main__':
     # print(len(models))
     # print('-'*50)
     # print(models.keys())
-    from turbo_ml.model_prediction import HyperTuner, StatisticalParametersExtractor
+    from turbo_ml.meta_learning.model_prediction import HyperTuner, StatisticalParametersExtractor
     for data, target in [get_breast_cancer(), get_iris()]:
         extractor = StatisticalParametersExtractor(data, target)
         characteristics = extractor.describe_dataset()

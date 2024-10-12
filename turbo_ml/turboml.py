@@ -115,7 +115,7 @@ class TurboML:
             model_name}, searching for better model (Currently disabled, unless guessing model is DummyModel)''')
         if isinstance(self.model.__class__, DummyModel):
             try:
-                search = ExhaustiveSearch()  # TODO split search engine into guessing and selection
+                search = ExhaustiveSearch()
                 self.model = search.predict(data, target_data)
                 self.logger.info(f'Looked at {search.counter} models')
             except Exception:
