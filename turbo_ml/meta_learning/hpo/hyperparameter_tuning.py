@@ -16,9 +16,9 @@ class HyperTuner:
         opt.logging.set_verbosity(
             verbosity=options.dev_mode_logging if options.dev_mode else options.user_mode_logging)
         self.sklearn_hyperparameters = json.load(
-            open('turbo_ml/hpo/sklearn_hyperparameters.json'))
+            open('turbo_ml/meta_learning/hpo/sklearn_hyperparameters.json'))
         self.hyperparameters = json.load(
-            open('turbo_ml/hpo/hyperparameters.json'))
+            open('turbo_ml/meta_learning/hpo/hyperparameters.json'))
 
     @staticmethod
     def process_conditions(hyper_param: dict, no_classes: int, no_variables: int, device: str) -> dict:
