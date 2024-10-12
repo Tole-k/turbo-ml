@@ -1,5 +1,5 @@
 """
-Module containing the tutorials for the QuickAI interface.
+Module containing the tutorials for the TurboML interface.
 """
 # TODO: Implement tutorials
 TUTORIAL_1 = """
@@ -64,7 +64,7 @@ test_5
 """
 
 TUTORIAL_NAMES = {
-    1: 'What is QuickAI ',
+    1: 'What is TurboML ',
     2: 'How to load a dataset ',
     3: 'How does this program work',
     4: 'How to train a model',

@@ -2,13 +2,13 @@ from typing import List
 import pandas as pd
 from datasets import get_iris, get_wine, get_breast_cancer, get_digits, get_adult, get_tips, get_titanic
 # get_heart_disease loads incorrectly
-from turbo_ml.algorithms import NeuralNetworkModel, XGBoostClassifier, sklearn_models
-from turbo_ml.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelEncoder
-from turbo_ml.forecast import HyperTuner, StatisticalParametersExtractor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import minmax_scale
 from pydataset import data
 
+from turbo_ml.algorithms import NeuralNetworkModel, XGBoostClassifier, sklearn_models
+from turbo_ml.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelEncoder
+from turbo_ml.meta_learning.model_prediction import HyperTuner, StatisticalParametersExtractor
 from turbo_ml.utils import options
 
 

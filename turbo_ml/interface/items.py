@@ -1,5 +1,5 @@
 """
-Module containing helpful pre-defined items for the QuickAI interface.
+Module containing helpful pre-defined items for the TurboML interface.
 """
 from ..utils import options
 import sys
@@ -28,8 +28,9 @@ def print_in_box(message: str, topic: str = 'Training', color_id: int = 92, max_
     max_width = options.text_size
     if with_header:
         print('+' + '-' * (max_width) + '+')
-        print(f"|\033[{color_id}m{' ' * ((max_width // 2) - len(topic)//2)
-                                  }{topic}{' ' * (max_width - (max_width//2) - len(topic)//2)}\033[0m |")
+        # Formatter is driving me crazy
+        print(f"""|\033[{color_id}m{' ' * ((max_width // 2) - len(topic)//2)}{topic +
+                                                                              ''}{' ' * (max_width - (max_width//2) - len(topic)//2)}\033[0m|""")
         print('+' + '-' * (max_width) + '+')
 
     line_counter = 0

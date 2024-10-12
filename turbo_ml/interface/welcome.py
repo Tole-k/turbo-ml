@@ -1,33 +1,29 @@
 """ 
-Main module implementing interactive command line interface for Quick AI library.
+Main module implementing interactive command line interface for Turbo-ML library.
 """
 import sys
 from collections import defaultdict
 from .items import print_in_box, Box
 from .tutorial import TUTORIAL_DICT, TUTORIAL_NAMES
+from turbo_ml import TurboML
+import pandas as pd
 
 LOGO = """
-  ____       _     __    ___   ____
- / __ \\__ __(_)___/ /__ / _ | /  _/
-/ /_/ / // / / __/  '_// __ |_/ /  
-\\___\\_\\_,_/_/\\__/_/\\_\\/_/ |_/___/ 
-"""
-
-LOGO_COLOR = """\033[32m
-  ____       _     __    \033[33m___   ____\033[32m
- / __ \\__ __(_)___/ /__ \033[33m/ _ | /  _/\033[32m
-/ /_/ / // / / __/  '_/\033[33m/ __ |_/ /\033[32m
-\\___\\_\\_,_/_/\\__/_/\\_\\\033[33m/_/ |_/___/\033[0m
+  ______           __                __  _____ 
+ /_  __/_  _______/ /_  ____        /  |/  / / 
+  / / / / / / ___/ __ \\/ __ \\______/ /|_/ / /  
+ / / / /_/ / /  / /_/ / /_/ /_____/ /  / / /___
+/_/  \\__,_/_/  /_.___/\\____/     /_/  /_/_____/
 """
 
 WELCOME_MESSAGE = """
-Welcome in Quick AI, this piece of software was created in order to make machine learning simple.
+Welcome in Turbo-ML, this piece of software was created in order to make machine learning simple.
 Given some dataset algorithms from library should be able to find the best machine learning algorithm with optimal parameters to solve problem provided in dataset whether this is classification or regression task.
 
 ## Guide ##
 - load your dataset
-- call quick_ai.train(dataset) to train model
-- call quick_ai.predict(data) to find predictions
+- call TurboML(dataset) to train model
+- call TurboML.predict(data) to find predictions
 """
 
 RESPONSES = defaultdict(lambda: None, {
@@ -115,11 +111,10 @@ def welcome():
                 sys.stdout.write(f"{' '*100}\n")
                 sys.stdout.write('\033[F')
                 _ask(counter+1)
-    num_lines = print_in_box(WELCOME_MESSAGE, topic='Welcome in Quick AI ')
+    num_lines = print_in_box(WELCOME_MESSAGE, topic='Welcome in Turbo-ML ')
     _ask(0)
-    # TODO: Provide calculations for dataset in this file
-    print(
-        f'Now there should be calculations for dataset in file {__DATASET_PATH}')
+    print(f"""Now there should be calculations for dataset in file {
+          __DATASET_PATH}""")
 
 
 def load_dataset():
@@ -127,7 +122,14 @@ def load_dataset():
     print_in_box('Provide path to dataset file', topic='Load dataset')
     global __DATASET_PATH
     __DATASET_PATH = input('Path: ')
-    print(__DATASET_PATH)
+    dataset = pd.read_csv(__DATASET_PATH)
+    print(f'Dataset columns: {dataset.columns}')
+    target = input('Choose target column: ')
+    model = TurboML(dataset, target)
+    print('Model trained, give path to data to predict')
+    test_set = pd.read_csv(input('Path: '))
+    predictions = model.predict(test_set)
+    print(f'Predictions: {predictions}')
     return
 
 

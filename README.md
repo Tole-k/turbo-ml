@@ -1,4 +1,5 @@
 # Turbo-ML
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/Turbo-ML)](https://pypi.org/project/Turbo-ML/)
 
 **Turbo-ML** is an out-of-the-box AutoML solution designed to simplify the machine learning workflow. With minimal user input, Turbo-ML automates model selection, hyperparameter optimization, and provides a trained machine learning model ready for deployment.
 
@@ -26,7 +27,7 @@
 
 ## Installation
 
-QuickAI is available on PyPI. You can install it using `pip`:
+Turbo-ML is available on PyPI. You can install it using `pip`:
 
 ```bash
 pip install turbo-ml
@@ -82,7 +83,7 @@ Detailed documentation should be available soon.
 
 We welcome contributions from the community!
 
-- **Bug Reports & Feature Requests**: Use the [GitHub Issues](https://github.com/Tole-k/quick-ai/issues) to report bugs or suggest features.
+- **Bug Reports & Feature Requests**: Use the [GitHub Issues](https://github.com/Tole-k/turbo-ml/issues) to report bugs or suggest features.
 
 ## License
 

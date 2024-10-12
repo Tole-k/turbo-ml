@@ -20,7 +20,7 @@ def evaluate(model: Type[Model], data: Any, target: Any) -> float:
     return -mse
 
 
-class Forecast:
+class Predictor:
     def __init__(self) -> None:
         pass
 
@@ -29,7 +29,7 @@ class Forecast:
         pass
 
 
-class ExhaustiveSearch(Forecast):
+class ExhaustiveSearch(Predictor):
     """ Search for the best model by evaluating all models in the list and picking the best one based on the evaluation function
     This search ignores HPO steps and focus only on AS based on predefined hyper-parameters"""
 
