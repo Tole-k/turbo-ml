@@ -6,16 +6,17 @@ It does not provide additional functionalities but it combines other modules to 
 """
 import pandas as pd
 
-from turbo_ml.utils import options
-from .base import Model, __ALL_MODELS__
-from .algorithms import RandomGuesser as DummyModel
-from .model_prediction import StatisticalParametersExtractor, ExhaustiveSearch, MetaModelGuesser
-from .hpo import HyperTuner
-from .preprocessing import sota_preprocessor
 from typing import Literal, Optional
 import time
 import logging
+
+from turbo_ml.preprocessing import sota_preprocessor
+from turbo_ml.meta_learning.hpo import HyperTuner
+from turbo_ml.meta_learning.model_prediction import StatisticalParametersExtractor, ExhaustiveSearch, MetaModelGuesser
+from turbo_ml.algorithms import RandomGuesser as DummyModel
+from turbo_ml.base import Model, __ALL_MODELS__
 from turbo_ml.utils import options
+
 logging.basicConfig(level=logging.INFO)
 
 

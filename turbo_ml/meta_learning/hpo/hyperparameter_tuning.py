@@ -1,12 +1,12 @@
 import numpy as np
-from turbo_ml.algorithms import NeuralNetworkModel
 import optuna as opt
 from sklearn.model_selection import train_test_split
-from turbo_ml.base import Model
 from typing import Tuple
 import pandas as pd
 from typing import Literal
 import json
+from turbo_ml.algorithms import NeuralNetworkModel
+from turbo_ml.base import Model
 from turbo_ml.utils import options
 
 

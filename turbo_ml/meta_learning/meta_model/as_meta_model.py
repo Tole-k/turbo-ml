@@ -1,15 +1,15 @@
 import matplotlib.pyplot as plt
 import torch.utils.data as data_utils
-from turbo_ml.model_prediction.dataset_characteristics import StatisticalParametersExtractor
-from turbo_ml.algorithms.neural_network import NeuralNetworkModel
 import pandas as pd
-from turbo_ml.preprocessing import sota_preprocessor
 import torch
 from torch import nn
 from torch import optim
 from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
 
+from turbo_ml.meta_learning.model_prediction.dataset_characteristics import StatisticalParametersExtractor
+from turbo_ml.algorithms.neural_network import NeuralNetworkModel
+from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.utils import options
 
 
