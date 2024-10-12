@@ -42,7 +42,7 @@ if __name__ == '__main__':
     # print(len(models))
     # print('-'*50)
     # print(models.keys())
-    from turbo_ml.forecast import HyperTuner, StatisticalParametersExtractor
+    from turbo_ml.model_prediction import HyperTuner, StatisticalParametersExtractor
     for data, target in [get_breast_cancer(), get_iris()]:
         extractor = StatisticalParametersExtractor(data, target)
         characteristics = extractor.describe_dataset()

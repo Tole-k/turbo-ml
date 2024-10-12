@@ -4,7 +4,7 @@ from datasets import get_iris, get_wine, get_breast_cancer, get_digits, get_adul
 # get_heart_disease loads incorrectly
 from turbo_ml.algorithms import NeuralNetworkModel, XGBoostClassifier, sklearn_models
 from turbo_ml.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelEncoder
-from turbo_ml.forecast import HyperTuner, StatisticalParametersExtractor
+from turbo_ml.model_prediction import HyperTuner, StatisticalParametersExtractor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import minmax_scale
 from pydataset import data

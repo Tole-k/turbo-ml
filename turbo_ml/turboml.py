@@ -9,7 +9,7 @@ import pandas as pd
 from turbo_ml.utils import options
 from .base import Model, __ALL_MODELS__
 from .algorithms import RandomGuesser as DummyModel
-from .forecast import StatisticalParametersExtractor, ExhaustiveSearch, MetaModelGuesser
+from .model_prediction import StatisticalParametersExtractor, ExhaustiveSearch, MetaModelGuesser
 from .hpo import HyperTuner
 from .preprocessing import sota_preprocessor
 from typing import Literal, Optional

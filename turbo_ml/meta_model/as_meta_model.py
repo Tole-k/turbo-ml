@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import torch.utils.data as data_utils
-from turbo_ml.forecast.dataset_characteristics import StatisticalParametersExtractor
+from turbo_ml.model_prediction.dataset_characteristics import StatisticalParametersExtractor
 from turbo_ml.algorithms.neural_network import NeuralNetworkModel
 import pandas as pd
 from turbo_ml.preprocessing import sota_preprocessor
