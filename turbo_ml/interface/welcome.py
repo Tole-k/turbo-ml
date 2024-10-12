@@ -1,5 +1,5 @@
 """ 
-Main module implementing interactive command line interface for Quick AI library.
+Main module implementing interactive command line interface for Turbo-ML library.
 """
 import sys
 from collections import defaultdict

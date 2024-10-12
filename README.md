@@ -27,7 +27,7 @@
 
 ## Installation
 
-QuickAI is available on PyPI. You can install it using `pip`:
+Turbo-ML is available on PyPI. You can install it using `pip`:
 
 ```bash
 pip install turbo-ml
@@ -83,7 +83,7 @@ Detailed documentation should be available soon.
 
 We welcome contributions from the community!
 
-- **Bug Reports & Feature Requests**: Use the [GitHub Issues](https://github.com/Tole-k/quick-ai/issues) to report bugs or suggest features.
+- **Bug Reports & Feature Requests**: Use the [GitHub Issues](https://github.com/Tole-k/turbo-ml/issues) to report bugs or suggest features.
 
 ## License
 

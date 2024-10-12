@@ -1,5 +1,5 @@
 """
-Module containing helpful pre-defined items for the QuickAI interface.
+Module containing helpful pre-defined items for the TurboML interface.
 """
 from ..utils import options
 import sys

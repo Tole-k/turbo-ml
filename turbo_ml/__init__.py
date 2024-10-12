@@ -1,5 +1,5 @@
 """
-Quick-AI
+Turbo-ML
 ===
 Library providing all necessary tools to use automatically adjusted Machine Learning techniques.
 We aim to simplify the process of user input to maximum.

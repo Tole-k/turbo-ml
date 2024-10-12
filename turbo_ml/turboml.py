@@ -1,7 +1,7 @@
 """
-quickai.py
+turboml.py
 
-This module provides the `QuickAI` class, our main class for out-of-the-box autoML solution.
+This module provides the `TurboML` class, our main class for out-of-the-box autoML solution.
 It does not provide additional functionalities but it combines other modules to provide a complete solution.
 """
 import pandas as pd
@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO)
 
 class TurboML:
     """
-    The `QuickAI` class provides an out-of-the-box AutoML solution that automatically
+    The `TurboML` class provides an out-of-the-box AutoML solution that automatically
     selects and trains the best machine learning model for a given dataset. It handles
     data validation, statistical parameter extraction, model selection, hyperparameter
     optimization, and model training.
@@ -30,20 +30,20 @@ class TurboML:
     **Example:**
 
     ```python
-    from quick_ai import QuickAI
+    from turbo_ml import TurboML
     import pandas as pd
 
     # Load your dataset
     df = pd.read_csv('your_dataset.csv')
 
-    # Initialize QuickAI with the dataset and target column
-    quick_ai = QuickAI(dataset=df, target='target_column_name')
+    # Initialize TurboML with the dataset and target column
+    turboml = TurboML(dataset=df, target='target_column_name')
 
     # Prepare new data for prediction
     new_data = pd.read_csv('new_data.csv')
 
     # Make predictions
-    predictions = quick_ai.predict(new_data)
+    predictions = turboml.predict(new_data)
     ```
 
     **Attributes:**
@@ -53,7 +53,7 @@ class TurboML:
 
     def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads: int = 1, hpo_trials: int = 10):
         """
-        Initializes the `QuickAI` instance by performing the following steps:
+        Initializes the `TurboML` instance by performing the following steps:
 
         - Validates the input dataset and target column.
         - Extracts statistical parameters from the dataset.
@@ -77,7 +77,7 @@ class TurboML:
         options.threads = threads
         self.logger.setLevel(
             'INFO') if verbose else self.logger.setLevel('ERROR')
-        self.logger.info("Initializing QuickAI...")
+        self.logger.info("Initializing TurboML...")
         self.model: Model = DummyModel()
         start_time = time.time()
         if target is None:
