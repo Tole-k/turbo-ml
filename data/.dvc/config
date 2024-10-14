@@ -1,0 +1,6 @@
+[core]
+    autostage = true
+    remote = myremote
+['remote "myremote"']
+    url = gdrive://0AIac4JZqHhKmUk9PDA/dvcstore
+    gdrive_acknowledge_abuse = true
