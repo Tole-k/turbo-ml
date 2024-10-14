@@ -1,0 +1,5 @@
+outs:
+- md5: 716d14341ea87bef3ef114025ad26e59
+  size: 16106
+  hash: md5
+  path: lung-cancer_R.dat

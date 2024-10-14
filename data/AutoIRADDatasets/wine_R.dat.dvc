@@ -1,0 +1,5 @@
+outs:
+- md5: c3e8c3ce2d47f44b4241766ae07a296e
+  size: 22218
+  hash: md5
+  path: wine_R.dat

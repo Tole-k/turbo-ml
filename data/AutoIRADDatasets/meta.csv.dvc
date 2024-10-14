@@ -1,0 +1,5 @@
+outs:
+- md5: 6c56a1ec6161acbde8f8a0ed4f3c9b9d
+  size: 63130
+  hash: md5
+  path: meta.csv

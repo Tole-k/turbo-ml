@@ -1,0 +1,5 @@
+outs:
+- md5: 92d282fc363fdfd516c8ab1fbfc77b52
+  size: 46741
+  hash: md5
+  path: triazines.csv

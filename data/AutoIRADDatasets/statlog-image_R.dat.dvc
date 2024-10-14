@@ -1,0 +1,5 @@
+outs:
+- md5: d17364b11308daddba22bc7dd1cb4e56
+  size: 405187
+  hash: md5
+  path: statlog-image_R.dat

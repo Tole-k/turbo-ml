@@ -1,0 +1,5 @@
+outs:
+- md5: c2f9aa03cc97913a1f3a47ab491d74ec
+  size: 174025
+  hash: md5
+  path: wine-quality-red_R.dat

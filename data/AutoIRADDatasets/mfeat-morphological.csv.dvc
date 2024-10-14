@@ -1,0 +1,5 @@
+outs:
+- md5: 81100410bd868842d0f1e9ae04e5bfb4
+  size: 80020
+  hash: md5
+  path: mfeat-morphological.csv

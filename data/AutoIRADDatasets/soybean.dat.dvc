@@ -1,0 +1,5 @@
+outs:
+- md5: de9c6c213838edba08292c9dc63a1dd2
+  size: 194302
+  hash: md5
+  path: soybean.dat

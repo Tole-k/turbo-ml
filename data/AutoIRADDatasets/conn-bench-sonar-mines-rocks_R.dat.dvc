@@ -1,0 +1,5 @@
+outs:
+- md5: 9a16890b7821db364e27a2c7281159cd
+  size: 116869
+  hash: md5
+  path: conn-bench-sonar-mines-rocks_R.dat

@@ -1,0 +1,5 @@
+outs:
+- md5: 7b92d10d7c981b28f3816520d4e79094
+  size: 162799
+  hash: md5
+  path: breast-cancer-wisc-diag_R.dat

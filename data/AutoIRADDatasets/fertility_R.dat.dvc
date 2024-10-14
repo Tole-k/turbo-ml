@@ -1,0 +1,5 @@
+outs:
+- md5: 8f460d0ec1d8d690715974747ca5a63a
+  size: 8718
+  hash: md5
+  path: fertility_R.dat

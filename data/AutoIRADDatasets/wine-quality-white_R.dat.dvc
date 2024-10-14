@@ -1,0 +1,5 @@
+outs:
+- md5: a6a799cf420bdd05f8e1411e5f707f9d
+  size: 532318
+  hash: md5
+  path: wine-quality-white_R.dat

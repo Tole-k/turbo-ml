@@ -1,0 +1,5 @@
+outs:
+- md5: 84f20237e2de7a3d914efe286ad975c6
+  size: 106681
+  hash: md5
+  path: conn-bench-vowel-deterding.dat

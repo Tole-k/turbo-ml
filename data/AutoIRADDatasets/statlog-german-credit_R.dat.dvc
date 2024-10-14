@@ -1,0 +1,5 @@
+outs:
+- md5: 391ae078631205a7fe22bea191659dcb
+  size: 224672
+  hash: md5
+  path: statlog-german-credit_R.dat
