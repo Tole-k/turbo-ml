@@ -1,0 +1,5 @@
+outs:
+- md5: 4bbd568f3fefd4ecb31ef85e106caee0
+  size: 331346
+  hash: md5
+  path: synthetic-control_R.dat

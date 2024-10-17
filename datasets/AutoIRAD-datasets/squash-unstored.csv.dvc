@@ -1,0 +1,5 @@
+outs:
+- md5: 2d9edb046789697f2ef348aaaae1f554
+  size: 6219
+  hash: md5
+  path: squash-unstored.csv

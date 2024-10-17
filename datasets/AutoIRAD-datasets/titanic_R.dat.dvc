@@ -1,0 +1,5 @@
+outs:
+- md5: 02f0cce0f75ef6e676f3caed660340c0
+  size: 74625
+  hash: md5
+  path: titanic_R.dat

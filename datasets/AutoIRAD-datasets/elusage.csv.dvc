@@ -1,0 +1,5 @@
+outs:
+- md5: 44564893ab05017ea51cf9641cda1d1d
+  size: 443
+  hash: md5
+  path: elusage.csv

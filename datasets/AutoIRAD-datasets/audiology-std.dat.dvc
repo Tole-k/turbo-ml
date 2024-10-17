@@ -1,0 +1,5 @@
+outs:
+- md5: c4d80a08057370dca008efa75ba55c5b
+  size: 110381
+  hash: md5
+  path: audiology-std.dat

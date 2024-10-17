@@ -1,0 +1,5 @@
+outs:
+- md5: 02fdc9f3628e236baa2110785d04efe9
+  size: 2604860
+  hash: md5
+  path: spambase_R.dat

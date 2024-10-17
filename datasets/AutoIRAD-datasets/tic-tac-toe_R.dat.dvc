@@ -1,0 +1,5 @@
+outs:
+- md5: 339c43f7e97d8341a20c9f58514ff2f2
+  size: 81272
+  hash: md5
+  path: tic-tac-toe_R.dat

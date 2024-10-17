@@ -1,0 +1,5 @@
+outs:
+- md5: 17fdf528e3b1f4f2a9552776ecd646f0
+  size: 3855
+  hash: md5
+  path: cloud.csv

@@ -1,0 +1,5 @@
+outs:
+- md5: 0e7f87a033bc9b835682cca350a0b31a
+  size: 107089
+  hash: md5
+  path: baseball.csv

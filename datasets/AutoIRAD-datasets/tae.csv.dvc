@@ -1,0 +1,5 @@
+outs:
+- md5: 3a4cce4b251375d65a43ee91543fa035
+  size: 2249
+  hash: md5
+  path: tae.csv

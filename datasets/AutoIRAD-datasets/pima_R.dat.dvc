@@ -1,0 +1,5 @@
+outs:
+- md5: d84e1b0f8a2935927df553889ee699eb
+  size: 61420
+  hash: md5
+  path: pima_R.dat

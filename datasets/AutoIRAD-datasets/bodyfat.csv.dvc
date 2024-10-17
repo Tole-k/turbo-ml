@@ -1,0 +1,5 @@
+outs:
+- md5: ff03fb74f4b4c02c58cd4a8b86730f2a
+  size: 18260
+  hash: md5
+  path: bodyfat.csv

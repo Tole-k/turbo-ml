@@ -1,0 +1,5 @@
+outs:
+- md5: e671d6b6a6db5df8d9d31d9de76df1e3
+  size: 70614
+  hash: md5
+  path: congressional-voting_R.dat

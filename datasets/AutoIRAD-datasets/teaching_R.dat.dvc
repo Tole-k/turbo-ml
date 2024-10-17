@@ -1,0 +1,5 @@
+outs:
+- md5: 467217e97fc2e2d178bd4950b33ac757
+  size: 7575
+  hash: md5
+  path: teaching_R.dat
