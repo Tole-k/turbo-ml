@@ -1,8 +1,7 @@
-import os
 from functools import cache
 from ..model_prediction.model_prediction import Predictor
-from ...preprocessing import sota_preprocessor
-from ...base import __ALL_MODELS__
+from turbo_ml.preprocessing import sota_preprocessor
+from turbo_ml.base import __ALL_MODELS__
 from ..dataset_parameters.dataset_characteristics import DatasetDescription
 import pandas as pd
 import torch
@@ -40,10 +39,9 @@ class MetaModelGuesser(Predictor):
         frame.drop(columns=['task'], axis=1, inplace=True)
         preprocessor = sota_preprocessor()
         pre_frame = preprocessor.fit_transform(frame)
-
         train = torch.tensor(pre_frame.values.astype(
             'float32')).to(self.device)
-        self._meta_model.eval()
+
         with torch.inference_mode():
             model_values = self._meta_model(train).cpu()[0]
         model_list = [float(i) for i in model_values]
@@ -57,7 +55,9 @@ class MetaModelGuesser(Predictor):
         model = Best_Model(15, 36).to(self.device)
         model.load_state_dict(torch.load(
             str(__file__)[:-20] + 'model.pth'))
-        return model
+        # Do not rename this file (-20 is length of file name, model.pth is expected to be in the same directory)
+        # in order to not exclude windows \ options
+        return model.eval()
 
     @cache
     @staticmethod
