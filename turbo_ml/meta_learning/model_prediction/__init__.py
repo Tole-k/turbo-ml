@@ -1,2 +1,2 @@
 from .model_prediction import Predictor, ExhaustiveSearch
-from .dataset_characteristics import StatisticalParametersExtractor
+from ..dataset_parameters.dataset_characteristics import StatisticalParametersExtractor

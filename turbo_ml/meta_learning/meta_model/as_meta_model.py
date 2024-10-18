@@ -7,7 +7,7 @@ from torch import optim
 from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
 
-from turbo_ml.meta_learning.model_prediction.dataset_characteristics import StatisticalParametersExtractor
+from turbo_ml.meta_learning.dataset_parameters.dataset_characteristics import StatisticalParametersExtractor
 from turbo_ml.algorithms.neural_network import NeuralNetworkModel
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.utils import options

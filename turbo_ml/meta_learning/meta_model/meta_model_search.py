@@ -3,7 +3,7 @@ from functools import cache
 from ..model_prediction.model_prediction import Predictor
 from ...preprocessing import sota_preprocessor
 from ...base import __ALL_MODELS__
-from ..model_prediction.dataset_characteristics import DatasetDescription
+from ..dataset_parameters.dataset_characteristics import DatasetDescription
 import pandas as pd
 import torch
 import torch.nn as nn
