@@ -1,6 +1,6 @@
 from functools import cache
+import pickle
 from ..model_prediction.model_prediction import Predictor
-from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.base import __ALL_MODELS__
 from ..dataset_parameters.dataset_characteristics import DatasetDescription
 import pandas as pd
@@ -32,32 +32,43 @@ class MetaModelGuesser(Predictor):
 
     def __init__(self, device='cpu'):
         self.device = device
+        self._path = str(__file__)[:-20] + 'model/'
+        # Do not rename this file (-20 is length of file name, model.pth is expected to be in the same directory)
+        # in order to not exclude windows \ options
         self._meta_model = self._load_meta_model()
+        self._preprocessor = self._load_preprocessor()
 
     def predict(self, dataset_params: DatasetDescription):
         frame = pd.DataFrame([dataset_params.dict()])
         frame.drop(columns=['task'], axis=1, inplace=True)
-        preprocessor = sota_preprocessor()
-        pre_frame = preprocessor.fit_transform(frame)
+        pre_frame = self._preprocessor.transform(frame)
         train = torch.tensor(pre_frame.values.astype(
             'float32')).to(self.device)
 
         with torch.inference_mode():
             model_values = self._meta_model(train).cpu()[0]
-        model_list = [float(i) for i in model_values]
-        best = model_list.index(max(model_list))
-        model_name = __MODELS__[best]
-        best_model = MetaModelGuesser._get_str_to_model_dict()[model_name]
+        models = self._find_models(model_values, 2)
+        if models[0].__name__ == 'NeuralNetworkModel':
+            return models[1]()
+        return models[0]()
 
-        return best_model()
+    def _find_models(self, model_values: list, n: int = 1) -> list:
+        model_list = [(idx, float(i)) for idx, i in enumerate(model_values)]
+        model_list.sort(key=lambda x: x[1], reverse=True)
+        best_models = model_list[:n]
+        models_names = [__MODELS__[idx] for idx, _ in best_models]
+        translate = MetaModelGuesser._get_str_to_model_dict()
+        return list(map(lambda x: translate[x], models_names))
 
     def _load_meta_model(self):
         model = Best_Model(15, 36).to(self.device)
-        model.load_state_dict(torch.load(
-            str(__file__)[:-20] + 'model.pth'))
-        # Do not rename this file (-20 is length of file name, model.pth is expected to be in the same directory)
-        # in order to not exclude windows \ options
+        model.load_state_dict(torch.load(self._path + 'model.pth'))
         return model.eval()
+
+    def _load_preprocessor(self):
+        with open(self._path + 'preprocessor.pkl', 'rb') as f:
+            preprocessor = pickle.load(f)
+        return preprocessor
 
     @cache
     @staticmethod
