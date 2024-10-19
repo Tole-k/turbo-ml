@@ -1,4 +1,3 @@
-from load import get_iris, get_wine, get_breast_cancer, get_digits
 import timeit
 from typing import Tuple, List
 from sklearn.decomposition import PCA
@@ -14,10 +13,11 @@ def load_datasets():
     names = []
     path = os.path.join('AutoIRAD-datasets')
     for filename in os.listdir(path):
-        names.append(filename)
         if filename.endswith('csv'):
+            names.append(filename)
             datasets.append(pd.read_csv(os.path.join(path, filename)))
         if filename.endswith('dat'):
+            names.append(filename)
             datasets.append(pd.read_csv(
                 os.path.join(path, filename), delimiter='\t'))
     return datasets, names
