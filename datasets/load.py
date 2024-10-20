@@ -1,5 +1,7 @@
+import os
+
 from sklearn import datasets
-from typing import Tuple
+from typing import List, Tuple
 import pandas as pd
 import certifi
 import ssl
@@ -92,3 +94,18 @@ def get_heart_disease() -> Tuple[pd.DataFrame, pd.Series]:
     target = pd.Series(heart_disease['num'])
     heart_disease.drop(columns=['num'], inplace=True)
     return heart_disease, target
+
+
+def get_AutoIRAD_datasets() -> Tuple[List[pd.DataFrame], List[str]]:
+    datasets = []
+    names = []
+    path = os.path.join(os.path.dirname(__file__), 'AutoIRAD-datasets')
+    for filename in os.listdir(path):
+        if filename.endswith('csv'):
+            names.append(filename)
+            datasets.append(pd.read_csv(os.path.join(path, filename)))
+        if filename.endswith('dat'):
+            names.append(filename)
+            datasets.append(pd.read_csv(
+                os.path.join(path, filename), delimiter='\t'))
+    return datasets, names

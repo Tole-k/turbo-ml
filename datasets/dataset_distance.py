@@ -2,25 +2,11 @@ import timeit
 from typing import Tuple, List
 from sklearn.decomposition import PCA
 import numpy as np
-from otdd import ArrayDataset, POTDistance, SinkhornCost, EarthMoversCost
+
+from datasets import get_AutoIRAD_datasets
+from datasets.otdd import ArrayDataset, POTDistance, EarthMoversCost
 import pandas as pd
-import os
-from sklearn.preprocessing import StandardScaler, Normalizer
-
-
-def load_datasets():
-    datasets = []
-    names = []
-    path = os.path.join('AutoIRAD-datasets')
-    for filename in os.listdir(path):
-        if filename.endswith('csv'):
-            names.append(filename)
-            datasets.append(pd.read_csv(os.path.join(path, filename)))
-        if filename.endswith('dat'):
-            names.append(filename)
-            datasets.append(pd.read_csv(
-                os.path.join(path, filename), delimiter='\t'))
-    return datasets, names
+from sklearn.preprocessing import Normalizer
 
 
 def process_datasets(datasets, names):
@@ -84,6 +70,6 @@ def calculate_distances(datasets: List[pd.DataFrame], names: List[str]):
 
 
 if __name__ == '__main__':
-    datasets, names = process_datasets(*load_datasets())
+    datasets, names = process_datasets(*get_AutoIRAD_datasets())
     df = calculate_distances(datasets, names)
     df.to_csv('AutoIRAD-dataset-distances.csv')
