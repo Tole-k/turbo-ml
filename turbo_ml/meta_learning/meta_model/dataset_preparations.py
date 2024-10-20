@@ -5,11 +5,12 @@ from datasets import get_iris, get_wine, get_breast_cancer, get_digits, get_adul
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import minmax_scale
 from pydataset import data
-
 from turbo_ml.algorithms import NeuralNetworkModel, XGBoostClassifier, sklearn_models
 from turbo_ml.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelEncoder
-from turbo_ml.meta_learning.model_prediction import HyperTuner, StatisticalParametersExtractor
+from turbo_ml.meta_learning.model_prediction import StatisticalParametersExtractor
+from turbo_ml.meta_learning.hpo import HyperTuner
 from turbo_ml.utils import options
+from datasets import get_AutoIRAD_datasets
 
 
 def generate_dataset(models, datasets, optuna_trials=10, device='cpu', threads=1, path='results.csv'):
@@ -95,9 +96,16 @@ def adapt_pydatasets(datasets: List[pd.DataFrame]):
             yield ((dataset, categorical_column), name)
 
 
-ALL_DATASETS = [get_iris, get_wine, get_breast_cancer, get_digits, get_adult,
-                get_tips, get_titanic] + list(adapt_pydatasets(PY_DATASETS))
+def adapt_AutoIRAD_datasets(datasets: List[pd.DataFrame], names: List[str]):
+    for dataset, name in zip(datasets, names):
+        data = dataset.drop(dataset.columns[-1], axis=1)
+        target = dataset.iloc[:, -1]
+        yield ((data, target), name)
 
+
+# ALL_DATASETS = [get_iris, get_wine, get_breast_cancer, get_digits, get_adult,
+#                get_tips, get_titanic] + list(adapt_pydatasets(PY_DATASETS))
+ALL_DATASETS = list(adapt_AutoIRAD_datasets(*get_AutoIRAD_datasets()))
 if __name__ == '__main__':
     generate_dataset(ALL_MODELS, ALL_DATASETS, optuna_trials=10,
                      device=options.device, threads=options.threads, path='results2.csv')
