@@ -7,6 +7,7 @@ from datasets import get_AutoIRAD_datasets
 from datasets.otdd import ArrayDataset, POTDistance, EarthMoversCost
 import pandas as pd
 from sklearn.preprocessing import Normalizer
+from turbo_ml.preprocessing import OneHotEncoder, NanImputer
 
 
 def process_datasets(datasets, names):
@@ -14,11 +15,12 @@ def process_datasets(datasets, names):
     nams = []
     for dataset, name in zip(datasets, names):
         data = dataset.drop(dataset.columns[-1], axis=1)
+        data = NanImputer().fit_transform(data)
+        data = OneHotEncoder().fit_transform(data)
         target = dataset.iloc[:, -1]
-        if 'O' not in data.dtypes.unique():
-            datas.append(
-                (data, target.astype(str)))
-            nams.append(name)
+        datas.append(
+            (data, target.astype(str)))
+        nams.append(name)
     datasets = datas.copy()
     names = nams.copy()
     return datasets, names
@@ -72,4 +74,4 @@ def calculate_distances(datasets: List[pd.DataFrame], names: List[str]):
 if __name__ == '__main__':
     datasets, names = process_datasets(*get_AutoIRAD_datasets())
     df = calculate_distances(datasets, names)
-    df.to_csv('AutoIRAD-dataset-distances.csv')
+    df.to_csv('AutoIRAD-dataset-distances-ohe.csv')
