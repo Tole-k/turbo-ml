@@ -1,5 +1,7 @@
 from functools import cache
 import pickle
+
+from turbo_ml.base.model import Model
 from ..model_prediction.model_prediction import Predictor
 from turbo_ml.base import __ALL_MODELS__
 from ..dataset_parameters.dataset_characteristics import DatasetDescription
@@ -38,8 +40,8 @@ class MetaModelGuesser(Predictor):
         self._meta_model = self._load_meta_model()
         self._preprocessor = self._load_preprocessor()
 
-    def predict(self, dataset_params: DatasetDescription):
-        frame = pd.DataFrame([dataset_params.dict()])
+    def predict(self, dataset_params: dict) -> Model:
+        frame = pd.DataFrame([dataset_params])
         frame.drop(columns=['task'], axis=1, inplace=True)
         pre_frame = self._preprocessor.transform(frame)
         train = torch.tensor(pre_frame.values.astype(

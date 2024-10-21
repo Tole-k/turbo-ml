@@ -83,8 +83,7 @@ class SimpleMetaFeatures(MetaFeature):
 
 
 def sota_dataset_parameters(dataset: pd.DataFrame, target_data: pd.Series, as_dict: bool = False) -> np.ndarray | dict:
-    extractor = StatisticalParametersExtractor(
-        dataset, target=target_data, one_hot_encoded=True)
+    extractor = StatisticalParametersExtractor(dataset, target=target_data)
     description = extractor.describe_dataset()
     print(description)
     dictionary = description.dict()
