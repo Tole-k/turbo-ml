@@ -5,6 +5,7 @@ import json
 from collections import defaultdict
 from datetime import datetime
 
+TRAIN_RATIO = 0.8
 TOP_N = [1, 3, 5, 10]
 TEST_DURATIONS = [60, 15 * 60, 60 * 60, 2 * 60 * 60]
 MODEL_NAMES = [
@@ -54,7 +55,7 @@ class BaseExperiment(abc.ABC):
         self.task_mapping = {"multiclass_classification": "multiclass_classification", "binary_classification": "binary_classification"}
     
     @abc.abstractmethod
-    def find_best_models(self, dataset_path, task, duration):
+    def find_best_model(self, dataset_path, task, duration, train_ration=0.8):
         pass
         
         
@@ -67,10 +68,16 @@ class BaseExperiment(abc.ABC):
             task = datasets_info[dataset_name]["task_detailed"] 
             best_models_sorted = sorted(MODEL_NAMES, key=lambda x: datasets_info[dataset_name][x], reverse=True)
             for duration in TEST_DURATIONS:
-                best_model = self.find_best_models(dataset_path, self.task_mapping[task], duration)
+                best_model = self.find_best_model(dataset_path, self.task_mapping[task], duration, TRAIN_RATIO)
                 for top_n in TOP_N:
                     results[duration][top_n] += 1/len(datasets) if best_model in best_models_sorted[:top_n] else 0
         self.__save_to_json(self.name, results)
+
+    def find_model_in_string(self, string):
+        for model in MODEL_NAMES:
+            if model.lower() in string.lower().replace(" ", ""):
+                return model
+        return None
 
     def __get_datasets(self):
         return ["benchmark/datasets/iris.csv"]
