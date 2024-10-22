@@ -64,7 +64,7 @@ class BaseExperiment(abc.ABC):
         datasets = self.__get_datasets()
         results = defaultdict(lambda: defaultdict(float))
         for dataset_path in datasets:
-            dataset_name = dataset_path.removeprefix("benchmark/datasets/").removesuffix(".csv")
+            dataset_name = dataset_path.replace("benchmark/datasets/", "").replace(".csv", "")
             task = datasets_info[dataset_name]["task_detailed"] 
             best_models_sorted = sorted(MODEL_NAMES, key=lambda x: datasets_info[dataset_name][x], reverse=True)
             for duration in TEST_DURATIONS:
