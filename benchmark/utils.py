@@ -55,7 +55,7 @@ class BaseExperiment(abc.ABC):
         self.task_mapping = {"multiclass_classification": "multiclass_classification", "binary_classification": "binary_classification"}
     
     @abc.abstractmethod
-    def find_best_model(self, dataset_path, task, duration, train_ration=0.8):
+    def find_best_model(self, dataset_path, task, duration, train_ratio=0.8):
         pass
         
         
@@ -68,7 +68,7 @@ class BaseExperiment(abc.ABC):
             task = datasets_info[dataset_name]["task_detailed"] 
             best_models_sorted = sorted(MODEL_NAMES, key=lambda x: datasets_info[dataset_name][x], reverse=True)
             for duration in TEST_DURATIONS:
-                best_model = self.find_best_model(dataset_path, self.task_mapping[task], duration, TRAIN_RATIO)
+                best_model = self.find_best_model(dataset_path, self.task_mapping.get(task, "Unknown"), duration, TRAIN_RATIO)
                 for top_n in TOP_N:
                     results[duration][top_n] += 1/len(datasets) if best_model in best_models_sorted[:top_n] else 0
         self.__save_to_json(self.name, results)

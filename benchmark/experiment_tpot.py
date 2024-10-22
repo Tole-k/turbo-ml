@@ -20,7 +20,7 @@ class TPotExperiment(BaseExperiment):
         pipeline_optimizer = TPOTClassifier(max_time_mins=duration/60, scoring="accuracy")
         pipeline_optimizer.fit(X_train, y_train)
         logging.info(pipeline_optimizer.score(X_test, y_test))
-        output_folder = f'benchmark/datasets/TPot-outputs/'
+        output_folder = f'benchmark/TPot-outputs/'
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
         output_path = f'{output_folder}tpot_exported_pipeline-{datetime.now()}.py'
