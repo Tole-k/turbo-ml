@@ -74,9 +74,12 @@ class BaseExperiment(abc.ABC):
         self.__save_to_json(self.name, results)
 
     def find_model_in_string(self, string):
+        models = []
         for model in MODEL_NAMES:
             if model.lower() in string.lower().replace(" ", ""):
-                return model
+                models.append(model)
+        if models:
+            return max(models, key=len)
         return None
 
     def __get_datasets(self):

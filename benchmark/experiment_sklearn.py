@@ -19,9 +19,11 @@ class AutoSklearnExperiment(BaseExperiment):
             return None
         automl = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=duration, metric=accuracy)
         automl.fit(X, y)
-        leaderboard = automl.leaderboard()
+        leaderboard = automl.leaderboard(ensemble_only=False)
         print(leaderboard)
-        for model in leaderboard["model_id"]:
+        for model in leaderboard["type"]:
+            # it uses snake case
+            model = model.replace("_", "")
             if model := self.find_model_in_string(model):
                 print(model)
                 return model
