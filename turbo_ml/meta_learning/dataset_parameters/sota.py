@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import pandas as pd
 from .dataset_characteristics import StatisticalParametersExtractor
+from sklearn.decomposition import PCA
 
 
 class MetaFeature(ABC):
@@ -102,6 +103,34 @@ class StatisticalMetaFeatures(MetaFeature):
             'skewness_max': skewness.max() if len(skewness) > 0 else 0,
             'skewness_mean': skewness.mean() if len(skewness) > 0 else 0,
             'skewness_std': skewness.std() if len(skewness) > 0 else 0
+        }
+        if as_dict:
+            return results
+        return np.array(list(results.values()))
+
+
+class PCAMetaFeatures(MetaFeature):
+    def __call__(self, dataset: pd.DataFrame, target_data: pd.Series, as_dict: bool = False) -> np.ndarray | dict:
+        pca = PCA()
+        dataset = dataset.select_dtypes(include=[np.number])
+        if dataset.shape[1] == 0:
+            if as_dict:
+                return {
+                    'pca_95_index': 0,
+                    'pca_skewness': 0,
+                    'pca_kurtosis': 0
+                }
+            return np.zeros(3)
+        new_set = pca.fit_transform(dataset)
+        pca_95_index = np.argmax(
+            np.cumsum(pca.explained_variance_ratio_) >= 0.95) + 1
+        pc1_scores = new_set[:, 0]
+        pca_skewness = pd.Series(pc1_scores).skew()
+        pca_kurtosis = pd.Series(pc1_scores).kurtosis()
+        results = {
+            'pca_95_index': pca_95_index,
+            'pca_skewness': pca_skewness,
+            'pca_kurtosis': pca_kurtosis
         }
         if as_dict:
             return results
