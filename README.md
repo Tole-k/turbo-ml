@@ -5,16 +5,19 @@
 
 ## Table of Contents
 
-- [Features](#features)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Usage](#usage)
-  - [Data Preprocessing](#data-preprocessing)
-  - [Model Selection](#model-selection)
-  - [Hyperparameter Optimization](#hyperparameter-optimization)
-  - [Model Evaluation](#model-evaluation)
-- [Contributing](#contributing)
-- [License](#license)
+- [Turbo-ML](#turbo-ml)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Quick Start](#quick-start)
+  - [Usage](#usage)
+    - [Data Preprocessing](#data-preprocessing)
+    - [Model Selection](#model-selection)
+    - [Hyperparameter Optimization](#hyperparameter-optimization)
+    - [Model Evaluation](#model-evaluation)
+  - [Documentation](#documentation)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Features
 
@@ -23,7 +26,7 @@
 - **Data Preprocessing**: Handles missing values, categorical encoding, and feature scaling automatically.
 - **Interactive Interface**: User-friendly terminal interface with tutorials and step-by-step guidance.
 - **Extensibility**: Modular architecture allows for easy customization and extension.
-- **Compatibility**: Supports a wide range of algorithms from scikit-learn, CatBoost, XGBoost, and more.
+- **Compatibility**: Supports a wide range of algorithms from scikit-learn, XGBoost, and more.
 
 ## Installation
 
@@ -62,7 +65,7 @@ TurboML automatically preprocesses your data to make it suitable for machine lea
 ### Model Selection
 
 - Analyzes data characteristics (e.g., number of features, class balance).
-- Selects suitable algorithms from a pool that includes scikit-learn classifiers/regressors, CatBoost, XGBoost, etc.
+- Selects suitable algorithms from a pool that includes scikit-learn classifiers/regressors, XGBoost, etc.
 - Supports both classification and regression tasks.
 
 ### Hyperparameter Optimization
