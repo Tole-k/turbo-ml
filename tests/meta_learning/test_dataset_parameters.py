@@ -1,4 +1,4 @@
-from turbo_ml.meta_learning.dataset_parameters import sota_dataset_parameters, SimpleMetaFeatures
+from turbo_ml.meta_learning.dataset_parameters import sota_dataset_parameters, SimpleMetaFeatures, StatisticalMetaFeatures
 from datasets import get_iris, get_adult
 import numpy as np
 
@@ -24,4 +24,15 @@ def test_simple_parameter_extraction():
     parameters = SimpleMetaFeatures()(dataset, target)
     assert isinstance(parameters, np.ndarray)
     parameters = SimpleMetaFeatures()(dataset, target, as_dict=True)
+    assert isinstance(parameters, dict)
+
+
+def test_statistical_parameter_extraction():
+    dataset, target = get_iris()
+    parameters = StatisticalMetaFeatures()(dataset, target)
+    assert isinstance(parameters, np.ndarray)
+    dataset, target = get_adult()
+    parameters = StatisticalMetaFeatures()(dataset, target)
+    assert isinstance(parameters, np.ndarray)
+    parameters = StatisticalMetaFeatures()(dataset, target, as_dict=True)
     assert isinstance(parameters, dict)
