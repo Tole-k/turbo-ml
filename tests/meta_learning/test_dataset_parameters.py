@@ -1,4 +1,4 @@
-from turbo_ml.meta_learning.dataset_parameters import sota_dataset_parameters, SimpleMetaFeatures, StatisticalMetaFeatures
+from turbo_ml.meta_learning.dataset_parameters import sota_dataset_parameters, SimpleMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures
 from datasets import get_iris, get_adult
 import numpy as np
 
@@ -35,4 +35,15 @@ def test_statistical_parameter_extraction():
     parameters = StatisticalMetaFeatures()(dataset, target)
     assert isinstance(parameters, np.ndarray)
     parameters = StatisticalMetaFeatures()(dataset, target, as_dict=True)
+    assert isinstance(parameters, dict)
+
+
+def test_pca_parameter_extraction():
+    dataset, target = get_iris()
+    parameters = PCAMetaFeatures()(dataset, target)
+    assert isinstance(parameters, np.ndarray)
+    dataset, target = get_adult()
+    parameters = PCAMetaFeatures()(dataset, target)
+    assert isinstance(parameters, np.ndarray)
+    parameters = PCAMetaFeatures()(dataset, target, as_dict=True)
     assert isinstance(parameters, dict)
