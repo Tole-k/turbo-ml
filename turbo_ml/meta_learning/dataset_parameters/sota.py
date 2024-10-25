@@ -82,6 +82,32 @@ class SimpleMetaFeatures(MetaFeature):
         return np.array(list(results.values()))
 
 
+class StatisticalMetaFeatures(MetaFeature):
+    def __call__(self, dataset: pd.DataFrame, target_data: pd.Series, as_dict: bool = False) -> np.ndarray | dict:
+        categorical = pd.Series([dataset[i].astype('category').nunique()
+                                 for i in dataset if dataset[i].dtype == 'O'] or [0, 0])
+        kurtosis = dataset.kurtosis(numeric_only=True)
+        skewness = dataset.skew(numeric_only=True)
+        results = {
+            'categorical_min': categorical.min(),
+            'categorical_max': categorical.max(),
+            'categorical_mean': categorical.mean(),
+            'categorical_std': categorical.std(),
+            'categorical_total': categorical.sum(),
+            'kurtosis_min': kurtosis.min() if len(kurtosis) > 0 else 0,
+            'kurtoisis_max': kurtosis.max() if len(kurtosis) > 0 else 0,
+            'kurtoisis_mean': kurtosis.mean() if len(kurtosis) > 0 else 0,
+            'kurtoisis_std': kurtosis.std() if len(kurtosis) > 0 else 0,
+            'skewness_min': skewness.min() if len(skewness) > 0 else 0,
+            'skewness_max': skewness.max() if len(skewness) > 0 else 0,
+            'skewness_mean': skewness.mean() if len(skewness) > 0 else 0,
+            'skewness_std': skewness.std() if len(skewness) > 0 else 0
+        }
+        if as_dict:
+            return results
+        return np.array(list(results.values()))
+
+
 def sota_dataset_parameters(dataset: pd.DataFrame, target_data: pd.Series, as_dict: bool = False) -> np.ndarray | dict:
     extractor = StatisticalParametersExtractor(dataset, target=target_data)
     description = extractor.describe_dataset()
