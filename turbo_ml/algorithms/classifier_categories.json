@@ -1,0 +1,62 @@
+{
+    "Boosting": [
+        "XGBoostClassifier",
+        "AdaBoostClassifier",
+        "GradientBoostingClassifier",
+        "HistGradientBoostingClassifier"
+    ],
+    "Bagging": [
+        "BaggingClassifier"
+    ],
+    "Bayesian": [
+        "BernoulliNB",
+        "CategoricalNB",
+        "ComplementNB",
+        "GaussianNB",
+        "MultinomialNB"
+    ],
+    "Decision Trees": [
+        "DecisionTreeClassifier",
+        "ExtraTreeClassifier"
+    ],
+    "Random Forests": [
+        "ExtraTreesClassifier",
+        "RandomForestClassifier"
+    ],
+    "Generalized Linear Models": [
+        "CalibratedClassifierCV",
+        "PassiveAggressiveClassifier",
+        "RidgeClassifier",
+        "RidgeClassifierCV",
+        "SGDClassifier"
+    ],
+    "Support Vector Machines": [
+        "GaussianProcessClassifier",
+        "LinearSVC",
+        "NuSVC",
+        "SVC"
+    ],
+    "Nearest Neighbor": [
+        "KNeighborsClassifier",
+        "RadiusNeighborsClassifier"
+    ],
+    "Discriminant Analysis": [
+        "LinearDiscriminantAnalysis",
+        "NearestCentroid",
+        "QuadraticDiscriminantAnalysis"
+    ],
+    "Logistic and Multinomial Regression": [
+        "LogisticRegression",
+        "LogisticRegressionCV"
+    ],
+    "Neural Networks": [
+        "NeuralNetworkModel",
+        "MLPClassifier",
+        "Perceptron"
+    ],
+    "Other Methods": [
+        "DummyClassifier",
+        "LabelPropagation",
+        "LabelSpreading"
+    ]
+}
