@@ -11,6 +11,23 @@ class MetaFeature(ABC):
         pass
 
 
+class CombinedMetaFeatures(MetaFeature):
+    def __init__(self, meta_features: list[MetaFeature]):
+        self.meta_features = meta_features
+
+    def __call__(self, dataset, target_data, as_dict=False):
+        results = []
+
+        for meta_feature in self.meta_features:
+            results.append(meta_feature(dataset, target_data, as_dict=as_dict))
+        if as_dict:
+            results_dict = {}
+            for i in results:
+                results_dict.update(i)
+            return results_dict
+        return np.concatenate(results)
+
+
 class SimpleMetaFeatures(MetaFeature):
     def __call__(self, dataset: pd.DataFrame, target_data: pd.Series, as_dict: bool = False) -> np.ndarray | dict:
         types = dataset.dtypes
