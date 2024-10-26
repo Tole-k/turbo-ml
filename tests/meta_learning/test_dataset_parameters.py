@@ -1,4 +1,4 @@
-from turbo_ml.meta_learning.dataset_parameters import sota_dataset_parameters, SimpleMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures
+from turbo_ml.meta_learning.dataset_parameters import sota_dataset_parameters, SimpleMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures, CombinedMetaFeatures
 from datasets import get_iris, get_adult
 import numpy as np
 
@@ -46,4 +46,18 @@ def test_pca_parameter_extraction():
     parameters = PCAMetaFeatures()(dataset, target)
     assert isinstance(parameters, np.ndarray)
     parameters = PCAMetaFeatures()(dataset, target, as_dict=True)
+    assert isinstance(parameters, dict)
+
+
+def test_combined_parameter_extraction():
+    dataset, target = get_iris()
+    meta_features = [SimpleMetaFeatures(
+    ), StatisticalMetaFeatures(), PCAMetaFeatures()]
+    parameters = CombinedMetaFeatures(meta_features)(dataset, target)
+    assert isinstance(parameters, np.ndarray)
+    dataset, target = get_adult()
+    parameters = CombinedMetaFeatures(meta_features)(dataset, target)
+    assert isinstance(parameters, np.ndarray)
+    parameters = CombinedMetaFeatures(
+        meta_features)(dataset, target, as_dict=True)
     assert isinstance(parameters, dict)
