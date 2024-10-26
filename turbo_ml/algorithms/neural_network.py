@@ -170,14 +170,14 @@ class NNFactory:
                 params['output_size'] = no_variables
             trial.set_user_attr('output_size', params['output_size'])
             num_hidden_layers = trial.suggest_int(
-                'num_hidden_layers', 0, 10)
+                'num_hidden_layers', 1, 8)
             hidden_sizes = []
             activations = []
             for i in range(num_hidden_layers):
-                hidden_sizes.append(trial.suggest_int(
-                    f'hidden_size_{i}', 1, 100))
+                hidden_sizes.append(trial.suggest_categorical(
+                    f'hidden_size_{i}', [2**i for i in range(2, 11)]))
                 activations.append(trial.suggest_categorical(
-                    f'activation_{i}', ['relu', 'sigmoid', 'tanh', 'softmax', 'leakyrelu', 'elu', 'selu', 'gelu', 'hardtanh', 'logsigmoid', 'softplus', 'softshrink', 'softsign', 'tanhshrink', 'rrelu', 'celu', 'silu', 'mish', 'relu6', 'prelu', 'hardsigmoid', 'hardshrink']))
+                    f'activation_{i}', ['relu', 'leakyrelu', 'elu', 'selu', 'gelu', 'rrelu', 'celu', 'silu', 'mish', 'relu6', 'prelu']))
             trial.set_user_attr('hidden_sizes', hidden_sizes)
             trial.set_user_attr('activations', activations)
             params['hidden_sizes'] = trial.user_attrs['hidden_sizes']
