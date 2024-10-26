@@ -28,7 +28,7 @@ class TurboML_Experimental:
         target_data = self.preprocessor.fit_transform_target(target_data)
 
         dataset_params = sota_dataset_parameters(
-            data, target_data, as_dict=True)
+            data, target_data, as_dict=True, old=True)
 
         guesser = MetaModelGuesser()
         self.model = guesser.predict(dataset_params)

@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from .dataset_characteristics import StatisticalParametersExtractor
 from sklearn.decomposition import PCA
+import warnings
 
 
 class MetaFeature(ABC):
@@ -154,13 +155,17 @@ class PCAMetaFeatures(MetaFeature):
         return np.array(list(results.values()))
 
 
-def sota_dataset_parameters(dataset: pd.DataFrame, target_data: pd.Series, as_dict: bool = False) -> np.ndarray | dict:
-    extractor = StatisticalParametersExtractor(dataset, target=target_data)
-    description = extractor.describe_dataset()
-    print(description)
-    dictionary = description.dict()
-    if as_dict:
-        return dictionary
-    variables = list(dictionary.values())[2:]
-    # skipping task describing variables (strings)
-    return np.array(variables)
+def sota_dataset_parameters(dataset: pd.DataFrame, target_data: pd.Series, as_dict: bool = False, old: bool = False) -> np.ndarray | dict:
+    if old:
+        warnings.warn(
+            "The 'old' parameter is deprecated and will be removed in a future version.", DeprecationWarning)
+        extractor = StatisticalParametersExtractor(dataset, target=target_data)
+        description = extractor.describe_dataset()
+        print(description)
+        dictionary = description.dict()
+        if as_dict:
+            return dictionary
+        variables = list(dictionary.values())[2:]
+        # skipping task describing variables (strings)
+        return np.array(variables)
+    return CombinedMetaFeatures([SimpleMetaFeatures(), StatisticalMetaFeatures(), PCAMetaFeatures()])(dataset, target_data, as_dict=as_dict)

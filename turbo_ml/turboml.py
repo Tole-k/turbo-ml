@@ -95,7 +95,7 @@ class TurboML:
         self.logger.info('Preprocessing completed')
         try:
             dataset_params = sota_dataset_parameters(
-                data, target_data, as_dict=True)
+                data, target_data, as_dict=True, old=True)
         except Exception:
             raise Exception("Dataset description failed")
         self.logger.info(
