@@ -1,3 +1,4 @@
+import pickle
 import matplotlib.pyplot as plt
 import torch.utils.data as data_utils
 import pandas as pd
@@ -7,7 +8,7 @@ from torch import optim
 from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
 
-from turbo_ml.meta_learning.model_prediction.dataset_characteristics import StatisticalParametersExtractor
+from turbo_ml.meta_learning.dataset_parameters.dataset_characteristics import StatisticalParametersExtractor
 from turbo_ml.algorithms.neural_network import NeuralNetworkModel
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.utils import options
@@ -41,7 +42,9 @@ def train_meta_model(device='cpu', save_model=False, save_path='model.pth'):
     frame.drop(Models, axis=1, inplace=True)
     preprocessor = sota_preprocessor()
     pre_frame = preprocessor.fit_transform(frame)
-
+    if save_path:
+        with open(save_path + '/preprocessor.pkl', 'wb') as f:
+            pickle.dump(preprocessor, f)
     # dataset = pd.concat([pre_frame, target], axis=1)
     # print(dataset)
 
@@ -84,10 +87,10 @@ def train_meta_model(device='cpu', save_model=False, save_path='model.pth'):
                     print(f'Epoch: {epoch}, Loss: {loss}')
                 values.append(float(loss))
     if save_model:
-        torch.save(model.state_dict(), save_path)
+        torch.save(model.state_dict(), save_path + '/model.pth')
     return model
 
 
 if __name__ == '__main__':
     train_meta_model(device=options.device, save_model=True,
-                     save_path='model2.pth')
+                     save_path='turbo_ml/meta_learning/meta_model/model')

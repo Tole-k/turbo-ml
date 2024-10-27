@@ -8,14 +8,14 @@ import pandas as pd
 from typing import Literal, Optional
 
 from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.meta_learning import StatisticalParametersExtractor, MetaModelGuesser, HyperTuner
+from turbo_ml.meta_learning import MetaModelGuesser, HyperTuner, sota_dataset_parameters
 from turbo_ml.algorithms import RandomGuesser as DummyModel
 from turbo_ml.base import Model, __ALL_MODELS__
 from turbo_ml.utils import options
 
 
 class TurboML_Experimental:
-    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads: int = 1, hpo_trials: int = 10):
+    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = False):
         options.device = device
         options.threads = threads
         self.model: Model = DummyModel()
@@ -27,16 +27,17 @@ class TurboML_Experimental:
         data = self.preprocessor.fit_transform(data)
         target_data = self.preprocessor.fit_transform_target(target_data)
 
-        extractor = StatisticalParametersExtractor(data, target_data)
-        dataset_params = extractor.describe_dataset()
+        dataset_params = sota_dataset_parameters(
+            data, target_data, as_dict=True, old=True)
 
         guesser = MetaModelGuesser()
         self.model = guesser.predict(dataset_params)
 
-        tuner = HyperTuner()
-        hyperparameters = tuner.optimize_hyperparameters(
-            self.model.__class__, (data, target_data), dataset_params.task, dataset_params.num_classes, dataset_params.target_features, device, hpo_trials, threads)
-        self.model = self.model.__class__(**hyperparameters)
+        if hpo_enabled:
+            tuner = HyperTuner()
+            hyperparameters = tuner.optimize_hyperparameters(
+                self.model.__class__, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'], device, hpo_trials, threads)
+            self.model = self.model.__class__(**hyperparameters)
 
         self.model.train(data, target_data)
 

@@ -1,4 +1,4 @@
-from turbo_ml.meta_learning.model_prediction.dataset_characteristics import StatisticalParametersExtractor, DatasetDescription
+from turbo_ml.meta_learning.dataset_parameters.dataset_characteristics import StatisticalParametersExtractor, DatasetDescription
 from datasets import get_iris, get_breast_cancer
 
 

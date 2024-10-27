@@ -8,6 +8,7 @@ import json
 from turbo_ml.algorithms import NeuralNetworkModel
 from turbo_ml.base import Model
 from turbo_ml.utils import options
+import os
 
 
 class HyperTuner:
@@ -15,10 +16,11 @@ class HyperTuner:
     def __init__(self) -> None:
         opt.logging.set_verbosity(
             verbosity=options.dev_mode_logging if options.dev_mode else options.user_mode_logging)
+        directory = os.path.dirname(__file__)
         self.sklearn_hyperparameters = json.load(
-            open('turbo_ml/meta_learning/hpo/sklearn_hyperparameters.json'))
+            open(os.path.join(directory, 'sklearn_hyperparameters.json')))
         self.hyperparameters = json.load(
-            open('turbo_ml/meta_learning/hpo/hyperparameters.json'))
+            open(os.path.join(directory, 'hyperparameters.json')))
 
     @staticmethod
     def process_conditions(hyper_param: dict, no_classes: int, no_variables: int, device: str) -> dict:
