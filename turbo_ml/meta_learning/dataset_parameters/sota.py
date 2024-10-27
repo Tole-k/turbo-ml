@@ -189,7 +189,6 @@ def sota_dataset_parameters(dataset: pd.DataFrame, target_data: pd.Series, as_di
             "The 'old' parameter is deprecated and will be removed in a future version.", DeprecationWarning)
         extractor = StatisticalParametersExtractor(dataset, target=target_data)
         description = extractor.describe_dataset()
-        print(description)
         dictionary = description.dict()
         if as_dict:
             return dictionary
