@@ -50,7 +50,7 @@ class TurboML:
     """
     logger = logging.getLogger()
 
-    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads: int = 1, hpo_trials: int = 10):
+    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = True):
         """
         Initializes the `TurboML` instance by performing the following steps:
 
@@ -120,14 +120,14 @@ class TurboML:
             except Exception:
                 self.logger.info('Trying to find better model failed')
         model_selection_time = time.time()
-
-        try:
-            tuner = HyperTuner()
-            hyperparameters = tuner.optimize_hyperparameters(
-                self.model.__class__, (data, target_data), dataset_params.task, dataset_params.num_classes, dataset_params.target_features, device, hpo_trials, threads)
-            self.model = self.model.__class__(**hyperparameters)
-        except Exception:
-            self.logger.info('Hyperparameter optimization failed')
+        if hpo_enabled:
+            try:
+                tuner = HyperTuner()
+                hyperparameters = tuner.optimize_hyperparameters(
+                    self.model.__class__, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'], device, hpo_trials, threads)
+                self.model = self.model.__class__(**hyperparameters)
+            except Exception:
+                self.logger.info('Hyperparameter optimization failed')
         hpo_time = time.time()
 
         model_name = self.model.__class__.__name__
