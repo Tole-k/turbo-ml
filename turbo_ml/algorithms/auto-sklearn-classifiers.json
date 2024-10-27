@@ -1,0 +1,33 @@
+{
+    "Boosting": [
+        "AdaBoostClassifier",
+        "GradientBoostingClassifier",
+    ],
+    "Bayesian": [
+        "BernoulliNB",
+        "GaussianNB",
+        "MultinomialNB"
+    ],
+    "Decision Trees": [
+        "DecisionTreeClassifier"
+    ],
+    "Random Forests": [
+        "ExtraTreesClassifier",
+        "RandomForestClassifier"
+    ],
+    "Generalized Linear Models": [
+        "PassiveAggressiveClassifier",
+        "SGDClassifier"
+    ],
+    "Support Vector Machines": [
+        "LinearSVC",
+        "SVC"
+    ],
+    "Nearest Neighbor": [
+        "KNeighborsClassifier",
+    ],
+    "Discriminant Analysis": [
+        "LinearDiscriminantAnalysis",
+        "QuadraticDiscriminantAnalysis"
+    ]
+}
