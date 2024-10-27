@@ -62,11 +62,11 @@ class SimpleMetaFeatures(MetaFeature):
         types = dataset.dtypes
         num_features = len(dataset.dtypes)
         log_num_cols = np.log2(num_features)
-        num_patters = len(dataset)
-        log_num_rows = np.log2(num_patters)
+        num_patterns = len(dataset)
+        log_num_rows = np.log2(num_patterns)
         num_categorical = sum(1 for i in types if i == 'O')
         num_numerical = num_features - num_categorical
-        assert num_features > 0 and num_patters > 0
+        assert num_features > 0 and num_patterns > 0
         if num_categorical == 0:
             ratio_num_cat = 1
         else:
@@ -81,9 +81,9 @@ class SimpleMetaFeatures(MetaFeature):
         perc_of_features_with_missing_values = number_of_features_with_missing_values / num_features
         number_of_patterns_with_missing_values = missing_values_frame.any(
             axis=1).sum()
-        perc_of_patterns_with_missing_values = number_of_patterns_with_missing_values / num_patters
+        perc_of_patterns_with_missing_values = number_of_patterns_with_missing_values / num_patterns
         number_of_missing_values = missing_values_frame.sum().sum()
-        perc_of_missing_values = number_of_missing_values / num_features / num_patters
+        perc_of_missing_values = number_of_missing_values / num_features / num_patterns
         # Classes
         target_data = target_data.astype('category')
         num_classes = target_data.nunique()
@@ -99,7 +99,7 @@ class SimpleMetaFeatures(MetaFeature):
         inverse_dataset_dimensionality = 1 / num_features
         inverse_dataset_dimensionality_log = 1 / log_num_cols
         results = {
-            'num_patterns': num_patters,
+            'num_patterns': num_patterns,
             'log_patterns': log_num_rows,
             'num_classes': num_classes,
             'num_features': num_features,
@@ -142,9 +142,9 @@ class StatisticalMetaFeatures(MetaFeature):
             'categorical_std': categorical.std(),
             'categorical_total': categorical.sum(),
             'kurtosis_min': kurtosis.min() if len(kurtosis) > 0 else 0,
-            'kurtoisis_max': kurtosis.max() if len(kurtosis) > 0 else 0,
-            'kurtoisis_mean': kurtosis.mean() if len(kurtosis) > 0 else 0,
-            'kurtoisis_std': kurtosis.std() if len(kurtosis) > 0 else 0,
+            'kurtosis_max': kurtosis.max() if len(kurtosis) > 0 else 0,
+            'kurtosis_mean': kurtosis.mean() if len(kurtosis) > 0 else 0,
+            'kurtosis_std': kurtosis.std() if len(kurtosis) > 0 else 0,
             'skewness_min': skewness.min() if len(skewness) > 0 else 0,
             'skewness_max': skewness.max() if len(skewness) > 0 else 0,
             'skewness_mean': skewness.mean() if len(skewness) > 0 else 0,
