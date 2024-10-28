@@ -153,7 +153,7 @@ class NNFactory:
                 for optimizer in self.optimizers}[optimizer.lower()]
 
     @staticmethod
-    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, device='cpu', trials: int = 100) -> Dict[str, Any]:
+    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, device='cpu', trials: int = 10) -> Dict[str, Any]:
         def objective(trial, dataset, task, device):
             x_train, x_test, y_train, y_test = train_test_split(
                 *dataset, test_size=0.2)
@@ -214,7 +214,7 @@ class NNFactory:
             trial, dataset, task, device), n_trials=trials)
         return study.best_params | study.best_trial.user_attrs
 
-    def create_neural_network(self, input_size: int, output_size: int, hidden_sizes: List[int], task: str = 'classification', activations: List[str] = ['relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> NeuralNetworkBase:
+    def create_neural_network(self, input_size: int = None, output_size: int = None, hidden_sizes: List[int] = [256, 128, 64], task: str = 'classification', activations: List[str] = ['relu', 'relu', 'relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> NeuralNetworkBase:
         layers = []
         if len(activations) != len(hidden_sizes):
             raise ValueError(
@@ -264,17 +264,27 @@ class NeuralNetworkModel(Model):
             activations.append(params[f'activation_{i}'])
             del params[f'hidden_size_{i}']
             del params[f'activation_{i}']
+        del params['input_size']
+        del params['output_size']
         del params['num_hidden_layers']
         params['hidden_sizes'] = hidden_sizes
         params['activations'] = activations
         return params
 
-    def __init__(self, input_size: int, output_size: int, hidden_sizes: List[int], task: str = 'classification', activations: List[str] = ['relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> None:
+    def __init__(self, hidden_sizes: List[int] = [256, 128, 64], task: str = 'classification', activations: List[str] = ['relu', 'relu', 'relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> None:
         super().__init__()
-        self.model = self.factory.create_neural_network(
-            input_size, output_size, hidden_sizes, task, activations, loss, optimizer, batch_size, epochs, learning_rate, device)
+        # self.model = self.factory.create_neural_network(
+        #     input_size, output_size, hidden_sizes, task, activations, loss, optimizer, batch_size, epochs, learning_rate, device)
+        self.params = {'hidden_sizes': hidden_sizes, 'task': task,
+                       'activations': activations, 'loss': loss, 'optimizer': optimizer, 'batch_size': batch_size, 'epochs': epochs, 'learning_rate': learning_rate, 'device': device}
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
+        if self.model is None:
+            self.params['input_size'] = data.shape[1]
+            self.params['output_size'] = target.nunique(
+            ) if self.params['task'] == 'classification' else 1 if isinstance(target, pd.Series) else target.shape[1]
+            self.model = self.factory.create_neural_network(
+                **self.params)
         self.model.train(data, target)
 
     def predict(self, guess: pd.DataFrame) -> pd.DataFrame | pd.Series:

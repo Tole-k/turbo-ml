@@ -6,7 +6,7 @@ It does not provide additional functionalities but it combines other modules to 
 """
 import pandas as pd
 
-from typing import Literal, Optional
+from typing import Any, Dict, Literal, Optional
 import time
 import logging
 
@@ -77,7 +77,9 @@ class TurboML:
         self.logger.setLevel(
             'INFO') if verbose else self.logger.setLevel('ERROR')
         self.logger.info("Initializing TurboML...")
-        self.model: Model = DummyModel()
+        self._algorithm = DummyModel
+        self.model: Model
+        self.hyperparameters: Dict[str, Any] = {}
         start_time = time.time()
         if target is None:
             # target = find_target() TODO: to be implemented
@@ -104,33 +106,50 @@ class TurboML:
 
         try:
             guesser = MetaModelGuesser()
-            self.model = guesser.predict(dataset_params)
+            self._algorithm = guesser.predict(dataset_params)
         except Exception:
             raise Exception('Model optimization failed')
         model_guessing_time = time.time()
 
-        model_name = self.model.__class__.__name__
+        model_name = self._algorithm.__name__
         self.logger.info(f'''Model guessed: {
             model_name}, searching for better model (Currently disabled, unless guessing model is DummyModel)''')
-        if isinstance(self.model.__class__, DummyModel):
+
+        if isinstance(self._algorithm, DummyModel):
             try:
                 search = ExhaustiveSearch()
-                self.model = search.predict(data, target_data)
+                self._algorithm = search.predict(data, target_data)
                 self.logger.info(f'Looked at {search.counter} models')
             except Exception:
                 self.logger.info('Trying to find better model failed')
         model_selection_time = time.time()
+
         if hpo_enabled:
             try:
                 tuner = HyperTuner()
-                hyperparameters = tuner.optimize_hyperparameters(
-                    self.model.__class__, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'], device, hpo_trials, threads)
-                self.model = self.model.__class__(**hyperparameters)
+                self.hyperparameters = tuner.optimize_hyperparameters(
+                    self._algorithm, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'], device, hpo_trials, threads)
             except Exception:
                 self.logger.info('Hyperparameter optimization failed')
+        else:
+            self.logger.info(
+                'Hyperparameter optimization disabled, setting default hyperparameters')
         hpo_time = time.time()
 
-        model_name = self.model.__class__.__name__
+        try:
+            self.model = self._algorithm(**self.hyperparameters)
+        except Exception:
+            logging.CRITICAL('Model initialization failed')
+            try:
+                self.hyperparameters = {}
+                self.model = self._algorithm(self.hyperparameters)
+            except Exception:
+                self.model = DummyModel()
+                self._algorithm = DummyModel
+                logging.CRITICAL(
+                    'Model initialization without hyperparameters failed')
+
+        model_name = self._algorithm.__name__
         self.logger.info(f"Training {model_name} model")
         try:
             self.model.train(data, target_data)
