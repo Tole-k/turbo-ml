@@ -50,9 +50,7 @@ class MetaModelGuesser(Predictor):
         with torch.inference_mode():
             model_values = self._meta_model(train).cpu()[0]
         models = self._find_models(model_values, 2)
-        if models[0].__name__ == 'NeuralNetworkModel':
-            return models[1]()
-        return models[0]()
+        return models[0]
 
     def _find_models(self, model_values: list, n: int = 1) -> list:
         model_list = [(idx, float(i)) for idx, i in enumerate(model_values)]

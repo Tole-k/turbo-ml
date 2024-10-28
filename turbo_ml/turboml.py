@@ -77,6 +77,7 @@ class TurboML:
         self.logger.setLevel(
             'INFO') if verbose else self.logger.setLevel('ERROR')
         self.logger.info("Initializing TurboML...")
+        classifier = DummyModel
         self.model: Model = DummyModel()
         start_time = time.time()
         if target is None:
@@ -104,18 +105,18 @@ class TurboML:
 
         try:
             guesser = MetaModelGuesser()
-            self.model = guesser.predict(dataset_params)
+            classifier = guesser.predict(dataset_params)
         except Exception:
             raise Exception('Model optimization failed')
         model_guessing_time = time.time()
 
-        model_name = self.model.__class__.__name__
+        model_name = classifier.__name__
         self.logger.info(f'''Model guessed: {
             model_name}, searching for better model (Currently disabled, unless guessing model is DummyModel)''')
-        if isinstance(self.model.__class__, DummyModel):
+        if isinstance(classifier, DummyModel):
             try:
                 search = ExhaustiveSearch()
-                self.model = search.predict(data, target_data)
+                classifier = search.predict(data, target_data)
                 self.logger.info(f'Looked at {search.counter} models')
             except Exception:
                 self.logger.info('Trying to find better model failed')
@@ -124,10 +125,14 @@ class TurboML:
             try:
                 tuner = HyperTuner()
                 hyperparameters = tuner.optimize_hyperparameters(
-                    self.model.__class__, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'], device, hpo_trials, threads)
-                self.model = self.model.__class__(**hyperparameters)
+                    classifier, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'], device, hpo_trials, threads)
+                self.model = classifier(**hyperparameters)
             except Exception:
                 self.logger.info('Hyperparameter optimization failed')
+                self.model = classifier()
+        else:
+            self.logger.info('Hyperparameter optimization disabled, setting default hyperparameters')
+            self.model = classifier()
         hpo_time = time.time()
 
         model_name = self.model.__class__.__name__

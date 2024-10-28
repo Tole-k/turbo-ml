@@ -50,4 +50,4 @@ class ExhaustiveSearch(Predictor):
                 self.counter += 1
             except:
                 continue
-        return best_model[0]()
+        return best_model[0]

@@ -18,6 +18,7 @@ class TurboML_Experimental:
     def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = False):
         options.device = device
         options.threads = threads
+        classifier = DummyModel
         self.model: Model = DummyModel()
         self._input_check(dataset, target)
         target_data = dataset[target]
@@ -31,13 +32,15 @@ class TurboML_Experimental:
             data, target_data, as_dict=True, old=True)
 
         guesser = MetaModelGuesser()
-        self.model = guesser.predict(dataset_params)
+        classifier = guesser.predict(dataset_params)
 
         if hpo_enabled:
             tuner = HyperTuner()
             hyperparameters = tuner.optimize_hyperparameters(
-                self.model.__class__, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'], device, hpo_trials, threads)
-            self.model = self.model.__class__(**hyperparameters)
+                classifier, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'], device, hpo_trials, threads)
+            self.model = classifier(**hyperparameters)
+        else:
+            self.model = classifier()
 
         self.model.train(data, target_data)
 
