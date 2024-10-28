@@ -214,7 +214,7 @@ class NNFactory:
             trial, dataset, task, device), n_trials=trials)
         return study.best_params | study.best_trial.user_attrs
 
-    def create_neural_network(self, input_size: int = 10, output_size: int = 2, hidden_sizes: List[int] = [4], task: str = 'classification', activations: List[str] = ['relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> NeuralNetworkBase:
+    def create_neural_network(self, input_size: int = None, output_size: int = None, hidden_sizes: List[int] = [256, 128, 64], task: str = 'classification', activations: List[str] = ['relu', 'relu', 'relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> NeuralNetworkBase:
         layers = []
         if len(activations) != len(hidden_sizes):
             raise ValueError(
@@ -264,6 +264,8 @@ class NeuralNetworkModel(Model):
             activations.append(params[f'activation_{i}'])
             del params[f'hidden_size_{i}']
             del params[f'activation_{i}']
+        del params['input_size']
+        del params['output_size']
         del params['num_hidden_layers']
         params['hidden_sizes'] = hidden_sizes
         params['activations'] = activations
