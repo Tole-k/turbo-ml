@@ -269,11 +269,11 @@ class NeuralNetworkModel(Model):
         params['activations'] = activations
         return params
 
-    def __init__(self, input_size: int = 10, output_size: int = 2, hidden_sizes: List[int] = [4], task: str = 'classification', activations: List[str] = ['relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> None:
+    def __init__(self, hidden_sizes: List[int] = [256, 128, 64], task: str = 'classification', activations: List[str] = ['relu', 'relu', 'relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> None:
         super().__init__()
         # self.model = self.factory.create_neural_network(
         #     input_size, output_size, hidden_sizes, task, activations, loss, optimizer, batch_size, epochs, learning_rate, device)
-        self.params = {'input_size': input_size, 'output_size': output_size, 'hidden_sizes': hidden_sizes, 'task': task,
+        self.params = {'hidden_sizes': hidden_sizes, 'task': task,
                        'activations': activations, 'loss': loss, 'optimizer': optimizer, 'batch_size': batch_size, 'epochs': epochs, 'learning_rate': learning_rate, 'device': device}
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
