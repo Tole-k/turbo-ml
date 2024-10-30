@@ -4,13 +4,12 @@ import logging
 import pandas as pd
 from tpot import TPOTClassifier
 from sklearn.model_selection import train_test_split
-from utils import BaseExperiment
+from utils import BaseExperiment, Task
 
 # It may have problem with ensemble models
 class TPotExperiment(BaseExperiment):
     def __init__(self):
         self.name = "TPot"
-        self.task_mapping = {"multiclass_classification": "classification", "binary_classification": "classification"}
 
     def __find_best_model_classification(self, dataset_path, duration, train_ratio=0.8):
         dataset = pd.read_csv(dataset_path)
@@ -34,10 +33,10 @@ class TPotExperiment(BaseExperiment):
 
 
     def find_best_model(self, dataset_path, task, duration, train_ratio=0.8):
-        if task == "classification":
+        if task is Task.BINARY or task is Task.MULTICLASS:
             return self.__find_best_model_classification(dataset_path, duration, train_ratio)
         else:
-            raise NotImplementedError("Regression task is not implemented")
+            raise NotImplementedError("Non classification task is not implemented")
 
 if __name__ == "__main__":
     experiment = TPotExperiment()

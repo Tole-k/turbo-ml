@@ -1,12 +1,11 @@
 import logging
 import pandas as pd
 from pycaret.classification import ClassificationExperiment
-from utils import BaseExperiment
+from utils import BaseExperiment, Task
 
 class PycaretExperiment(BaseExperiment):
     def __init__(self):
         self.name = "Pycaret"
-        self.task_mapping = {"multiclass_classification": "classification", "binary_classification": "classification"}
         
     def __find_best_model_classification(self, dataset_path, duration, train_ratio=0.8):
         data = pd.read_csv(dataset_path)
@@ -23,8 +22,10 @@ class PycaretExperiment(BaseExperiment):
 
         
     def find_best_model(self, dataset_path, task, duration, train_ratio=0.8):
-        if task == "classification":
+        if task is Task.BINARY or task is Task.MULTICLASS:
             return self.__find_best_model_classification(dataset_path, duration, train_ratio)
+        else:
+            raise NotImplementedError("Non classification task is not implemented")
         
 
 if __name__ == "__main__":

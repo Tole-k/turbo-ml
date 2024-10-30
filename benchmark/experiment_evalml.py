@@ -1,15 +1,18 @@
 import pandas as pd
 from evalml.automl import AutoMLSearch
 
-from utils import BaseExperiment
+from utils import BaseExperiment, Task
 
 class EvalMlExperiment(BaseExperiment):
     def __init__(self):
         self.name = "EvalML"
-        self.task_mapping = {"multiclass_classification": "multiclass", "binary_classification": "binary"}
+        self.task_mapping = {Task.MULTICLASS: "multiclass", Task.BINARY: "binary"}
 
     
     def find_best_model(self, dataset_path, task, duration, train_ratio=0.8):
+        if task not in self.task_mapping:
+            raise NotImplementedError("Non classification task is not implemented")
+        task = self.task_mapping[task]
         df = pd.read_csv(dataset_path)
         last_col = df.columns[-1]
         y = df[last_col]

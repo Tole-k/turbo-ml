@@ -2,6 +2,7 @@ import os
 import abc
 import csv
 import json
+from enum import Enum, auto
 from collections import defaultdict
 from datetime import datetime
 
@@ -47,15 +48,20 @@ MODEL_NAMES = [
     "SVC",
 ]
 
-AVAILABLE_TASKS = ["multiclass_classification", "binary_classification"]
+
+class Task(Enum):
+    MULTICLASS = auto()
+    BINARY = auto()
+    UNKNOWN = auto()
+
+TASK_MAPPING = {"multiclass_classification": Task.MULTICLASS, "binary_classification": Task.BINARY}
 
 class BaseExperiment(abc.ABC):
     def __init__(self):
         self.name = self.__class__.__name__
-        self.task_mapping = {"multiclass_classification": "multiclass_classification", "binary_classification": "binary_classification"}
     
     @abc.abstractmethod
-    def find_best_model(self, dataset_path, task, duration, train_ratio=0.8):
+    def find_best_model(self, dataset_path: str, task: Task, duration: int, train_ratio=0.8):
         pass
         
         
@@ -68,12 +74,12 @@ class BaseExperiment(abc.ABC):
             task = datasets_info[dataset_name]["task_detailed"] 
             best_models_sorted = sorted(MODEL_NAMES, key=lambda x: datasets_info[dataset_name][x], reverse=True)
             for duration in TEST_DURATIONS:
-                best_model = self.find_best_model(dataset_path, self.task_mapping.get(task, "Unknown"), duration, TRAIN_RATIO)
+                best_model = self.find_best_model(dataset_path, TASK_MAPPING.get(task, Task.UNKNOWN), duration, TRAIN_RATIO)
                 for top_n in TOP_N:
                     results[duration][top_n] += 1/len(datasets) if best_model in best_models_sorted[:top_n] else 0
         self.__save_to_json(self.name, results)
 
-    def find_model_in_string(self, string):
+    def find_model_in_string(self, string: str) -> str:
         models = []
         for model in MODEL_NAMES:
             if model.lower() in string.lower().replace(" ", ""):
@@ -86,7 +92,7 @@ class BaseExperiment(abc.ABC):
         return ["benchmark/datasets/iris.csv"]
 
 
-    def __save_to_json(self, library_name: str, data: dict):
+    def __save_to_json(self, library_name: str, data: dict) -> None:
         output_path = f"./benchmark/outputs/{library_name}-{datetime.now()}.json"
         if not os.path.exists("benchmark/outputs"):
             os.makedirs("benchmark/outputs")

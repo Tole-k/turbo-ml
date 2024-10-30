@@ -1,13 +1,16 @@
 from autogluon.tabular import TabularDataset, TabularPredictor
 from sklearn import model_selection
-from utils import BaseExperiment
+from utils import BaseExperiment, Task
 
 class AutoGluonExperiment(BaseExperiment):
     def __init__(self):
         self.name = "Auto-gluon"
-        self.task_mapping = {"multiclass_classification": "multiclass", "binary_classification": "binary"}
+        self.task_mapping = {Task.MULTICLASS: "multiclass", Task.BINARY: "binary"}
 
     def find_best_model(self, dataset_path, task, duration, train_ratio=0.8):
+        if task not in self.task_mapping:
+            raise NotImplementedError("Non classification task is not implemented")
+        task = self.task_mapping[task]
         dataset = TabularDataset(dataset_path)
         train_dataset, test_dataset = model_selection.train_test_split(dataset, train_size=train_ratio)
         predictor = TabularPredictor(
