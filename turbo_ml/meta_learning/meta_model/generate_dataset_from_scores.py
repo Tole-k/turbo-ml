@@ -6,7 +6,7 @@ from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures, Combin
 from turbo_ml.utils import options
 
 
-def generate_dataset(results_path: str = os.path.join('datasets', 'results_algorithms.csv'), datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'), optuna_trials=10, device='cpu', threads=1, path1='scores.csv', path2='parameters.csv'):
+def generate_dataset_from_scores(results_path: str = os.path.join('datasets', 'results_algorithms.csv'), datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'), path1='scores.csv', path2='parameters.csv'):
     with open(results_path, 'r') as f:
         scores = pd.read_csv(f, index_col=0)
     sets = {}
@@ -38,11 +38,11 @@ def generate_dataset(results_path: str = os.path.join('datasets', 'results_algor
         ), StatisticalMetaFeatures(), PCAMetaFeatures()]
         X = dataset.drop(dataset.columns[-1], axis=1)
         y = dataset[dataset.columns[-1]]
-        for preprocessor in [NanImputer, Normalizer]:
-            X = preprocessor().fit_transform(X)
-            y = preprocessor().fit_transform_target(y)
-        X = OneHotEncoder().fit_transform(X)
-        y = LabelEncoder().fit_transform_target(y)
+        # for preprocessor in [NanImputer, Normalizer]:
+        #     X = preprocessor().fit_transform(X)
+        #     y = preprocessor().fit_transform_target(y)
+        # X = OneHotEncoder().fit_transform(X)
+        # y = LabelEncoder().fit_transform_target(y)
         parameters = CombinedMetaFeatures(meta_features)(X, y, as_dict=True)
         scores_df = pd.DataFrame([datasets_scores])
         scores_df.insert(0, 'name', dataset_name)
@@ -54,5 +54,5 @@ def generate_dataset(results_path: str = os.path.join('datasets', 'results_algor
 
 
 if __name__ == '__main__':
-    generate_dataset(results_path=os.path.join('datasets', 'results_algorithms.csv'), datasets_dir=os.path.join('datasets', 'AutoIRAD-datasets'), device=options.device,
-                     threads=options.threads)
+    generate_dataset_from_scores(results_path=os.path.join('datasets', 'results_algorithms.csv'), datasets_dir=os.path.join(
+        'datasets', 'AutoIRAD-datasets'), path1='scores.csv', path2='parameters.csv')
