@@ -1,6 +1,6 @@
 from autogluon.tabular import TabularDataset, TabularPredictor
 from sklearn import model_selection
-from utils import BaseExperiment, Task
+from utils_old import BaseExperiment, Task
 
 class AutoGluonExperiment(BaseExperiment):
     def __init__(self):

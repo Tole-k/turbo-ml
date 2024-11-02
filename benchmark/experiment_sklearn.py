@@ -1,51 +1,47 @@
 import pandas as pd
 import autosklearn.classification
 from autosklearn.metrics import accuracy
-# from sklearn.model_selection import train_test_split
-from utils import BaseExperiment, Task
-ALGORITHM_FAMILY_MAPPING = {
-    "adaboost":
-    "bernoulli_nb":
-    "decision_tree":
-    "extra_trees":
-    "gaussian_nb":
-    "gradient_boosting":
-    "k_nearest_neighbors":
-    "lda":
-    "liblinear_svc":
-    "libsvm_svc":
-    "mlp":
-    "multinomial_nb":
-    "passive_aggressive":
-    "qda":
-    "random_forest":
-    "sgd":
+from utils import BaseExperiment, Task, ClassificationFamily
+
+FAMILY_MAPPING = {
+    "adaboost": ClassificationFamily.BOOSTING,
+    "bernoulli_nb": ClassificationFamily.BAYESIAN_METHOD,
+    "decision_tree": ClassificationFamily.DECISION_TREE,
+    "extra_trees": ClassificationFamily.RANDOM_FOREST, # similar to sklearn random forest
+    "gaussian_nb": ClassificationFamily.BAYESIAN_METHOD,
+    "gradient_boosting": ClassificationFamily.BOOSTING,
+    "k_nearest_neighbors": ClassificationFamily.NEAREST_NEIGHBOR_METHOD,
+    "lda": ClassificationFamily.DISCRIMINANT_ANALYSIS,
+    "liblinear_svc": ClassificationFamily.SVM,
+    "libsvm_svc": ClassificationFamily.SVM,
+    "mlp": ClassificationFamily.NEURAL_NETWORK,
+    "multinomial_nb": ClassificationFamily.BAYESIAN_METHOD,
+    "passive_aggressive": ClassificationFamily.GENERALIZED_LINEAR_MODEL, # its in linear models category of sklearn
+    "qda": ClassificationFamily.DISCRIMINANT_ANALYSIS,
+    "random_forest": ClassificationFamily.RANDOM_FOREST,
+    "sgd": ClassificationFamily.SVM # not sure, but by default it uses SVM according to the documentation
 }
 
 class AutoSklearnExperiment(BaseExperiment):
     def __init__(self):
         self.name = "AutoSklearn"
 
-    def find_best_model(self, dataset_path, task, duration, train_ratio=0.8):
-        dataset = pd.read_csv(dataset_path)
+    def rank_families(self, dataset: pd.DataFrame, task: Task, seed, duration: int):
+        if task is not Task.BINARY and task is not Task.MULTICLASS:
+            raise NotImplementedError("Non classification task is not implemented") 
         X = dataset.iloc[:, :-1]
         y = dataset.iloc[:, -1]
-        # It doesnt take test data into account
-        # X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=train_ratio)
-        if task is not Task.BINARY and task is not Task.MULTICLASS:
-            raise NotImplementedError("Non classification task is not implemented")
-        automl = autosklearn.classification.AutoSklearnClassifier(time_left_for_this_task=duration, metric=accuracy)
+        automl = autosklearn.classification.AutoSklearnClassifier(
+            time_left_for_this_task=duration, metric=accuracy, seed=seed)
         automl.fit(X, y)
         leaderboard = automl.leaderboard(ensemble_only=False)
-        print(leaderboard)
+        ranked_families = []
         for model in leaderboard["type"]:
-            # it uses snake case
-            model = model.replace("_", "")
-            if model := self.find_model_in_string(model):
-                print(model)
-                return model
-        return automl
+            if family := FAMILY_MAPPING.get(model):
+                if family not in ranked_families:
+                    ranked_families.append(family)
+        return ranked_families
     
 if __name__ == "__main__":
     experiment = AutoSklearnExperiment()
-    experiment.perform_experiment()
+    experiment.perform_experiments([1])

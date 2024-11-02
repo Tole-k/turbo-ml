@@ -1,7 +1,7 @@
 import pandas as pd
 from evalml.automl import AutoMLSearch
 
-from utils import BaseExperiment, Task
+from utils_old import BaseExperiment, Task
 
 class EvalMlExperiment(BaseExperiment):
     def __init__(self):

@@ -4,7 +4,7 @@ import logging
 import pandas as pd
 from tpot import TPOTClassifier
 from sklearn.model_selection import train_test_split
-from utils import BaseExperiment, Task
+from utils_old import BaseExperiment, Task
 
 # It may have problem with ensemble models
 class TPotExperiment(BaseExperiment):

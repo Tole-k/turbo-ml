@@ -2,7 +2,7 @@ import logging
 import h2o
 from h2o.automl import H2OAutoML
 
-from utils import BaseExperiment, Task
+from utils_old import BaseExperiment, Task
 
 # Its not really working. Errors because number of rows is too small
 class H2OExperiment(BaseExperiment):

@@ -1,7 +1,7 @@
 import logging
 import pandas as pd
 from pycaret.classification import ClassificationExperiment
-from utils import BaseExperiment, Task
+from utils_old import BaseExperiment, Task
 
 class PycaretExperiment(BaseExperiment):
     def __init__(self):
