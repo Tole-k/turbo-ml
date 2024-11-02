@@ -49,8 +49,9 @@ def generate_dataset_from_scores(results_path: str = os.path.join('datasets', 'r
         params_df = pd.DataFrame([parameters])
         params_df.insert(0, 'name', dataset_name)
         header = i == 0
-        scores_df.to_csv(path1, mode='a', header=header, index=False)
-        params_df.to_csv(path2, mode='a', header=header, index=False)
+        mode = 'w' if header else 'a'
+        scores_df.to_csv(path1, mode=mode, header=header, index=False)
+        params_df.to_csv(path2, mode=mode, header=header, index=False)
 
 
 if __name__ == '__main__':
