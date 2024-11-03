@@ -26,7 +26,7 @@ class AutoSklearnExperiment(BaseExperiment):
     def __init__(self):
         self.name = "AutoSklearn"
 
-    def rank_families(self, dataset: pd.DataFrame, task: Task, seed, duration: int):
+    def rank_families(self, dataset: pd.DataFrame, dataset_name: str, task: Task, seed, duration: int):
         if task is not Task.BINARY and task is not Task.MULTICLASS:
             raise NotImplementedError("Non classification task is not implemented") 
         X = dataset.iloc[:, :-1]

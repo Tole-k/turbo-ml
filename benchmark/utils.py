@@ -69,7 +69,7 @@ class BaseExperiment(abc.ABC):
 
 
     @abc.abstractmethod
-    def rank_families(self, dataset: pd.DataFrame, task: Task, seed, duration: int):
+    def rank_families(self, dataset: pd.DataFrame, dataset_name, task: Task, seed, duration: int):
         pass
 
 
@@ -77,12 +77,12 @@ class BaseExperiment(abc.ABC):
         results = defaultdict(dict)
         for seed in seeds:
             for duration in TEST_DURATIONS:
-                result = self.__perform_experiment(seed, duration)
+                result = self._perform_experiment(seed, duration)
                 results[seed][duration] = result
-        self.__save_to_json(self.name, results)
+        self._save_to_json(self.name, results)
 
 
-    def __perform_experiment(self, seed, duration):
+    def _perform_experiment(self, seed, duration):
         experiment_results = dict()
         parameters = self._get_parameters()
         family_scores = self.__get_family_scores()
@@ -101,7 +101,9 @@ class BaseExperiment(abc.ABC):
             if dataset is None:
                 logging.warning(f"Dataset {dataset_name} not found")
                 continue
-            ranked_families = self.rank_families(dataset, task, seed, duration)
+            ranked_families = self.rank_families(dataset, dataset_name, task, seed, duration)
+            if ranked_families is None:
+                continue
             scores_list = []
             current_max_score = 0
             for family in ranked_families:
@@ -139,7 +141,7 @@ class BaseExperiment(abc.ABC):
             return df.iloc[:, 1:] # first column is index
                       
 
-    def __save_to_json(self, library_name: str, data: dict) -> None:
+    def _save_to_json(self, library_name: str, data: dict) -> None:
         output_path = f"benchmark/outputs/{library_name}-{datetime.now()}.json"
         if not os.path.exists("benchmark/outputs"):
             os.makedirs("benchmark/outputs")
