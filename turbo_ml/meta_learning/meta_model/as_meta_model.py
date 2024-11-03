@@ -1,4 +1,5 @@
 import pickle
+from typing import Literal
 import matplotlib.pyplot as plt
 import torch.utils.data as data_utils
 import pandas as pd
@@ -11,7 +12,7 @@ from sklearn.model_selection import train_test_split
 from turbo_ml.meta_learning.dataset_parameters.dataset_characteristics import StatisticalParametersExtractor
 from turbo_ml.algorithms.neural_network import NeuralNetworkModel
 from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.utils import options
+from turbo_ml.utils import options, device_detector
 
 
 class Best_Model(nn.Module):
@@ -30,7 +31,8 @@ class Best_Model(nn.Module):
         return x
 
 
-def train_meta_model(device='cpu', save_model=False, save_path='model.pth'):
+def train_meta_model(device: Literal['cpu', 'cuda', 'mps'] = 'auto', save_model=False, save_path='model.pth'):
+    device_detector(device)
     frame = pd.read_csv('results.csv')
     PARAMETERS = ["name", "task", "task_detailed", "target_features", "target_nans", "num_columns", "num_rows", "number_of_highly_correlated_features", "highest_correlation",
                   "number_of_lowly_correlated_features", "lowest_correlation", "highest_eigenvalue", "lowest_eigenvalue", "share_of_numerical_features", "num_classes", "biggest_class_freq", "smallest_class_freq"]

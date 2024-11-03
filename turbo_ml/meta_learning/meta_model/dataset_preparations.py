@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Literal
 import pandas as pd
 from datasets import get_iris, get_wine, get_breast_cancer, get_digits, get_adult, get_tips, get_titanic
 # get_heart_disease loads incorrectly
@@ -9,10 +9,10 @@ from pydataset import data
 from turbo_ml.algorithms import NeuralNetworkModel, XGBoostClassifier, sklearn_models
 from turbo_ml.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelEncoder
 from turbo_ml.meta_learning.model_prediction import HyperTuner, StatisticalParametersExtractor
-from turbo_ml.utils import options
+from turbo_ml.utils import options, device_detector
 
 
-def generate_dataset(models, datasets, optuna_trials=10, device='cpu', threads=1, path='results.csv'):
+def generate_dataset(models, datasets, optuna_trials=10, device: Literal['cpu', 'cuda', 'mps'] = 'auto', threads=1, path='results.csv'):
     for dataset in datasets:
         if isinstance(dataset, tuple):
             name = dataset[1]
@@ -44,7 +44,7 @@ def generate_dataset(models, datasets, optuna_trials=10, device='cpu', threads=1
             tuner = HyperTuner()
             try:
                 params = tuner.optimize_hyperparameters(model, (data_train, target_train), description.task,
-                                                        description.num_classes, description.target_features, device, optuna_trials, threads)
+                                                        description.num_classes, description.target_features, device_detector(device), optuna_trials, threads)
             except Exception as e:
                 print(e)
                 params = {}

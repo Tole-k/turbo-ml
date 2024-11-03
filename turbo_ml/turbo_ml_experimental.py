@@ -12,10 +12,12 @@ from turbo_ml.meta_learning import MetaModelGuesser, HyperTuner, sota_dataset_pa
 from turbo_ml.algorithms import RandomGuesser as DummyModel
 from turbo_ml.base import Model, __ALL_MODELS__
 from turbo_ml.utils import options
+from turbo_ml.utils import device_detector
 
 
 class TurboML_Experimental:
-    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = False):
+    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, device: Literal['cpu', 'cuda', 'mps'] = 'auto', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = False):
+        device = device_detector(device)
         options.device = device
         options.threads = threads
         self._algorithm = DummyModel
@@ -32,7 +34,7 @@ class TurboML_Experimental:
         dataset_params = sota_dataset_parameters(
             data, target_data, as_dict=True, old=True)
 
-        guesser = MetaModelGuesser()
+        guesser = MetaModelGuesser(device)
         self._algorithm = guesser.predict(dataset_params)
 
         if hpo_enabled:

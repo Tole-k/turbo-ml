@@ -1,7 +1,7 @@
 import numpy as np
 import xgboost as xgb
 
-from turbo_ml.utils import options
+from turbo_ml.utils import options, device_detector
 from ..base import Model
 from typing import Optional, List, Literal
 from sklearn.model_selection import train_test_split
@@ -15,7 +15,7 @@ class XGBoostClassifier(Model):
     def __init__(
         self,
         booster: Literal['gbtree', 'dart'] = 'gbtree',
-        device: Literal['cpu', 'cuda'] = 'cpu',
+        device: Literal['cpu', 'cuda', 'auto'] = 'auto',
         learning_rate: float = 0.3,
         gamma: float = 0,
         max_depth: int = 6,
@@ -33,8 +33,8 @@ class XGBoostClassifier(Model):
                              'mlogloss', 'merror'] = 'error',
         **options
     ) -> None:
-
-        self.device = device
+        device = device_detector(device)
+        self.device = 'cuda' if device == 'cuda' else 'cpu'
         if early_stopping_rounds is not None:
             self.early_stop = True
             self.early_validation_fraction = early_stopping_validation_fraction

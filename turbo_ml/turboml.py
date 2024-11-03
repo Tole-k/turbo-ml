@@ -15,6 +15,7 @@ from turbo_ml.meta_learning import ExhaustiveSearch, MetaModelGuesser, HyperTune
 from turbo_ml.algorithms import RandomGuesser as DummyModel
 from turbo_ml.base import Model, __ALL_MODELS__
 from turbo_ml.utils import options
+from turbo_ml.utils import device_detector
 
 logging.basicConfig(level=logging.INFO)
 
@@ -50,7 +51,7 @@ class TurboML:
     """
     logger = logging.getLogger()
 
-    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = True):
+    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True, device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = True):
         """
         Initializes the `TurboML` instance by performing the following steps:
 
@@ -72,6 +73,7 @@ class TurboML:
             - The `target` parameter is currently required. Automatic target detection is not yet implemented.
             - Model selection and hyperparameter optimization functionalities are placeholders and should be implemented.
         """
+        device = device_detector(device)
         options.device = device
         options.threads = threads
         self.logger.setLevel(
@@ -105,7 +107,7 @@ class TurboML:
         data_operations = time.time()
 
         try:
-            guesser = MetaModelGuesser()
+            guesser = MetaModelGuesser(device)
             self._algorithm = guesser.predict(dataset_params)
         except Exception:
             raise Exception('Model optimization failed')

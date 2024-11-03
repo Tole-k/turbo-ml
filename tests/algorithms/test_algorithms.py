@@ -1,6 +1,7 @@
 from turbo_ml.base.model import Model, get_models_list
 from turbo_ml.algorithms import *
 from datasets import get_iris
+from turbo_ml.utils import options
 
 
 class AlgorithmTesting:
@@ -47,7 +48,7 @@ def test_gboost():
 
 
 def test_xgboost():
-    model = XGBoostClassifier()
+    model = XGBoostClassifier(device=options.device)
     AlgorithmTesting._baseline_test(model)
     AlgorithmTesting._existence_test(model)
 

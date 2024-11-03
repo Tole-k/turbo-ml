@@ -7,7 +7,7 @@ from typing import Literal
 import json
 from turbo_ml.algorithms import NeuralNetworkModel
 from turbo_ml.base import Model
-from turbo_ml.utils import options
+from turbo_ml.utils import options, device_detector
 import os
 
 
@@ -93,7 +93,7 @@ class HyperTuner:
     def filter_nones(self, best_params: dict) -> dict:
         return {k: v for k, v in best_params.items() if k[-5:] != '=None'}
 
-    def optimize_hyperparameters(self, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None, device='cpu', trials: int = 10, thread_num=1) -> dict:
+    def optimize_hyperparameters(self, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None, device: Literal['cpu', 'cuda', 'mps'] = 'auto', trials: int = 10, thread_num=1) -> dict:
         if model.__name__ in options.blacklist:
             return {}
         if model == NeuralNetworkModel:  # Neural Network requires a more specific approach, infeasible to adapt the general function do it's been implemented separately
@@ -101,7 +101,7 @@ class HyperTuner:
         study = opt.create_study(
             direction='maximize' if task == 'classification' else 'minimize', study_name=model.__name__ + " Hyperparameter Optimization")
         study.optimize(lambda trial: self.objective(
-            trial, model, dataset, task, no_classes, no_variables, device, thread_num=thread_num), n_trials=trials)
+            trial, model, dataset, task, no_classes, no_variables, device_detector(device), thread_num=thread_num), n_trials=trials)
         return self.filter_nones(study.best_params) | study.best_trial.user_attrs
 
 
