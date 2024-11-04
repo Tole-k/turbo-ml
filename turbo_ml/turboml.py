@@ -15,7 +15,6 @@ from turbo_ml.meta_learning import ExhaustiveSearch, MetaModelGuesser, HyperTune
 from turbo_ml.algorithms import RandomGuesser as DummyModel
 from turbo_ml.base import Model, __ALL_MODELS__
 from turbo_ml.utils import options
-from turbo_ml.utils import device_detector
 
 logging.basicConfig(level=logging.INFO)
 
@@ -73,9 +72,9 @@ class TurboML:
             - The `target` parameter is currently required. Automatic target detection is not yet implemented.
             - Model selection and hyperparameter optimization functionalities are placeholders and should be implemented.
         """
-        device = device_detector(device)
-        options.device = device
-        options.threads = threads
+        options.set_device(options, device)
+        device = options.get_device(options)
+        options.set_threads(options, threads)
         self.logger.setLevel(
             'INFO') if verbose else self.logger.setLevel('ERROR')
         self.logger.info("Initializing TurboML...")

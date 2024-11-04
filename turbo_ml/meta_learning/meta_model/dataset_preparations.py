@@ -9,10 +9,10 @@ from pydataset import data
 from turbo_ml.algorithms import NeuralNetworkModel, XGBoostClassifier, sklearn_models
 from turbo_ml.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelEncoder
 from turbo_ml.meta_learning.model_prediction import HyperTuner, StatisticalParametersExtractor
-from turbo_ml.utils import options, device_detector
+from turbo_ml.utils import options
 
 
-def generate_dataset(models, datasets, optuna_trials=10, device: Literal['cpu', 'cuda', 'mps'] = 'auto', threads=1, path='results.csv'):
+def generate_dataset(models, datasets, optuna_trials=10, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads=1, path='results.csv'):
     for dataset in datasets:
         if isinstance(dataset, tuple):
             name = dataset[1]
@@ -44,7 +44,7 @@ def generate_dataset(models, datasets, optuna_trials=10, device: Literal['cpu', 
             tuner = HyperTuner()
             try:
                 params = tuner.optimize_hyperparameters(model, (data_train, target_train), description.task,
-                                                        description.num_classes, description.target_features, device_detector(device), optuna_trials, threads)
+                                                        description.num_classes, description.target_features, device, optuna_trials, threads)
             except Exception as e:
                 print(e)
                 params = {}
@@ -100,4 +100,4 @@ ALL_DATASETS = [get_iris, get_wine, get_breast_cancer, get_digits, get_adult,
 
 if __name__ == '__main__':
     generate_dataset(ALL_MODELS, ALL_DATASETS, optuna_trials=10,
-                     device=options.device, threads=options.threads, path='results2.csv')
+                     device=options.get_device(options), threads=options.threads, path='results2.csv')

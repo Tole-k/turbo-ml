@@ -9,7 +9,6 @@ from ..dataset_parameters.dataset_characteristics import DatasetDescription
 import pandas as pd
 import torch
 import torch.nn as nn
-from turbo_ml.utils import device_detector
 
 __MODELS__ = ["NeuralNetworkModel", "XGBoostClassifier", "AdaBoostClassifier", "BaggingClassifier", "BernoulliNB", "CalibratedClassifierCV", "CategoricalNB", "ComplementNB", "DecisionTreeClassifier", "DummyClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "GaussianNB", "GaussianProcessClassifier", "GradientBoostingClassifier", "HistGradientBoostingClassifier", "KNeighborsClassifier",
               "LabelPropagation", "LabelSpreading", "LinearDiscriminantAnalysis", "LinearSVC", "LogisticRegression", "LogisticRegressionCV", "MLPClassifier", "MultinomialNB", "NearestCentroid", "NuSVC", "PassiveAggressiveClassifier", "Perceptron", "QuadraticDiscriminantAnalysis", "RadiusNeighborsClassifier", "RandomForestClassifier", "RidgeClassifier", "RidgeClassifierCV", "SGDClassifier", "SVC"]
@@ -34,11 +33,11 @@ class Best_Model(nn.Module):
 class MetaModelGuesser(Predictor):
     """ Search for the best meta model for a given dataset and model """
 
-    def __init__(self, device: Literal['cpu', 'cuda', 'mps'] = 'auto'):
-        self.device = device_detector(device)
+    def __init__(self, device: Literal['cpu', 'cuda', 'mps'] = 'cpu'):
         self._path = str(__file__)[:-20] + 'model/'
         # Do not rename this file (-20 is length of file name, model.pth is expected to be in the same directory)
         # in order to not exclude windows \ options
+        self.device = device
         self._meta_model = self._load_meta_model()
         self._preprocessor = self._load_preprocessor()
 

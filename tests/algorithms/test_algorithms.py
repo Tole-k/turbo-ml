@@ -48,7 +48,7 @@ def test_gboost():
 
 
 def test_xgboost():
-    model = XGBoostClassifier(device=options.device)
+    model = XGBoostClassifier(device=options.get_device(options))
     AlgorithmTesting._baseline_test(model)
     AlgorithmTesting._existence_test(model)
 

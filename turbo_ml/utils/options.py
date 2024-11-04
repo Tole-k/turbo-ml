@@ -1,5 +1,6 @@
 import logging
 from typing import Literal
+import torch
 
 
 class options:
@@ -16,3 +17,17 @@ class options:
     blacklist = ['CalibratedClassifierCV']
     hyperparameters_declaration_priority: Literal['sklearn',
                                                   'custom'] = 'custom'
+
+    def get_device(self):
+        if self.device == 'auto':
+            self.device = 'cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu'
+        return self.device
+
+    def set_device(self, device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto'):
+        self.device = device
+
+    def get_threads(self):
+        return self.threads
+
+    def set_threads(self, threads: int):
+        self.threads = threads

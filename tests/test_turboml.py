@@ -11,7 +11,7 @@ def test_happypath():
     test = random['target']
     random.drop('target', axis=1, inplace=True)
     turbo_ml = TurboML(dataset=dataset, target='target',
-                       device=options.device, threads=options.threads, hpo_trials=10)
+                       device=options.get_device(options), threads=options.threads, hpo_trials=10)
     result = turbo_ml(random)
     assert result is not None
     assert len(result) == len(test)
