@@ -3,7 +3,7 @@ from typing import Tuple
 import tensorflow as tf
 from tensorflow.keras.applications import InceptionV3
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Flatten, Dense
+from tensorflow.keras.layers import Flatten, Dense, Dropout
 from PIL import Image
 import numpy as np
 import pandas as pd
@@ -22,6 +22,7 @@ class AutoIRAD:
         model.add(base_model)
         model.add(Flatten())
         model.add(Dense(2048, activation='relu'))
+        model.add(Dropout(0.3))
         model.add(Dense(17, activation='softmax'))
         model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=1e-4),
                       loss='sparse_categorical_crossentropy', metrics=['accuracy'])
@@ -29,9 +30,8 @@ class AutoIRAD:
 
         self.model = model
 
-    def train(self, X_train, y_train, epochs: int = 80, validation_split: float = 0.2):
-        self.model.fit(X_train, y_train, epochs=epochs,
-                       validation_split=validation_split)
+    def train(self, X_train, y_train, epochs: int = 80):
+        self.model.fit(X_train, y_train, epochs=epochs)
 
     def predict(self, X_test):
         return np.argmax(self.model.predict(X_test), axis=1)
@@ -48,15 +48,15 @@ if __name__ == '__main__':
         for file in files:
             if file.endswith(".png"):
                 with open(os.path.join(root, file), 'rb') as f:
-                    file = file.replace('.png', '')
+                    file = file.split('_')[0]
                     image = Image.open(f)
                     image = np.asarray(image)
                     images.append(image)
-            y = df.loc[int(file), 'family']
-            ys.append(y)
+                y = df.loc[int(file), 'family']
+                ys.append(y)
     images = np.array(images)
     ys = np.array(ys)
-    auto = AutoIRAD()
+    auto = AutoIRAD(resolution=(512,512))
     auto.train(images, ys)
     acc = np.sum(auto.predict(images) == ys)/len(ys)
     print(f'Accuracy: {acc}')

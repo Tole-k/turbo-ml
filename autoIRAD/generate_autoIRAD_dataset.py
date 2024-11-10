@@ -6,7 +6,8 @@ import numpy as np
 from sklearn.manifold import TSNE
 from PIL import Image, ImageDraw
 from turbo_ml.preprocessing import Normalizer
-
+import matplotlib
+matplotlib.use('Agg')
 
 def generate_AutoIRAD_dataset(results_path: str = os.path.join('datasets', 'results_algorithms.csv'), datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'), path1='scores.csv', images_dir: str = os.path.join('autoIRAD', 'images'), resolution: Tuple[int, int] = (100, 100)):
     with open(results_path, 'r') as f:
@@ -46,31 +47,34 @@ def generate_AutoIRAD_dataset(results_path: str = os.path.join('datasets', 'resu
         X = dataset.drop(dataset.columns[-1], axis=1)
         y = dataset[dataset.columns[-1]]
 
-        for j in range(1):
-            tsne = TSNE(n_components=2, random_state=j, n_jobs=-1, perplexity=20)
+        for j in range(10):
+            print(dataset_name, j)
+            tsne = TSNE(n_components=2,
+                        n_jobs=-1, perplexity=20, random_state=j, init='random')
             X_embedded = tsne.fit_transform(X)
             X_normalized = Normalizer().fit_transform(
                 pd.DataFrame(X_embedded, columns=['x', 'y']))
+
             X_normalized['x'] *= (resolution[0]-1)
             X_normalized['y'] *= (resolution[1]-1)
+            X_normalized['x'] = X_normalized['x'].astype(int)
+            X_normalized['y'] = X_normalized['y'].astype(int)
             X_normalized['class'] = y
 
             unique_classes = y.unique()
-            num_classes = len(unique_classes)
-            image = Image.new("RGB", resolution, (255, 255, 255))
-            draw = ImageDraw.Draw(image)
-            colormap = plt.cm.get_cmap("tab10", num_classes)
-            class_colors = {cls: tuple(
-                int(c * 255) for c in colormap(i)[:3]) for i, cls in enumerate(unique_classes)}
-            for _, row in X_normalized.iterrows():
-                width, height, cls = int(row['x']), int(row['y']), row['class']
-                color = class_colors.get(cls, (0, 0, 0))
-                draw.point((width, height), fill=color)
-            image.save(images_dir + '/' + str(i)
-                       # + '_' + str(j)
-                       + '.png')
+
+            plt.figure(
+                figsize=(resolution[0] / 100, resolution[1] / 100), dpi=100)
+            for cls in unique_classes:
+                class_data = X_normalized[X_normalized['class'] == cls]
+                plt.scatter(class_data['x'], class_data['y'], label=str(cls))
+
+            plt.axis('off')
+            plt.savefig(images_dir + '/' + str(i) + '_' + dataset_name +
+                        '_' + str(j) + '.png', dpi=100)
+            plt.close()
 
 
 if __name__ == '__main__':
     generate_AutoIRAD_dataset(results_path=os.path.join('data', 'family_scores.csv'), datasets_dir=os.path.join(
-        'datasets', 'AutoIRAD-datasets'), path1='data/best_family.csv', images_dir=os.path.join('autoIRAD', 'images'))
+        'datasets', 'AutoIRAD-datasets'), path1='data/best_family.csv', images_dir=os.path.join('autoIRAD', 'images'), resolution=(512, 512))
