@@ -1,0 +1,5 @@
+outs:
+- md5: 638f084ac450168c7439e38b6bb25e95
+  size: 34400
+  hash: md5
+  path: 74_mammographic_8.png

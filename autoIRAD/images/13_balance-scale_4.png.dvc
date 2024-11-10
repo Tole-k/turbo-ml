@@ -1,0 +1,5 @@
+outs:
+- md5: 40c2d32fd85d219e1e1994b2378eb0dc
+  size: 42685
+  hash: md5
+  path: 13_balance-scale_4.png

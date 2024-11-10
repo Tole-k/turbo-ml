@@ -1,0 +1,5 @@
+outs:
+- md5: 9e465f18c74a1edf7491be83675f2d7d
+  size: 7536
+  hash: md5
+  path: 71_lung-cancer_2.png

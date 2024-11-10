@@ -1,0 +1,5 @@
+outs:
+- md5: d80a1ca508eefd86bbfba7d6bb7db13f
+  size: 28235
+  hash: md5
+  path: 33_conn-bench-vowel-deterding_5.png

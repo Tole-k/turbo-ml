@@ -1,0 +1,5 @@
+outs:
+- md5: 3742e1590fef15a411f302e28ef84d3d
+  size: 24244
+  hash: md5
+  path: 19_breast-cancer_4.png

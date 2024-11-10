@@ -1,0 +1,5 @@
+outs:
+- md5: 3b55713ea4fe10a8328ad932bbdc032d
+  size: 16662
+  hash: md5
+  path: 32_conn-bench-sonar-mines-rocks_5.png

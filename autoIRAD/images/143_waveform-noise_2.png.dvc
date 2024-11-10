@@ -1,0 +1,5 @@
+outs:
+- md5: 279fb3a0b8ae82b0b27a73059ce71e79
+  size: 58846
+  hash: md5
+  path: 143_waveform-noise_2.png

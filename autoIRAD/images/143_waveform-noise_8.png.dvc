@@ -1,0 +1,5 @@
+outs:
+- md5: 941a2dc24da92906d746d5dea43f9b40
+  size: 57652
+  hash: md5
+  path: 143_waveform-noise_8.png
