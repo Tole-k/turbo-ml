@@ -9,6 +9,7 @@ from turbo_ml.preprocessing import Normalizer
 import matplotlib
 matplotlib.use('Agg')
 
+
 def generate_AutoIRAD_dataset(results_path: str = os.path.join('datasets', 'results_algorithms.csv'), datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'), path1='scores.csv', images_dir: str = os.path.join('autoIRAD', 'images'), resolution: Tuple[int, int] = (100, 100)):
     with open(results_path, 'r') as f:
         scores = pd.read_csv(f, index_col=0)

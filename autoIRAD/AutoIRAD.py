@@ -38,6 +38,8 @@ class AutoIRAD:
 
 
 if __name__ == '__main__':
+    img_size = (256, 256)
+
     df = pd.read_csv('data/best_family.csv')
     df.set_index('dataset', inplace=True)
 
@@ -55,8 +57,9 @@ if __name__ == '__main__':
                 y = df.loc[int(file), 'family']
                 ys.append(y)
     images = np.array(images)
+    images = np.resize(images, (len(images), *img_size, 3))
     ys = np.array(ys)
-    auto = AutoIRAD(resolution=(512,512))
+    auto = AutoIRAD(resolution=img_size)
     auto.train(images, ys)
     acc = np.sum(auto.predict(images) == ys)/len(ys)
     print(f'Accuracy: {acc}')
