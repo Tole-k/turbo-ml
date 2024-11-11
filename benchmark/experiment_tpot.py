@@ -1,24 +1,47 @@
 import os
 from datetime import datetime
 import logging
+from typing import List
 import pandas as pd
 from tpot import TPOTClassifier
-from sklearn.model_selection import train_test_split
-from utils_old import BaseExperiment, Task
+from utils import BaseExperiment, Task, ClassificationFamily
+
+
+FAMILIES_MAPPING = {
+    'GaussianNB': ClassificationFamily.BAYESIAN_METHOD,
+    'BernoulliNB': ClassificationFamily.BAYESIAN_METHOD,
+    'MultinomialNB': ClassificationFamily.BAYESIAN_METHOD, 
+    'DecisionTreeClassifier': ClassificationFamily.DECISION_TREE,
+    'ExtraTreesClassifier':  ClassificationFamily.RANDOM_FOREST, # same as in sklearn experiment
+    'RandomForestClassifier': ClassificationFamily.RANDOM_FOREST, 
+    'GradientBoostingClassifier': ClassificationFamily.BOOSTING,
+    'KNeighborsClassifier': ClassificationFamily.NEAREST_NEIGHBOR_METHOD,
+    'LinearSVC': ClassificationFamily.SVM,
+    'LogisticRegression': ClassificationFamily.LOGISTIC_AND_MULTINOMINAL_REGRESSION,
+    'XGBClassifier': ClassificationFamily.BOOSTING,
+    'SGDClassifier': ClassificationFamily.SVM, # not sure, but by default it uses SVM according to the documentation
+    'MLPClassifier': ClassificationFamily.NEURAL_NETWORK
+}
 
 # It may have problem with ensemble models
 class TPotExperiment(BaseExperiment):
     def __init__(self):
         self.name = "TPot"
 
-    def __find_best_model_classification(self, dataset_path, duration, train_ratio=0.8):
-        dataset = pd.read_csv(dataset_path)
+    def find_model_in_string(self, content: str) -> ClassificationFamily:
+        for model_name, family in FAMILIES_MAPPING.items():
+            if model_name in content:
+                return family
+        logging.warning(f"Model not found in {content}")
+        return None
+
+    def rank_families(self, dataset: pd.DataFrame, _, task: Task, seed, duration: int) -> List[ClassificationFamily]:
+        if task is not Task.BINARY and task is not Task.MULTICLASS:
+            raise NotImplementedError("Non classification task is not implemented") 
         X = dataset.iloc[:, :-1]
         y = dataset.iloc[:, -1]
-        X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=train_ratio)
-        pipeline_optimizer = TPOTClassifier(max_time_mins=duration/60, scoring="accuracy")
-        pipeline_optimizer.fit(X_train, y_train)
-        logging.info(pipeline_optimizer.score(X_test, y_test))
+        pipeline_optimizer = TPOTClassifier(max_time_mins=duration/60, scoring="accuracy", random_state=seed)
+        pipeline_optimizer.fit(X, y)
         output_folder = f'benchmark/TPot-outputs/'
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
@@ -26,18 +49,10 @@ class TPotExperiment(BaseExperiment):
         pipeline_optimizer.export(output_path)
         with open(output_path, "r") as f:
             content = f.read()
-            model_name = self.find_model_in_string(content)
-            if model_name is None:
-                logging.warning(f"Model not found in {output_path}")
-            return model_name
+            family = self.find_model_in_string(content)
+            return [family]
 
-
-    def find_best_model(self, dataset_path, task, duration, train_ratio=0.8):
-        if task is Task.BINARY or task is Task.MULTICLASS:
-            return self.__find_best_model_classification(dataset_path, duration, train_ratio)
-        else:
-            raise NotImplementedError("Non classification task is not implemented")
 
 if __name__ == "__main__":
     experiment = TPotExperiment()
-    experiment.perform_experiment()
+    experiment.perform_experiments([0], [60])
