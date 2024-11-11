@@ -121,7 +121,7 @@ class BaseExperiment(abc.ABC):
 
 
     def _perform_experiment(self, seed, duration):
-        parameters = self._get_parameters()[:3]
+        parameters = self._get_parameters()
         for (_, dataset_parameter) in parameters.iterrows():
             dataset_name = dataset_parameter["name"]
             num_classes = dataset_parameter["num_classes"]
