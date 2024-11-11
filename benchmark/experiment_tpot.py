@@ -25,9 +25,6 @@ FAMILIES_MAPPING = {
 
 # It may have problem with ensemble models
 class TPotExperiment(BaseExperiment):
-    def __init__(self):
-        self.name = "TPot"
-
     def find_model_in_string(self, content: str) -> ClassificationFamily:
         for model_name, family in FAMILIES_MAPPING.items():
             if model_name in content:
