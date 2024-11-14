@@ -298,7 +298,7 @@ def __main__imports__():
 if __name__ == '__main__':
     get_iris = __main__imports__()
     params = NeuralNetworkModel.optimize_hyperparameters(
-        dataset=get_iris(), task='classification', no_classes=3, no_variables=1, device=options.get_device(options))
+        dataset=get_iris(), task='classification', no_classes=3, no_variables=1, device=options.device)
     print(params)
     model = NeuralNetworkModel(**params)
     model.train(*get_iris())

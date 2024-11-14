@@ -165,14 +165,14 @@ if __name__ == "__main__":
     get_iris, get_diabetes = __main__imports__()
     x_train, x_test, y_train, y_test = train_test_split(
         *get_iris(), test_size=0.2)
-    clf = XGBoostClassifier(booster='dart', device=options.get_device(options), learning_rate=0.1, max_depth=3, subsample=0.5, sampling_method='gradient_based', colsample_bytree=0.5, colsample_bynode=0.5,
+    clf = XGBoostClassifier(booster='dart', device=options.device, learning_rate=0.1, max_depth=3, subsample=0.5, sampling_method='gradient_based', colsample_bytree=0.5, colsample_bynode=0.5,
                             reg_lambda=0.5, reg_alpha=0.5, grow_policy='lossguide', early_stopping_rounds=2, early_stopping_validation_fraction=0.2, objective='multi:softmax', eval_metric='mlogloss')
     clf.train(x_train, y_train)
     print(clf.predict(x_test) == y_test)
 
     x_train, x_test, y_train, y_test = train_test_split(
         *get_diabetes(), test_size=0.2)
-    reg = XGBoostRegressor(booster='dart', device=options.get_device(options), learning_rate=0.1, max_depth=3, subsample=0.5, sampling_method='gradient_based', colsample_bytree=0.5, colsample_bynode=0.5,
+    reg = XGBoostRegressor(booster='dart', device=options.device, learning_rate=0.1, max_depth=3, subsample=0.5, sampling_method='gradient_based', colsample_bytree=0.5, colsample_bynode=0.5,
                            reg_lambda=0.5, reg_alpha=0.5, grow_policy='lossguide', early_stopping_rounds=2, early_stopping_validation_fraction=0.2, objective='reg:squarederror', eval_metric='rmse')
     reg.train(x_train, y_train)
     print(np.mean((reg.predict(x_test)-y_test)**2))

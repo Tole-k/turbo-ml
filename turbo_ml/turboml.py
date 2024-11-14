@@ -72,9 +72,9 @@ class TurboML:
             - The `target` parameter is currently required. Automatic target detection is not yet implemented.
             - Model selection and hyperparameter optimization functionalities are placeholders and should be implemented.
         """
-        options.set_device(options, device)
-        device = options.get_device(options)
-        options.set_threads(options, threads)
+        options.device = device
+        device = options.device
+        options.threads = threads
         self.logger.setLevel(
             'INFO') if verbose else self.logger.setLevel('ERROR')
         self.logger.info("Initializing TurboML...")

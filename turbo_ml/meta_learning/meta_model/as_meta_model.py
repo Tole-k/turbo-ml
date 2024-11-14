@@ -93,5 +93,5 @@ def train_meta_model(device: Literal['cpu', 'cuda', 'mps'] = 'cpu', save_model=F
 
 
 if __name__ == '__main__':
-    train_meta_model(device=options.get_device(options), save_model=True,
+    train_meta_model(device=options.device, save_model=True,
                      save_path='turbo_ml/meta_learning/meta_model/model')

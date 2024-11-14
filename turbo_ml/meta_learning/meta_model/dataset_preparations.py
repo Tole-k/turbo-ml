@@ -100,4 +100,4 @@ ALL_DATASETS = [get_iris, get_wine, get_breast_cancer, get_digits, get_adult,
 
 if __name__ == '__main__':
     generate_dataset(ALL_MODELS, ALL_DATASETS, optuna_trials=10,
-                     device=options.get_device(options), threads=options.threads, path='results2.csv')
+                     device=options.device, threads=options.threads, path='results2.csv')

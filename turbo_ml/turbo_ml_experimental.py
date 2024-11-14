@@ -16,9 +16,9 @@ from turbo_ml.utils import options
 
 class TurboML_Experimental:
     def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = False):
-        options.set_device(options, device)
-        device = options.get_device(options)
-        options.set_threads(options, threads)
+        options.device = device
+        device = options.device
+        options.threads = threads
         self._algorithm = DummyModel
         self.model: Model
         self.hyperparameters = {}
