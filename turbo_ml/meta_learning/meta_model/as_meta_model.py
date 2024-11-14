@@ -31,13 +31,14 @@ class Best_Model(nn.Module):
         return x
 
 
-def train_meta_model(device: Literal['cpu', 'cuda', 'mps'] = 'cpu', save_model=False, save_path='model.pth'):
+def train_meta_model(save_model=False, save_path='model.pth'):
     frame = pd.read_csv('results.csv')
     PARAMETERS = ["name", "task", "task_detailed", "target_features", "target_nans", "num_columns", "num_rows", "number_of_highly_correlated_features", "highest_correlation",
                   "number_of_lowly_correlated_features", "lowest_correlation", "highest_eigenvalue", "lowest_eigenvalue", "share_of_numerical_features", "num_classes", "biggest_class_freq", "smallest_class_freq"]
 
     Models = ["NeuralNetworkModel", "XGBoostClassifier", "AdaBoostClassifier", "BaggingClassifier", "BernoulliNB", "CalibratedClassifierCV", "CategoricalNB", "ComplementNB", "DecisionTreeClassifier", "DummyClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "GaussianNB", "GaussianProcessClassifier", "GradientBoostingClassifier", "HistGradientBoostingClassifier", "KNeighborsClassifier",
               "LabelPropagation", "LabelSpreading", "LinearDiscriminantAnalysis", "LinearSVC", "LogisticRegression", "LogisticRegressionCV", "MLPClassifier", "MultinomialNB", "NearestCentroid", "NuSVC", "PassiveAggressiveClassifier", "Perceptron", "QuadraticDiscriminantAnalysis", "RadiusNeighborsClassifier", "RandomForestClassifier", "RidgeClassifier", "RidgeClassifierCV", "SGDClassifier", "SVC"]
+    device = options.device
     frame.drop(columns=['name', 'task'], axis=1, inplace=True)
     target = frame[Models]
     frame.drop(Models, axis=1, inplace=True)
@@ -93,5 +94,5 @@ def train_meta_model(device: Literal['cpu', 'cuda', 'mps'] = 'cpu', save_model=F
 
 
 if __name__ == '__main__':
-    train_meta_model(device=options.device, save_model=True,
+    train_meta_model(save_model=True,
                      save_path='turbo_ml/meta_learning/meta_model/model')

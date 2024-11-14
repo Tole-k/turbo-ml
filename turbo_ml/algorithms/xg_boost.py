@@ -15,7 +15,6 @@ class XGBoostClassifier(Model):
     def __init__(
         self,
         booster: Literal['gbtree', 'dart'] = 'gbtree',
-        device: Literal['cpu', 'cuda'] = 'cpu',
         learning_rate: float = 0.3,
         gamma: float = 0,
         max_depth: int = 6,
@@ -31,9 +30,9 @@ class XGBoostClassifier(Model):
         objective: Literal['binary:hinge', 'multi:softmax'] = 'binary:hinge',
         eval_metric: Literal['logloss', 'error',
                              'mlogloss', 'merror'] = 'error',
-        **options
+        **rest
     ) -> None:
-        self.device = 'cuda' if device == 'cuda' else 'cpu'
+        self.device = 'cuda' if options.device == 'cuda' else 'cpu'
         if early_stopping_rounds is not None:
             self.early_stop = True
             self.early_validation_fraction = early_stopping_validation_fraction
@@ -42,7 +41,7 @@ class XGBoostClassifier(Model):
 
         self.clf = xgb.XGBClassifier(
             booster=booster,
-            device=device,
+            device=self.device,
             learning_rate=learning_rate,
             gamma=gamma,
             max_depth=max_depth,
@@ -57,7 +56,7 @@ class XGBoostClassifier(Model):
             early_stopping_validation_fraction=early_stopping_validation_fraction,
             objective=objective,
             eval_metric=eval_metric,
-            **options
+            **rest
         )
 
     def train(self, data: Iterable[int | float | bool], target: Iterable) -> None:
@@ -88,7 +87,6 @@ class XGBoostRegressor(Model):
     def __init__(
         self,
         booster: Literal['gbtree', 'gblinear', 'dart'] = 'gbtree',
-        device: Literal['cpu', 'cuda'] = 'cpu',
         learning_rate: float = 0.3,
         gamma: float = 0,
         max_depth: int = 6,
@@ -104,10 +102,10 @@ class XGBoostRegressor(Model):
         objective: Literal['reg:squarederror', 'reg:squaredlogerror',
                            'reg:pseudohubererror', 'reg:absoluteerror'] = 'reg:squarederror',
         eval_metric: Literal['rmse', 'rmsle', 'mae', 'mape', 'mphe'] = 'rmse',
-        **options
+        **rest
     ) -> None:
 
-        self.device = device
+        self.device = 'cuda' if options.device == 'cuda' else 'cpu'
         if early_stopping_rounds is not None:
             self.early_stop = True
             self.early_validation_fraction = early_stopping_validation_fraction
@@ -119,7 +117,7 @@ class XGBoostRegressor(Model):
 
         self.clf = xgb.XGBRegressor(
             booster=booster,
-            device=device,
+            device=self.device,
             learning_rate=learning_rate,
             gamma=gamma,
             max_depth=max_depth,
@@ -134,7 +132,7 @@ class XGBoostRegressor(Model):
             early_stopping_validation_fraction=early_stopping_validation_fraction,
             objective=objective,
             eval_metric=eval_metric,
-            **options
+            **rest
         )
 
     def train(self, data: Iterable[int | float | bool], target: Iterable) -> None:
@@ -165,14 +163,14 @@ if __name__ == "__main__":
     get_iris, get_diabetes = __main__imports__()
     x_train, x_test, y_train, y_test = train_test_split(
         *get_iris(), test_size=0.2)
-    clf = XGBoostClassifier(booster='dart', device=options.device, learning_rate=0.1, max_depth=3, subsample=0.5, sampling_method='gradient_based', colsample_bytree=0.5, colsample_bynode=0.5,
+    clf = XGBoostClassifier(booster='dart', learning_rate=0.1, max_depth=3, subsample=0.5, sampling_method='gradient_based', colsample_bytree=0.5, colsample_bynode=0.5,
                             reg_lambda=0.5, reg_alpha=0.5, grow_policy='lossguide', early_stopping_rounds=2, early_stopping_validation_fraction=0.2, objective='multi:softmax', eval_metric='mlogloss')
     clf.train(x_train, y_train)
     print(clf.predict(x_test) == y_test)
 
     x_train, x_test, y_train, y_test = train_test_split(
         *get_diabetes(), test_size=0.2)
-    reg = XGBoostRegressor(booster='dart', device=options.device, learning_rate=0.1, max_depth=3, subsample=0.5, sampling_method='gradient_based', colsample_bytree=0.5, colsample_bynode=0.5,
+    reg = XGBoostRegressor(booster='dart', learning_rate=0.1, max_depth=3, subsample=0.5, sampling_method='gradient_based', colsample_bytree=0.5, colsample_bynode=0.5,
                            reg_lambda=0.5, reg_alpha=0.5, grow_policy='lossguide', early_stopping_rounds=2, early_stopping_validation_fraction=0.2, objective='reg:squarederror', eval_metric='rmse')
     reg.train(x_train, y_train)
     print(np.mean((reg.predict(x_test)-y_test)**2))

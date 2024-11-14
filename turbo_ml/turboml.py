@@ -73,7 +73,6 @@ class TurboML:
             - Model selection and hyperparameter optimization functionalities are placeholders and should be implemented.
         """
         options.device = device
-        device = options.device
         options.threads = threads
         self.logger.setLevel(
             'INFO') if verbose else self.logger.setLevel('ERROR')
@@ -106,7 +105,7 @@ class TurboML:
         data_operations = time.time()
 
         try:
-            guesser = MetaModelGuesser(device)
+            guesser = MetaModelGuesser()
             self._algorithm = guesser.predict(dataset_params)
         except Exception:
             raise Exception('Model optimization failed')
@@ -129,7 +128,7 @@ class TurboML:
             try:
                 tuner = HyperTuner()
                 self.hyperparameters = tuner.optimize_hyperparameters(
-                    self._algorithm, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'], device, hpo_trials, threads)
+                    self._algorithm, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'])
             except Exception:
                 self.logger.info('Hyperparameter optimization failed')
         else:

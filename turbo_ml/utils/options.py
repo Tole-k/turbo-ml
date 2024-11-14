@@ -18,6 +18,7 @@ class options:
         self._blacklist = ['CalibratedClassifierCV']
         self._hyperparameters_declaration_priority: Literal['sklearn',
                                                             'custom'] = 'custom'
+        self._hpo_trials = 10
 
     @property
     def print_logs(self):
@@ -105,6 +106,14 @@ class options:
     @hyperparameters_declaration_priority.setter
     def hyperparameters_declaration_priority(self, value: Literal['sklearn', 'custom']):
         self._hyperparameters_declaration_priority = value
+
+    @property
+    def hpo_trials(self):
+        return self._hpo_trials
+
+    @hpo_trials.setter
+    def hpo_trials(self, value: int):
+        self._hpo_trials = value
 
 
 options = options()
