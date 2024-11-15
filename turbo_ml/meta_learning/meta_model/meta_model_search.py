@@ -1,7 +1,9 @@
 from functools import cache
 import pickle
+from typing import Literal
 
 from turbo_ml.base.model import Model
+from turbo_ml.utils import options
 from ..model_prediction.model_prediction import Predictor
 from turbo_ml.base import __ALL_MODELS__
 from ..dataset_parameters.dataset_characteristics import DatasetDescription
@@ -32,11 +34,11 @@ class Best_Model(nn.Module):
 class MetaModelGuesser(Predictor):
     """ Search for the best meta model for a given dataset and model """
 
-    def __init__(self, device='cpu'):
-        self.device = device
+    def __init__(self):
         self._path = str(__file__)[:-20] + 'model/'
         # Do not rename this file (-20 is length of file name, model.pth is expected to be in the same directory)
         # in order to not exclude windows \ options
+        self.device = options.device
         self._meta_model = self._load_meta_model()
         self._preprocessor = self._load_preprocessor()
 

@@ -15,7 +15,7 @@ from turbo_ml.utils import options
 
 
 class TurboML_Experimental:
-    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = False):
+    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_enabled: bool = False):
         options.device = device
         options.threads = threads
         self._algorithm = DummyModel
@@ -38,7 +38,7 @@ class TurboML_Experimental:
         if hpo_enabled:
             tuner = HyperTuner()
             self.hyperparameters = tuner.optimize_hyperparameters(
-                self._algorithm, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'], device, hpo_trials, threads)
+                self._algorithm, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'])
         self.model = self._algorithm(**self.hyperparameters)
 
         self.model.train(data, target_data)

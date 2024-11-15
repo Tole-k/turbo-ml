@@ -41,17 +41,19 @@ if __name__ == '__main__':
     # print(len(models))
     # print('-'*50)
     # print(models.keys())
-    from turbo_ml.meta_learning.model_prediction import HyperTuner, StatisticalParametersExtractor
+    from turbo_ml.meta_learning.hpo import HyperTuner
+    from turbo_ml.meta_learning.dataset_parameters import StatisticalParametersExtractor
     for data, target in [get_breast_cancer(), get_iris()]:
         extractor = StatisticalParametersExtractor(data, target)
         characteristics = extractor.describe_dataset()
+        options.hpo_trials = 50
         print(characteristics)
         tuner = HyperTuner()
         for name, model in sklearn_models.items():
             print(name)
             hparams = {}
             hparams = tuner.optimize_hyperparameters(model, (data, target), 'classification',
-                                                     no_classes=characteristics.num_classes, no_variables=characteristics.target_features, device=options.device, trials=50, thread_num=options.threads)
+                                                     no_classes=characteristics.num_classes, no_variables=characteristics.target_features)
             print(hparams)
             model_instance = model(**hparams)
             model_instance.train(data, target)

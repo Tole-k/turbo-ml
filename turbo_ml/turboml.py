@@ -50,7 +50,7 @@ class TurboML:
     """
     logger = logging.getLogger()
 
-    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = True):
+    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True, device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = True):
         """
         Initializes the `TurboML` instance by performing the following steps:
 
@@ -128,7 +128,7 @@ class TurboML:
             try:
                 tuner = HyperTuner()
                 self.hyperparameters = tuner.optimize_hyperparameters(
-                    self._algorithm, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'], device, hpo_trials, threads)
+                    self._algorithm, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'])
             except Exception:
                 self.logger.info('Hyperparameter optimization failed')
         else:

@@ -18,7 +18,6 @@ class CatBoostClassifier(Model):
                  feature_border_type: Literal['Median', 'Uniform', 'UniformAndQuantiles',
                                               'GreedyLogSum', 'MaxLogSum', 'MinEntropy'] = 'GreedyLogSum',
                  min_data_in_leaf: int = 1,
-                 device: Literal['CPU', 'GPU'] = 'CPU',
                  ** options) -> None:
         super().__init__()
         self.clf = cb.CatBoostClassifier(
@@ -30,7 +29,7 @@ class CatBoostClassifier(Model):
             loss_function=loss_function,
             feature_border_type=feature_border_type,
             min_data_in_leaf=min_data_in_leaf,
-            task_type=device,
+            task_type='GPU' if options.device == 'cuda' else 'CPU',
             **options
         )
 
@@ -54,8 +53,6 @@ class CatBoostRegressor(Model):
                  feature_border_type: Literal['Median', 'Uniform', 'UniformAndQuantiles',
                                               'GreedyLogSum', 'MaxLogSum', 'MinEntropy'] = 'GreedyLogSum',
                  min_data_in_leaf: int = 1,
-                 device: Literal['CPU', 'GPU'] = 'CPU',
-                 devices: List[int] = [0],
                  ** options) -> None:
         super().__init__()
         self.reg = cb.CatBoostRegressor(
@@ -67,8 +64,7 @@ class CatBoostRegressor(Model):
             loss_function=loss_function,
             feature_border_type=feature_border_type,
             min_data_in_leaf=min_data_in_leaf,
-            task_type=device,
-            devices=devices,
+            task_type='GPU' if options.device == 'cuda' else 'CPU',
             **options
         )
 
