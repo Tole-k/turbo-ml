@@ -4,19 +4,27 @@ from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
 from sklearn.manifold import TSNE
-from PIL import Image, ImageDraw
 from turbo_ml.preprocessing import Normalizer
 import matplotlib
 matplotlib.use('Agg')
 
 
-def generate_AutoIRAD_dataset(results_path: str = os.path.join('datasets', 'results_algorithms.csv'), datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'), path1='scores.csv', images_dir: str = os.path.join('autoIRAD', 'images'), resolution: Tuple[int, int] = (100, 100)):
+def generate_AutoIRAD_dataset(results_path: str, datasets_dir: str, path1, images_dir: str, resolution: Tuple[int, int] = (100, 100)):
     with open(results_path, 'r') as f:
         scores = pd.read_csv(f, index_col=0)
+
+    rmas = {}
+    for i in range(scores.shape[0]):
+        scores.iloc[i, :] /= scores.iloc[i, :].max()
+        print(scores.iloc[i, :])
+        rmas[scores.index[i]] = scores.iloc[i, :].to_dict()
+    rmas = pd.DataFrame(rmas).T
+    rmas.to_csv('data/family_rma.csv')
+
     sets = {}
     names = []
     directory = os.path.join(datasets_dir)
-    for root, dirs, files in os.walk(directory):
+    for root, _, files in os.walk(directory):
         for file in files:
             if file.endswith(".csv"):
                 with open(os.path.join(root, file), 'r') as f:

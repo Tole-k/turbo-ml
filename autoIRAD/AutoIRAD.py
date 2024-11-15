@@ -7,6 +7,7 @@ from tensorflow.keras.layers import Flatten, Dense, Dropout
 from PIL import Image
 import numpy as np
 import pandas as pd
+import re
 
 
 class AutoIRAD:
@@ -43,23 +44,28 @@ if __name__ == '__main__':
     df = pd.read_csv('data/best_family.csv')
     df.set_index('dataset', inplace=True)
 
+    with open(os.path.join('data', 'family_rma.csv'), 'r') as f:
+        scores = pd.read_csv(f, index_col=0)
+
     images_dir = os.path.join('autoIRAD', 'images')
     images = []
     ys = []
+    datasets = []
     for root, dirs, files in os.walk(images_dir):
         for file in files:
             if file.endswith(".png"):
                 with open(os.path.join(root, file), 'rb') as f:
-                    file = file.split('_')[0]
                     image = Image.open(f)
                     image = np.asarray(image)
                     images.append(image)
-                y = df.loc[int(file), 'family']
+                y = df.loc[int(file.split('_')[0]), 'family']
                 ys.append(y)
+                datasets.append('_'.join(file.split('_')[1:-1]))
     images = np.array(images)
     images = np.resize(images, (len(images), *img_size, 3))
     ys = np.array(ys)
     auto = AutoIRAD(resolution=img_size)
     auto.train(images, ys)
-    acc = np.sum(auto.predict(images) == ys)/len(ys)
-    print(f'Accuracy: {acc}')
+    chosen = np.array(auto.predict(images))
+    chosen = np.array([scores.columns[i] for i in chosen])
+    print(np.array([scores.loc[datasets[i], chosen[i]] for i in range(len(datasets))]).mean())

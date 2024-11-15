@@ -6,13 +6,13 @@ from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures, Combin
 from turbo_ml.utils import options
 
 
-def generate_dataset_from_scores(results_path: str = os.path.join('datasets', 'results_algorithms.csv'), datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'), path1='scores.csv', path2='parameters.csv'):
+def generate_dataset_from_scores(results_path: str, datasets_dir: str, path1: str, path2: str):
     with open(results_path, 'r') as f:
         scores = pd.read_csv(f, index_col=0)
     sets = {}
     names = []
     directory = os.path.join(datasets_dir)
-    for root, dirs, files in os.walk(directory):
+    for root, _, files in os.walk(directory):
         for file in files:
             if file.endswith(".csv"):
                 with open(os.path.join(root, file), 'r') as f:
