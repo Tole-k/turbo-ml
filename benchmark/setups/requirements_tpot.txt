@@ -1,0 +1,7 @@
+# 3.12
+deap
+update_checker
+tqdm
+stopit
+xgboost
+tpot
