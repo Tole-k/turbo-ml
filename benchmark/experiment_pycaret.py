@@ -47,4 +47,4 @@ class PycaretExperiment(BaseExperiment):
 
 if __name__ == "__main__":
     experiment = PycaretExperiment()
-    experiment.perform_experiments([0], [60])
+    experiment.perform_experiments()

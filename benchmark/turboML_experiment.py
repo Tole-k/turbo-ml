@@ -53,4 +53,4 @@ class TurboMLExperiment(BaseExperiment):
 
 if __name__ == "__main__":
     experiment = TurboMLExperiment()
-    experiment.perform_experiments([0], [60])
+    experiment.perform_experiments(durations=[60])
