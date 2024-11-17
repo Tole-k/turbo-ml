@@ -45,7 +45,9 @@ def friedman_test(experiments: List[str], datasets: List[str], timestamps: List[
         df = pd.DataFrame(scores[timestamp])
         # print(f"Timestamp: {timestamp}")
         # print(df, '\n')
-        stat, p_value = friedmanchisquare(*[df[col] for col in df.columns])
+        stat, p_value = friedmanchisquare(
+            *[df[col] for col in df.columns], nan_policy='omit')
+        # print("P-value:", p_value)
         # print(f"Friedman Test Statistic: {stat}")
         # print(f"p-value: {p_value}")
 
@@ -62,10 +64,13 @@ def friedman_test(experiments: List[str], datasets: List[str], timestamps: List[
         # print(average_ranks)
         ranks_list.append(average_ranks)
         nemenyi_result = sp.posthoc_nemenyi_friedman(df.to_numpy())
+        # print(nemenyi_result)
         # print("\nNemenyi Post Hoc Results:")
         ranking = pd.DataFrame(nemenyi_result)
-        ranking.columns = df.columns
-        ranking.index = df.columns
+        valid_experiemnts = [
+            experiment for experiment in experiments if not np.all(np.isnan(np.array(list(scores[timestamp][experiment].values()))))]
+        ranking.columns = valid_experiemnts
+        ranking.index = valid_experiemnts
 
         for i in range(len(ranking)):
             for j in range(len(ranking)):
@@ -82,12 +87,13 @@ def friedman_test(experiments: List[str], datasets: List[str], timestamps: List[
         if not os.path.exists(path):
             os.makedirs(path)
         ranking.to_csv(os.path.join(path, f"after_{timestamp}s.csv"))
-        print("\n")
+        # print("\n")
     ranks = pd.DataFrame(ranks_list)
     ranks.insert(0, "Timestamp", timestamps)
     ranks['is_significant'] = is_significant
     ranks.set_index("Timestamp", inplace=True)
-    ranks.to_csv(os.path.join('benchmark', 'friedman_results', 'average_ranks.csv'))
+    ranks.to_csv(os.path.join(
+        'benchmark', 'friedman_results', 'average_ranks.csv'))
     return ranks
 
 
