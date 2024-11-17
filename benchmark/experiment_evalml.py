@@ -51,4 +51,4 @@ class EvalMlExperiment(BaseExperiment):
 
 if __name__ == "__main__":
     experiment = EvalMlExperiment()
-    experiment.perform_experiments([1])
+    experiment.perform_experiments()

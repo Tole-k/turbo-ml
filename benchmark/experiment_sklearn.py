@@ -41,4 +41,4 @@ class AutoSklearnExperiment(BaseExperiment):
     
 if __name__ == "__main__":
     experiment = AutoSklearnExperiment()
-    experiment.perform_experiments([1])
+    experiment.perform_experiments()

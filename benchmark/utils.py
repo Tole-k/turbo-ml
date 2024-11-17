@@ -10,7 +10,8 @@ from datetime import datetime
 
 import pandas as pd
 
-TEST_DURATIONS = [30, 60]
+SEEDS = [1, 2, 3, 4, 5]
+TEST_DURATIONS = [30, 60] # in seconds
 
 
 class ClassificationFamily(Enum):
@@ -108,7 +109,7 @@ class BaseExperiment(abc.ABC):
         pass
 
 
-    def perform_experiments(self, seeds, durations=TEST_DURATIONS):
+    def perform_experiments(self, seeds=SEEDS, durations=TEST_DURATIONS):
         with YamlWriter(self.name) as writer:
             self.writer = writer
             for seed in seeds:
