@@ -1,0 +1,5 @@
+pandas
+numpy
+scikit_posthocs
+scipy
+pyyaml
