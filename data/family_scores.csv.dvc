@@ -1,0 +1,5 @@
+outs:
+- md5: 4b3237594df18542865b33d648739acd
+  size: 10639
+  hash: md5
+  path: family_scores.csv

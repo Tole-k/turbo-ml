@@ -1,0 +1,5 @@
+outs:
+- md5: a94cbe2aae7a2f4d697457f90ef897d8
+  size: 95322
+  hash: md5
+  path: scores.csv

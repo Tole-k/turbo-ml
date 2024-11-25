@@ -20,28 +20,34 @@ class Best_Model(nn.Module):
         super(Best_Model, self).__init__()
         self.fc1 = nn.Linear(num_features, 256)
         self.fc2 = nn.Linear(256, 128)
+        self.fc25 = nn.Linear(128, 128)
         self.fc3 = nn.Linear(128, 64)
         self.fc4 = nn.Linear(64, num_classes)
 
     def forward(self, x):
         x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
-        x = torch.relu(self.fc3(x))
+        x = torch.sigmoid(self.fc2(x))
+        x = torch.relu(self.fc25(x))
+        x = torch.sigmoid(self.fc3(x))
         x = self.fc4(x)
         return x
 
 
-def train_meta_model(save_model=False, save_path='model.pth'):
-    frame = pd.read_csv('results.csv')
+def train_meta_model(device='cpu', save_model=False, save_path='model.pth', frame=None):
+    if frame is None:
+        frame = pd.read_csv('results.csv')
+    # change parameters
     PARAMETERS = ["name", "task", "task_detailed", "target_features", "target_nans", "num_columns", "num_rows", "number_of_highly_correlated_features", "highest_correlation",
                   "number_of_lowly_correlated_features", "lowest_correlation", "highest_eigenvalue", "lowest_eigenvalue", "share_of_numerical_features", "num_classes", "biggest_class_freq", "smallest_class_freq"]
+    Families = ["Bagging_(BAG)", "Bayesian_Methods_(BY)", "Boosting_(BST)", "Decision_Trees_(DT)", "Discriminant_Analysis_(DA)", "Generalized_Linear_Models_(GLM)", "Logistic_and_Multinomial_Regression_(LMR)", "Multivariate_Adaptive_Regression_Splines_(MARS)",
+                "Nearest_Neighbor_Methods_(NN)", "Neural_Networks_(NNET)", "Other_Ensembles_(OEN)", "Other_Methods_(OM)", "Partial_Least_Squares_and_Principal_Component_Regression_(PLSR)", "Random_Forests_(RF)", "Rule-Based_Methods_(RL)", "Stacking_(STC)", "Support_Vector_Machines_(SVM)"]
+    if 'task' in frame.columns:
+        frame.drop(columns=['task'], axis=1, inplace=True)
+    if 'name' in frame.columns:
+        frame.drop(columns=['name'], axis=1, inplace=True)
 
-    Models = ["NeuralNetworkModel", "XGBoostClassifier", "AdaBoostClassifier", "BaggingClassifier", "BernoulliNB", "CalibratedClassifierCV", "CategoricalNB", "ComplementNB", "DecisionTreeClassifier", "DummyClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "GaussianNB", "GaussianProcessClassifier", "GradientBoostingClassifier", "HistGradientBoostingClassifier", "KNeighborsClassifier",
-              "LabelPropagation", "LabelSpreading", "LinearDiscriminantAnalysis", "LinearSVC", "LogisticRegression", "LogisticRegressionCV", "MLPClassifier", "MultinomialNB", "NearestCentroid", "NuSVC", "PassiveAggressiveClassifier", "Perceptron", "QuadraticDiscriminantAnalysis", "RadiusNeighborsClassifier", "RandomForestClassifier", "RidgeClassifier", "RidgeClassifierCV", "SGDClassifier", "SVC"]
-    device = options.device
-    frame.drop(columns=['name', 'task'], axis=1, inplace=True)
-    target = frame[Models]
-    frame.drop(Models, axis=1, inplace=True)
+    target = frame[Families]
+    frame.drop(Families, axis=1, inplace=True)
     preprocessor = sota_preprocessor()
     pre_frame = preprocessor.fit_transform(frame)
     if save_path:
@@ -70,7 +76,7 @@ def train_meta_model(save_model=False, save_path='model.pth'):
     train_loader = DataLoader(train, batch_size=32)
     test_loader = DataLoader(test, batch_size=32)
 
-    epochs = 25000
+    epochs = 7000
 
     for epoch in range(epochs):
         model.train()
@@ -90,7 +96,7 @@ def train_meta_model(save_model=False, save_path='model.pth'):
                 values.append(float(loss))
     if save_model:
         torch.save(model.state_dict(), save_path + '/model.pth')
-    return model
+    return model, preprocessor
 
 
 if __name__ == '__main__':
