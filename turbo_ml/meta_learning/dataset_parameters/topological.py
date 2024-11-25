@@ -1,9 +1,10 @@
 from matplotlib import colormaps as cm
 from .base import MetaFeature
 import numpy as np
-from datasets import get_iris, get_adult
+from datasets import get_iris
 from pyballmapper import BallMapper
-
+from ripser import ripser
+from persim import plot_diagrams
 import pandas as pd
 
 
@@ -24,11 +25,45 @@ class BallMapperFeatures(MetaFeature):
         plt.show()
         return None
 
+class RipserFeatures(MetaFeature):
+    def __call__(self, dataframe, target_data, as_dict=False):
+        diagrams = ripser(dataframe.values, maxdim=2)['dgms']
+
+        features = {}
+        betti_numbers = []
+        # plot_diagrams(diagrams, show=True)
+        for dim, diagram in enumerate(diagrams):
+            betti_numbers.append(len(diagram))
+
+            finite_lifespans = diagram[np.isfinite(diagram[:, 1])]
+            lifespans = finite_lifespans[:, 1] - finite_lifespans[:, 0]
+
+            total_pers = np.sum(lifespans)
+            pers_entropy = -np.sum((lifespans / total_pers)
+                                   * np.log(lifespans / total_pers))
+
+            features[f'dim_{dim}_total_persistence'] = total_pers
+            features[f'dim_{dim}_max_persistence'] = np.max(lifespans)
+            features[f'dim_{dim}_mean_persistence'] = np.mean(lifespans)
+            features[f'dim_{dim}_median_persistence'] = np.median(lifespans)
+            features[f'dim_{dim}_std_persistence'] = np.std(lifespans)
+            features[f'dim_{dim}_persistence_entropy'] = pers_entropy
+
+        features['euler_characteristic'] = sum(
+            (-1)**i * b for i, b in enumerate(betti_numbers))
+
+        for dim, betti in enumerate(betti_numbers):
+            features[f'betti_{dim}'] = betti
+        if as_dict:
+            return features
+        return np.array(list(features.values()))
+
 
 if __name__ == '__main__':
+    import pprint
     dataset, target = get_iris()
-    parameters = BallMapperFeatures()(dataset, target)
-
+    parameters = RipserFeatures()(dataset, target, as_dict=dict)
+    pprint.pprint(parameters)
     # dataset, target = get_adult()
     # parameters = BallMapperFeatures()(dataset, target)
     # print(parameters)
