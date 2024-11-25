@@ -1,0 +1,5 @@
+outs:
+- md5: bb6507cf45873955f6cd0aa5b69e4a8b
+  size: 20150
+  hash: md5
+  path: 128_synthetic-control_6.png

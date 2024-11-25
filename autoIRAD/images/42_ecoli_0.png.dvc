@@ -1,0 +1,5 @@
+outs:
+- md5: 9820bbf70c81d743ebb8ba7848cae511
+  size: 25794
+  hash: md5
+  path: 42_ecoli_0.png

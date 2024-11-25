@@ -1,0 +1,5 @@
+outs:
+- md5: d62dd07fb225cb3e2ee9c50f2dc375bb
+  size: 40316
+  hash: md5
+  path: 60_image-segmentation_3.png

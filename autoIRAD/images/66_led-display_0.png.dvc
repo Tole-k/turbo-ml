@@ -1,0 +1,5 @@
+outs:
+- md5: b0bfe4d7572c737c355c16579fefd054
+  size: 24519
+  hash: md5
+  path: 66_led-display_0.png

@@ -1,0 +1,5 @@
+outs:
+- md5: 97dde7238d7ea263e4878c6dbae7d770
+  size: 30933
+  hash: md5
+  path: 21_breast-cancer-wisc-diag_1.png

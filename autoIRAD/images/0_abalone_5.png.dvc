@@ -1,0 +1,5 @@
+outs:
+- md5: d89192bfe2acfcfa4b9f3527b2782b55
+  size: 50923
+  hash: md5
+  path: 0_abalone_5.png
