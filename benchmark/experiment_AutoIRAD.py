@@ -1,10 +1,12 @@
 import os
+
+import tensorflow as tf
 from turbo_ml.base import __ALL_MODELS__
 from PIL import Image
 import numpy as np
 import pandas as pd
 from autoIRAD import AutoIRAD
-
+import cv2
 
 from .utils import BaseExperiment, _FAMILY_MAPPING
 
@@ -37,12 +39,13 @@ class AutoIRADExperiment(BaseExperiment):
                     with open(os.path.join(root, file), 'rb') as f:
                         image = Image.open(f)
                         image = np.asarray(image)
+                        image = cv2.resize(image, (img_size[1], img_size[0]))
+                        image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
                         self.images.append(image)
                     y = df.loc[int(file.split('_')[0]), 'family']
                     ys.append(y)
                     self.dataset_names.append('_'.join(file.split('_')[1:-1]))
         self.images = np.array(self.images)
-        self.images = np.resize(self.images, (len(self.images), *img_size, 3))
         self.ys = np.array(ys)
 
     def rank_families(self, dataset, dataset_name, *_):
@@ -61,5 +64,10 @@ class AutoIRADExperiment(BaseExperiment):
 
 
 if __name__ == "__main__":
-    experiment = AutoIRADExperiment(img_size=(256, 256))
+    gpus = tf.config.list_physical_devices('GPU')
+    if gpus:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+            logical_gpus = tf.config.list_logical_devices('GPU')
+    experiment = AutoIRADExperiment(img_size=(75, 75))
     experiment.perform_experiments(durations=[60])
