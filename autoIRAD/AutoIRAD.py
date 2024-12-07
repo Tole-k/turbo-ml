@@ -7,7 +7,6 @@ from tensorflow.keras.layers import Flatten, Dense, Dropout
 from PIL import Image
 import numpy as np
 import pandas as pd
-import re
 
 
 class AutoIRAD:
@@ -68,4 +67,5 @@ if __name__ == '__main__':
     auto.train(images, ys)
     chosen = np.array(auto.predict(images))
     chosen = np.array([scores.columns[i] for i in chosen])
-    print(np.array([scores.loc[datasets[i], chosen[i]] for i in range(len(datasets))]).mean())
+    print(np.array([scores.loc[datasets[i], chosen[i]]
+          for i in range(len(datasets))]).mean())
