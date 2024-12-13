@@ -1,4 +1,5 @@
 import os
+from typing import Tuple
 from prefect import task
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.utils import options
@@ -28,9 +29,12 @@ class Best_Model(nn.Module):
         x = self.fc4(x)
         return x
 
-@task(name='train_model')
-def train_meta_model(save_model=False, save_path='model.pth'):
-    feature_frame = pd.read_csv('parameters.csv')
+@task(name='Train Meta Model')
+def train_meta_model(feature_frame: pd.DataFrame | str = None) -> Tuple[Best_Model, sota_preprocessor]:
+    if feature_frame is None:
+        feature_frame = 'parameters.csv'
+    if isinstance(feature_frame, str):
+        feature_frame = pd.read_csv(feature_frame)
     target_frame = pd.read_csv(os.path.join('datasets','results_algorithms.csv'))
 
     preprocessor = sota_preprocessor()
@@ -81,8 +85,6 @@ def train_meta_model(save_model=False, save_path='model.pth'):
                 output = model(x)
                 loss = criterion(output, y)
                 values.append(float(loss))
-    if save_model:
-        torch.save(model.state_dict(), save_path + '/model.pth')
     return model, preprocessor
 
 

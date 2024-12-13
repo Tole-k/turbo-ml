@@ -10,7 +10,8 @@ def main():
     
 @flow(name='Train Meta Model', log_prints=True)
 def model():
-    result = train_meta_model()
+    training_parameters = generate_training_parameters(meta_data_extractor=BallMapperFeatures())
+    result = train_meta_model(training_parameters)
     print('Flow created')
     print(result)
     

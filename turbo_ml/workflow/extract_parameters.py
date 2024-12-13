@@ -7,7 +7,7 @@ from turbo_ml.meta_learning.dataset_parameters.topological import RipserFeatures
 from tqdm import tqdm
 from prefect import task
 
-@task(name='generate_dataset_from_scores')
+@task(name='Generate Training Parameters')
 def generate_training_parameters(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'),
                                  output_path='parameters.csv', meta_data_extractor=SimpleMetaFeatures(),
                                  preprocessor=[NanImputer, Normalizer, OneHotEncoder]):
