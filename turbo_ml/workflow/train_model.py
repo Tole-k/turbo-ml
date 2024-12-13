@@ -1,6 +1,6 @@
 import os
 from typing import Tuple
-from prefect import task
+from prefect import flow
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.utils import options
 import torch
@@ -29,35 +29,44 @@ class Best_Model(nn.Module):
         x = self.fc4(x)
         return x
 
-@task(name='Train Meta Model')
-def train_meta_model(feature_frame: pd.DataFrame | str = None) -> Tuple[Best_Model, sota_preprocessor]:
+@flow(name='Train Meta Model')
+def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluations_frame: pd.DataFrame | str | None = None) -> Tuple[Best_Model, sota_preprocessor]:
     if feature_frame is None:
         feature_frame = 'parameters.csv'
     if isinstance(feature_frame, str):
         feature_frame = pd.read_csv(feature_frame)
-    target_frame = pd.read_csv(os.path.join('datasets','results_algorithms.csv'))
+        
+    if evaluations_frame is None:
+        evaluations_frame = os.path.join('datasets', 'results_algorithms.csv')
+    
+    if isinstance(evaluations_frame, str):
+        evaluations_frame = pd.read_csv(evaluations_frame)
+
+    evaluations_frame = pd.read_csv(os.path.join('datasets','results_algorithms.csv'))
 
     preprocessor = sota_preprocessor()
     pre_frame = preprocessor.fit_transform(feature_frame.drop(columns=['name'], axis=1))
 
-    pre_frame['name'] = feature_frame['name'].str.replace(r'_R\.dat|\.dat|\.csv', '', regex=True)
+    print(pre_frame.columns)
+    print(feature_frame.columns)
+    pre_frame['name'] = feature_frame['name'].str.replace(r'_R\.dat|\.dat|\.csv', '', regex=True).reset_index(drop=True)
 
-    common_names = set(pre_frame['name']).intersection(set(target_frame['problema']))
+    common_names = set(pre_frame['name']).intersection(set(evaluations_frame['problema']))
     pre_frame = pre_frame[pre_frame['name'].isin(common_names)].sort_values('name').reset_index(drop=True)
-    target_frame = target_frame[target_frame['problema'].isin(common_names)].sort_values('problema').reset_index(drop=True)
+    evaluations_frame = evaluations_frame[evaluations_frame['problema'].isin(common_names)].sort_values('problema').reset_index(drop=True)
 
     pre_frame.drop(columns=['name'], axis=1, inplace=True)
-    target_frame.drop(columns=['problema'], axis=1, inplace=True)
+    evaluations_frame.drop(columns=['problema'], axis=1, inplace=True)
 
     values = []
     model = Best_Model(len(pre_frame.columns),
-                       len(target_frame.columns)).to(options.device)
+                       len(evaluations_frame.columns)).to(options.device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     criterion = nn.MSELoss()
 
     x_train, x_test, y_train, y_test = train_test_split(
-        pre_frame, target_frame, test_size=0.2)
+        pre_frame, evaluations_frame, test_size=0.2)
 
     train = data_utils.TensorDataset(torch.tensor(x_train.values.astype(
         'float32')).to(options.device), torch.tensor(y_train.values.astype
@@ -71,7 +80,8 @@ def train_meta_model(feature_frame: pd.DataFrame | str = None) -> Tuple[Best_Mod
 
     epochs = 7000
     loss = float('inf')
-    for epoch in tqdm(range(epochs), total=epochs, desc=f'Training model, loss: {round(loss, 2)}', unit='epoch'):
+    pbar = tqdm(range(epochs), total=epochs, desc='Training model, loss: ...', unit='epoch')
+    for epoch in pbar:
         model.train()
         for x, y in train_loader:
             optimizer.zero_grad()
@@ -84,6 +94,7 @@ def train_meta_model(feature_frame: pd.DataFrame | str = None) -> Tuple[Best_Mod
             for x, y in test_loader:
                 output = model(x)
                 loss = criterion(output, y)
+                pbar.set_description(f'Training model, loss: {loss}')
                 values.append(float(loss))
     return model, preprocessor
 
