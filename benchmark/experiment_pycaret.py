@@ -44,7 +44,7 @@ class PycaretExperiment(BaseExperiment):
                 logging.warning(f"Couldnt find mapping of {model_name} to a family")
         return best_families
         
-
+import sys
 if __name__ == "__main__":
     experiment = PycaretExperiment()
-    experiment.perform_experiments()
+    experiment.perform_experiments([sys.argv[1]])

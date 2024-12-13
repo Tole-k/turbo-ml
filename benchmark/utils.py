@@ -1,17 +1,15 @@
 import os
 import abc
-import json
 import logging
 from glob import glob
 from enum import Enum, auto
 from typing import List
-from collections import defaultdict
 from datetime import datetime
 
 import pandas as pd
 
-SEEDS = [1, 2, 3, 4, 5]
-TEST_DURATIONS = [30, 60] # in seconds
+SEEDS = [0, 2, 3, 4, 5]
+TEST_DURATIONS = [180, 900] # in seconds
 
 
 class ClassificationFamily(Enum):
@@ -130,7 +128,7 @@ class BaseExperiment(abc.ABC):
             task = Task.UNKNOWN
             if num_classes == 2:
                 task = Task.BINARY
-            elif 2 < num_classes < 50:
+            elif 2 < num_classes < 10000000:
                 # realistically it would be more of regression then
                 task = Task.MULTICLASS
             if dataset is None:

@@ -40,15 +40,18 @@ class EvalMlExperiment(BaseExperiment):
         X = dataset.drop(last_col, axis=1)
         # cant choose accuracy as eval metric
         automl = AutoMLSearch(X_train=X, y_train=y, problem_type=task, max_time=duration, random_seed=seed)
-        automl.search()
-        families = []
-        for pipeline in automl.rankings['pipeline_name']:
-            print(pipeline)
-            if family := self.find_family_in_string(pipeline):
-                families.append(family)
+        try:
+            automl.search()
+            families = []
+            for pipeline in automl.rankings['pipeline_name']:
+                print(pipeline)
+                if family := self.find_family_in_string(pipeline):
+                    families.append(family)
+        except:
+            families = ['','','','','']
         return families
         
-
+import sys
 if __name__ == "__main__":
     experiment = EvalMlExperiment()
-    experiment.perform_experiments()
+    experiment.perform_experiments([int(sys.argv[1])])
