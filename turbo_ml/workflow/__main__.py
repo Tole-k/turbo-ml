@@ -1,17 +1,12 @@
 from prefect import flow
-from .extract_parameters import generate_training_parameters
-from .train_model import train_meta_model
-from turbo_ml.meta_learning.dataset_parameters.topological import BallMapperFeatures
-
-@flow(name='Generate Training Parameters', log_prints=True)
-def main():
-    training_parameters = generate_training_parameters()
+from turbo_ml.workflow import generate_training_parameters, load_algorithms_evaluations, train_meta_model
+from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures, BallMapperFeatures
     
-    
-@flow(name='Train Meta Model', log_prints=True)
+@flow(name='Full Meta Model Workflow', log_prints=True)
 def model():
     training_parameters = generate_training_parameters(meta_data_extractor=BallMapperFeatures())
-    result = train_meta_model(training_parameters)
+    evaluations = load_algorithms_evaluations()
+    result = train_meta_model(training_parameters, evaluations)
     print('Flow created')
     print(result)
     

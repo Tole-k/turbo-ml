@@ -47,8 +47,6 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
     preprocessor = sota_preprocessor()
     pre_frame = preprocessor.fit_transform(feature_frame.drop(columns=['name'], axis=1))
 
-    print(pre_frame.columns)
-    print(feature_frame.columns)
     pre_frame['name'] = feature_frame['name'].str.replace(r'_R\.dat|\.dat|\.csv', '', regex=True).reset_index(drop=True)
 
     common_names = set(pre_frame['name']).intersection(set(evaluations_frame['problema']))
