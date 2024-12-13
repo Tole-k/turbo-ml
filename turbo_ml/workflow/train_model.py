@@ -1,6 +1,6 @@
 import os
-from typing import Tuple
-from prefect import flow
+from typing import Any, Tuple
+from prefect import flow, task
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.utils import options
 import torch
@@ -30,7 +30,8 @@ class Best_Model(nn.Module):
         return x
 
 @flow(name='Train Meta Model')
-def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluations_frame: pd.DataFrame | str | None = None) -> Tuple[Best_Model, sota_preprocessor]:
+def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluations_frame: pd.DataFrame | str | None = None,
+                     epochs:int=7000) -> Tuple[Best_Model, Any]:
     if feature_frame is None:
         feature_frame = 'parameters.csv'
     if isinstance(feature_frame, str):
@@ -92,10 +93,15 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
             for x, y in test_loader:
                 output = model(x)
                 loss = criterion(output, y)
-                pbar.set_description(f'Training model, loss: {loss}')
+                if epoch % 100 == 0:
+                    pbar.set_description(f'Training model, loss: {loss:.2f}')
                 values.append(float(loss))
     return model, preprocessor
 
+@task(name="Save Meta Model")
+def save_meta_model(model: Best_Model, preprocessor:Any, save_path: str):
+    torch.save(model.state_dict(), save_path)
+    torch.save(preprocessor, save_path + '_preprocessor')
 
 if __name__ == '__main__':
     train_meta_model(save_model=True,
