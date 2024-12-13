@@ -42,6 +42,8 @@ class RipserFeatures(MetaFeature):
             pers_entropy = -np.sum((lifespans / total_pers)
                                    * np.log(lifespans / total_pers))
 
+            if len(lifespans) == 0:
+                lifespans = [0]
             features[f'dim_{dim}_total_persistence'] = total_pers
             features[f'dim_{dim}_max_persistence'] = np.max(lifespans)
             features[f'dim_{dim}_mean_persistence'] = np.mean(lifespans)
