@@ -5,9 +5,9 @@ from turbo_ml.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelE
 from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures, CombinedMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures
 from turbo_ml.meta_learning.dataset_parameters.topological import RipserFeatures, BallMapperFeatures
 from tqdm import tqdm
-from prefect import task
+from prefect import flow
 
-@task(name='Generate Training Parameters')
+@flow(name='Generate Training Parameters')
 def generate_training_parameters(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'),
                                  output_path='parameters.csv', meta_data_extractor=SimpleMetaFeatures(),
                                  preprocessor=[NanImputer, Normalizer, OneHotEncoder]):
