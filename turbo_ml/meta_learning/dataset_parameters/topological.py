@@ -1,29 +1,49 @@
+from typing import List
+import matplotlib.pyplot as plt
 from matplotlib import colormaps as cm
 from .base import MetaFeature
 import numpy as np
 from datasets import get_iris
 from pyballmapper import BallMapper
 from ripser import ripser
-from persim import plot_diagrams
 import pandas as pd
 
 
 class BallMapperFeatures(MetaFeature):
-    def __init__(self, num_intervals=10, num_balls=10):
-        self.num_intervals = num_intervals
-        self.num_balls = num_balls
+    def __init__(self, epsilons:List[int] = [0.25, 1, 5, 25], verbose:bool=False):
+        self.epsilons = epsilons
+        self.verbose = verbose
 
     def __call__(self, dataset, target_data, as_dict=False):
-        bm = BallMapper(X=dataset.values, eps=0.25, coloring_df=pd.DataFrame(
-            target_data, columns=['target']))
-        import matplotlib.pyplot as plt
+        self.epsilons = [0.25, 1, 5, 25]
+        features = {}
+        for eps in self.epsilons:
+            bm = BallMapper(X=dataset.values, eps=eps, coloring_df=pd.DataFrame(
+                target_data, columns=['target']))
 
-        my_red_palette = cm.get_cmap("viridis")
-        fig, ax = plt.subplots(figsize=(8, 6))
-        ax = bm.draw_networkx(coloring_variable='target',
-                              ax=ax, color_palette=my_red_palette)
-        plt.show()
-        return None
+            if self.verbose:
+                if len(bm.points_covered_by_landmarks) == 0:
+                    print(f'No landmarks found for eps={eps}')
+                    continue
+                my_red_palette = cm.get_cmap("viridis")
+                fig, ax = plt.subplots(figsize=(8, 6))
+                ax = bm.draw_networkx(coloring_variable='target',
+                                    ax=ax, color_palette=my_red_palette)
+                plt.show()
+
+            points = bm.points_covered_by_landmarks.values()
+            points = points if len(points) > 0 else [0]
+            point_lengths = np.array(list(map(len, bm.points_covered_by_landmarks.values())))
+            features[f'number_of_landmarks_at_{eps}'] = point_lengths.shape[0]
+            features[f'mean_len_at_{eps}'] = point_lengths.mean()
+            features[f'min_len_at_{eps}'] = point_lengths.min()
+            features[f'max_len_at_{eps}'] = point_lengths.max()
+            features[f'std_len_at_{eps}'] = point_lengths.std()
+            features[f'median_len_at_{eps}'] = np.median(point_lengths)
+
+        if as_dict:
+            return features
+        return np.array(list(features.values()))
 
 class RipserFeatures(MetaFeature):
     def __call__(self, dataframe, target_data, as_dict=False):
@@ -62,12 +82,12 @@ class RipserFeatures(MetaFeature):
 
 
 if __name__ == '__main__':
-    import pprint
+    # import pprint
+    # dataset, target = get_iris()
+    # parameters = RipserFeatures()(dataset, target, as_dict=dict)
+    # pprint.pprint(parameters)
     dataset, target = get_iris()
-    parameters = RipserFeatures()(dataset, target, as_dict=dict)
-    pprint.pprint(parameters)
-    # dataset, target = get_adult()
-    # parameters = BallMapperFeatures()(dataset, target)
-    # print(parameters)
+    parameters = BallMapperFeatures()(dataset, target)
+    print(parameters)
     # parameters = BallMapperFeatures()(dataset, target, as_dict=True)
     # print(parameters)
