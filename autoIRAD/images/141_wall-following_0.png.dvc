@@ -1,0 +1,5 @@
+outs:
+- md5: 258fd05663d8a5b1092c8fbbf59a810e
+  size: 72000
+  hash: md5
+  path: 141_wall-following_0.png

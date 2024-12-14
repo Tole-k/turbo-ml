@@ -1,7 +1,9 @@
 from functools import cache
 import pickle
+from typing import Literal
 
 from turbo_ml.base.model import Model
+from turbo_ml.utils import options
 from ..model_prediction.model_prediction import Predictor
 from turbo_ml.base import __ALL_MODELS__
 from ..dataset_parameters.dataset_characteristics import DatasetDescription
@@ -34,11 +36,17 @@ class Best_Model(nn.Module):
 class MetaModelGuesser(Predictor):
     """ Search for the best meta model for a given dataset and model """
 
-    def __init__(self, device='cpu', model=None, preprocessors=None):
+    def __init__(self, device='cpu', model=None, preprocessors=None, path:str = None):
         self.device = device
-        self._path = str(__file__)[:-20] + 'model/'
+        self._path = path if path is not None else str(__file__)[:-20] + 'model/'
         # Do not rename this file (-20 is length of file name, model.pth is expected to be in the same directory)
         # in order to not exclude windows \ options
+        self.device = options.device
+        if path is not None:
+            with open(self._path + 'model_params.pkl', 'rb') as f:
+                self._config = pickle.load(f)
+        else:
+            self._config = {'input_size': 15, 'output_size': 36}
         if model is not None:
             self._meta_model = model
         else:
@@ -71,7 +79,8 @@ class MetaModelGuesser(Predictor):
         return models_names
 
     def _load_meta_model(self):
-        model = Best_Model(15, 36).to(self.device)
+        model = Best_Model(self._config['input_size'], 
+                           self._config['output_size']).to(self.device)
         model.load_state_dict(torch.load(self._path + 'model.pth'))
         return model.eval()
 

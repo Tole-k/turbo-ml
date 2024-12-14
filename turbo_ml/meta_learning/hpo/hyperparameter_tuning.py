@@ -23,7 +23,7 @@ class HyperTuner:
             open(os.path.join(directory, 'hyperparameters.json')))
 
     @staticmethod
-    def process_conditions(hyper_param: dict, no_classes: int, no_variables: int, device: str) -> dict:
+    def process_conditions(hyper_param: dict, no_classes: int, no_variables: int) -> dict:
         if 'conditional' in hyper_param:
             match hyper_param['condition']:
                 case "binary/multi":
@@ -31,7 +31,7 @@ class HyperTuner:
                 case 'single/multi':
                     return hyper_param['variants'][not no_variables == 1]
                 case 'cpu/cuda':
-                    return hyper_param['variants'][device == 'cuda']
+                    return hyper_param['variants'][options.device == 'cuda']
                 # more cases to be added if needed
         return hyper_param
 
@@ -48,14 +48,14 @@ class HyperTuner:
             raise ValueError(
                 f"Model {model} not found in hyperparameters database")
 
-    def objective(self, trial: opt.Trial, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None, device='cpu', thread_num=1) -> float:
+    def objective(self, trial: opt.Trial, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None) -> float:
         x_train, x_test, y_train, y_test = train_test_split(
             *dataset, test_size=0.2)
         hyperparams: list = self.get_model_hyperparameters(model)
         params = {}
         for hyper_param in hyperparams:
             hyper_param = self.process_conditions(
-                hyper_param, no_classes, no_variables, device)
+                hyper_param, no_classes, no_variables)
             if hyper_param['optional'] and trial.suggest_categorical(f"{hyper_param['name']}=None", [True, False]):
                 continue
             if hyper_param['type'] == 'no_choice':
@@ -76,7 +76,7 @@ class HyperTuner:
                     hyper_param['name'], [True, False])
             elif hyper_param['type'] == 'thread_num':
                 trial.set_user_attr(
-                    hyper_param['name'], thread_num)
+                    hyper_param['name'], options.threads)
                 params[hyper_param['name']
                        ] = trial.user_attrs[hyper_param['name']]
         model = model(**params)
@@ -93,15 +93,15 @@ class HyperTuner:
     def filter_nones(self, best_params: dict) -> dict:
         return {k: v for k, v in best_params.items() if k[-5:] != '=None'}
 
-    def optimize_hyperparameters(self, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None, device='cpu', trials: int = 10, thread_num=1) -> dict:
+    def optimize_hyperparameters(self, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None) -> dict:
         if model.__name__ in options.blacklist:
             return {}
         if model == NeuralNetworkModel:  # Neural Network requires a more specific approach, infeasible to adapt the general function do it's been implemented separately
-            return NeuralNetworkModel.optimize_hyperparameters(dataset, task, no_classes, no_variables, device, trials*10)
+            return NeuralNetworkModel.optimize_hyperparameters(dataset, task, no_classes, no_variables)
         study = opt.create_study(
             direction='maximize' if task == 'classification' else 'minimize', study_name=model.__name__ + " Hyperparameter Optimization")
         study.optimize(lambda trial: self.objective(
-            trial, model, dataset, task, no_classes, no_variables, device, thread_num=thread_num), n_trials=trials)
+            trial, model, dataset, task, no_classes, no_variables), n_trials=options.hpo_trials)
         return self.filter_nones(study.best_params) | study.best_trial.user_attrs
 
 
@@ -118,44 +118,44 @@ if __name__ == '__main__':
     model = AdaBoostClassifier
     task = 'classification'
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=3, thread_num=options.threads))
+        model, dataset, task, no_classes=3))
     model = NeuralNetworkModel
     task = 'classification'
     device = 'cuda'
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=3, device=device, thread_num=options.threads))
+        model, dataset, task, no_classes=3))
     dataset = get_diabetes()
     model = AdaBoostRegressor
     task = 'regression'
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=1, thread_num=options.threads))
+        model, dataset, task, no_variables=1))
     model = NeuralNetworkModel
     task = 'regression'
 
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=1, device=device, thread_num=options.threads))
+        model, dataset, task, no_variables=1))
 
     dataset = get_breast_cancer()
     model = XGBoostClassifier
     task = 'classification'
 
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=2, device=device, thread_num=options.threads))
+        model, dataset, task, no_classes=2))
 
     model = NeuralNetworkModel
     task = 'classification'
 
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=2, device=device, thread_num=options.threads))
+        model, dataset, task, no_classes=2))
     dataset = get_linnerud()
     model = XGBoostRegressor
     task = 'regression'
 
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=3, device=device, thread_num=options.threads))
+        model, dataset, task, no_variables=3))
 
     model = NeuralNetworkModel
     task = 'regression'
 
     print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=3, device=device, thread_num=options.threads))
+        model, dataset, task, no_variables=3))

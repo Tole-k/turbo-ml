@@ -20,12 +20,12 @@ class NeuralNetworkBase(Model):
     input_formats = {pd.DataFrame}
     output_formats = {pd.DataFrame | pd.Series}
 
-    def __init__(self, model: nn.Module, loss, optimizer, device, batch_size, epochs) -> None:
+    def __init__(self, model: nn.Module, loss, optimizer, batch_size, epochs) -> None:
         super().__init__()
+        self.device = options.device
         self.model = model
         self.criterion = loss
         self.optimizer = optimizer
-        self.device = device
         self.batch_size = batch_size
         self.epochs = epochs
 
@@ -153,14 +153,14 @@ class NNFactory:
                 for optimizer in self.optimizers}[optimizer.lower()]
 
     @staticmethod
-    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, device='cpu', trials: int = 100) -> Dict[str, Any]:
-        def objective(trial, dataset, task, device):
+    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None) -> Dict[str, Any]:
+        def objective(trial, dataset, task):
             x_train, x_test, y_train, y_test = train_test_split(
                 *dataset, test_size=0.2)
             trial.set_user_attr('input_size', x_train.shape[1])
 
             trial.set_user_attr('task', task)
-            trial.set_user_attr('device', device)
+            trial.set_user_attr('device', options.device)
             trial.set_user_attr('epochs', 1000)
             params = {}
             params['input_size'] = trial.user_attrs['input_size']
@@ -207,14 +207,13 @@ class NNFactory:
                     results.index = y_test.index
                     return np.sum((results-y_test).values**2)/len(y_test)
                 return sum((results-y_test)**2)/len(y_test)
-
         study = opt.create_study(
             direction='maximize' if task == 'classification' else 'minimize', study_name='Neural Network Hyperparameter Optimization')
         study.optimize(lambda trial: objective(
-            trial, dataset, task, device), n_trials=trials)
+            trial, dataset, task), n_trials=options.hpo_trials)
         return study.best_params | study.best_trial.user_attrs
 
-    def create_neural_network(self, input_size: int, output_size: int, hidden_sizes: List[int], task: str = 'classification', activations: List[str] = ['relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> NeuralNetworkBase:
+    def create_neural_network(self, input_size: int = None, output_size: int = None, hidden_sizes: List[int] = [256, 128, 64], task: str = 'classification', activations: List[str] = ['relu', 'relu', 'relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001) -> NeuralNetworkBase:
         layers = []
         if len(activations) != len(hidden_sizes):
             raise ValueError(
@@ -231,16 +230,16 @@ class NNFactory:
             layers.append(nn.Linear(hidden_sizes[-1], output_size))
         self.task = task
         self.model = nn.Sequential(
-            *layers).to(device)
+            *layers).to(options.device)
         self.criterion = self._add_loss(loss)
         self.optimizer = self._add_optimizer(optimizer, learning_rate)
         self.batch_size = batch_size
         self.epochs = epochs
-        self.device = device
+        self.device = options.device
         if task == 'classification':
-            return NeuralNetworkClassifier(self.model, self.criterion, self.optimizer, self.device, self.batch_size, self.epochs)
+            return NeuralNetworkClassifier(self.model, self.criterion, self.optimizer, self.batch_size, self.epochs)
         elif task == 'regression':
-            return NeuralNetworkRegressor(self.model, self.criterion, self.optimizer, self.device, self.batch_size, self.epochs)
+            return NeuralNetworkRegressor(self.model, self.criterion, self.optimizer, self.batch_size, self.epochs)
         else:
             raise ValueError('Invalid task type')
 
@@ -254,9 +253,9 @@ class NeuralNetworkModel(Model):
     factory = NNFactory()
 
     @staticmethod
-    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, device='cpu', trials=100) -> Dict[str, Any]:
+    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, ) -> Dict[str, Any]:
         params = NNFactory.optimize_hyperparameters(
-            dataset, task, no_classes, no_variables, device, trials)
+            dataset, task, no_classes, no_variables)
         hidden_sizes = []
         activations = []
         for i in range(params['num_hidden_layers']):
@@ -264,17 +263,25 @@ class NeuralNetworkModel(Model):
             activations.append(params[f'activation_{i}'])
             del params[f'hidden_size_{i}']
             del params[f'activation_{i}']
+        del params['input_size']
+        del params['output_size']
         del params['num_hidden_layers']
         params['hidden_sizes'] = hidden_sizes
         params['activations'] = activations
         return params
 
-    def __init__(self, input_size: int, output_size: int, hidden_sizes: List[int], task: str = 'classification', activations: List[str] = ['relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001, device='cpu') -> None:
+    def __init__(self, hidden_sizes: List[int] = [256, 128, 64], task: str = 'classification', activations: List[str] = ['relu', 'relu', 'relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001) -> None:
         super().__init__()
-        self.model = self.factory.create_neural_network(
-            input_size, output_size, hidden_sizes, task, activations, loss, optimizer, batch_size, epochs, learning_rate, device)
+        self.params = {'hidden_sizes': hidden_sizes, 'task': task,
+                       'activations': activations, 'loss': loss, 'optimizer': optimizer, 'batch_size': batch_size, 'epochs': epochs, 'learning_rate': learning_rate}
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
+        if self.model is None:
+            self.params['input_size'] = data.shape[1]
+            self.params['output_size'] = target.nunique(
+            ) if self.params['task'] == 'classification' else 1 if isinstance(target, pd.Series) else target.shape[1]
+            self.model = self.factory.create_neural_network(
+                **self.params)
         self.model.train(data, target)
 
     def predict(self, guess: pd.DataFrame) -> pd.DataFrame | pd.Series:
@@ -289,7 +296,7 @@ def __main__imports__():
 if __name__ == '__main__':
     get_iris = __main__imports__()
     params = NeuralNetworkModel.optimize_hyperparameters(
-        dataset=get_iris(), task='classification', no_classes=3, no_variables=1, device=options.device)
+        dataset=get_iris(), task='classification', no_classes=3, no_variables=1)
     print(params)
     model = NeuralNetworkModel(**params)
     model.train(*get_iris())

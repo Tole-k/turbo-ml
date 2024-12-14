@@ -1,0 +1,5 @@
+outs:
+- md5: 76dafab9a23976611dad701696bed170
+  size: 23880
+  hash: md5
+  path: 61_ionosphere_2.png

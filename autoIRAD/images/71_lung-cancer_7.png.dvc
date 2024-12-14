@@ -1,0 +1,5 @@
+outs:
+- md5: ece5c3303abb5714725d7f72617bc578
+  size: 7210
+  hash: md5
+  path: 71_lung-cancer_7.png

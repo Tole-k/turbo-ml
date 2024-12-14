@@ -1,4 +1,5 @@
 import pickle
+from typing import Literal
 import matplotlib.pyplot as plt
 import torch.utils.data as data_utils
 import pandas as pd
@@ -99,5 +100,5 @@ def train_meta_model(device='cpu', save_model=False, save_path='model.pth', fram
 
 
 if __name__ == '__main__':
-    train_meta_model(device=options.device, save_model=True,
+    train_meta_model(save_model=True,
                      save_path='turbo_ml/meta_learning/meta_model/model')

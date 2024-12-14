@@ -1,0 +1,5 @@
+outs:
+- md5: 93a8c8fe7c9cef37db2632fb170b39ed
+  size: 32023
+  hash: md5
+  path: 8_annealing_1.png
