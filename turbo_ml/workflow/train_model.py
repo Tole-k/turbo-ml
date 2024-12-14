@@ -2,16 +2,15 @@ import os
 import pickle
 from typing import Any, Tuple
 from prefect import flow, task
+from turbo_ml.meta_learning.meta_model.meta_model_search import Best_Model
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.utils import options
 import torch
 import torch.nn as nn
+from torch.utils import data as data_utils
 import pandas as pd
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
-from torch.utils.data import DataLoader
-from torch.utils import data as data_utils
-from turbo_ml.meta_learning.meta_model.meta_model_search import Best_Model
 
 
 @flow(name='Train Meta Model')
@@ -65,11 +64,12 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
         'float32')).to(options.device), torch.tensor(y_test.values.astype
                                                      ('float32')).to(options.device))
 
-    train_loader = DataLoader(train, batch_size=32)
-    test_loader = DataLoader(test, batch_size=32)
+    train_loader = data_utils.DataLoader(train, batch_size=32)
+    test_loader = data_utils.DataLoader(test, batch_size=32)
 
     loss = float('inf')
-    pbar = tqdm(range(epochs), total=epochs, desc='Training model, loss: ...', unit='epoch')
+    pbar = tqdm(range(epochs), total=epochs,
+                desc='Training model, loss: ...', unit='epoch')
     for epoch in pbar:
         model.train()
         for x, y in train_loader:
