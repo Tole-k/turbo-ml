@@ -1,4 +1,5 @@
 import os
+import pickle
 from typing import Any, Tuple
 from prefect import flow, task
 from turbo_ml.preprocessing import sota_preprocessor
@@ -10,24 +11,7 @@ from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 from torch.utils import data as data_utils
-
-
-class Best_Model(nn.Module):
-    def __init__(self, num_features: int, num_classes: int):
-        super(Best_Model, self).__init__()
-        self.fc1 = nn.Linear(num_features, 256)
-        self.fc2 = nn.Linear(256, 128)
-        self.fc25 = nn.Linear(128, 128)
-        self.fc3 = nn.Linear(128, 64)
-        self.fc4 = nn.Linear(64, num_classes)
-
-    def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = torch.sigmoid(self.fc2(x))
-        x = torch.relu(self.fc25(x))
-        x = torch.sigmoid(self.fc3(x))
-        x = self.fc4(x)
-        return x
+from turbo_ml.meta_learning.meta_model.meta_model_search import Best_Model
 
 @flow(name='Train Meta Model')
 def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluations_frame: pd.DataFrame | str | None = None,
@@ -77,7 +61,6 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
     train_loader = DataLoader(train, batch_size=32)
     test_loader = DataLoader(test, batch_size=32)
 
-    epochs = 7000
     loss = float('inf')
     pbar = tqdm(range(epochs), total=epochs, desc='Training model, loss: ...', unit='epoch')
     for epoch in pbar:
@@ -100,8 +83,15 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
 
 @task(name="Save Meta Model")
 def save_meta_model(model: Best_Model, preprocessor:Any, save_path: str):
-    torch.save(model.state_dict(), save_path)
-    torch.save(preprocessor, save_path + '_preprocessor')
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    
+    torch.save(model.state_dict(), save_path + '/model.pth')
+    with open(save_path + '/model_params.pkl', 'wb') as f:
+        pickle.dump({'input_size': model.fc1.in_features,
+                     'output_size': model.fc4.out_features}, f)
+    with open(save_path + '/preprocessor.pkl', 'wb') as f:
+        pickle.dump(preprocessor, f)
 
 if __name__ == '__main__':
     train_meta_model(save_model=True,
