@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from turbo_ml.base import __ALL_MODELS__
 from turbo_ml.workflow.utils import list_dataset_files, read_data_file
 from turbo_ml.base.model import Model
+from turbo_ml.preprocessing import sota_preprocessor
 from prefect_dask import DaskTaskRunner
 from prefect import flow, task
 import os
@@ -27,7 +28,9 @@ def evaluate_models(dataset_path: str, dataset_name: Optional[str] = None) -> pd
     X = dataset.iloc[:, :-1]
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42)
-
+    preprocessor = sota_preprocessor()
+    X_train = preprocessor.fit_transform(X_train)
+    X_test = preprocessor.transform(X_test)
     frame = {'name': dataset_name or dataset_path}
     frame.update({model.__name__: np.nan for model in __ALL_MODELS__})
     for model_cls in __ALL_MODELS__:
