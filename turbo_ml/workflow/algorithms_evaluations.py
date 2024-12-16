@@ -22,6 +22,7 @@ def calculate_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
 
 @task(name='Evaluate Models')
 def evaluate_models(dataset_path: str, dataset_name: Optional[str] = None) -> pd.Series:
+    print(dataset_name)
     dataset = read_data_file(dataset_path)
     y = dataset.iloc[:, -1]
     X = dataset.iloc[:, :-1]
@@ -57,10 +58,9 @@ def evaluate_datasets(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-dat
     evaluations = []
     for dataset_name, path in names:
         evaluations.append(evaluate_models.submit(path, dataset_name))
-    sleep(3000) # There are some errors without this line
     evaluations_results = [evaluation.result() for evaluation in evaluations]
     dataframe = pd.concat(evaluations_results, axis=1).T
 
     if dataframe is not None and output_path is not None:
-        dataframe.to_csv(output_path, index=False)
+        dataframe.to_csv(str(slice_index)+ '_' + output_path, index=False)
     return dataframe
