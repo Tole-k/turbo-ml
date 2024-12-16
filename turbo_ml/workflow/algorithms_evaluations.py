@@ -50,8 +50,11 @@ def load_algorithms_evaluations():
 
 @flow(name='Evaluate Models for every dataset', task_runner=DaskTaskRunner())
 def evaluate_datasets(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'),
-                      output_path='results_algorithms.csv') -> pd.DataFrame:
-    names = list_dataset_files(datasets_dir)[1:2]
+                      output_path='results_algorithms.csv', slice_index:Optional[int]=None) -> pd.DataFrame:
+    if slice_index is not None:
+        names = list_dataset_files(datasets_dir)[slice_index*10:(slice_index+1)*10]
+    else:
+        names = list_dataset_files(datasets_dir)
     evaluations = []
     for dataset_name, path in names:
         evaluations.append(evaluate_models.submit(path, dataset_name))
