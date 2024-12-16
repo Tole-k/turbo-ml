@@ -4,6 +4,7 @@ import pandas as pd
 from turbo_ml.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelEncoder
 from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures, CombinedMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures
 from turbo_ml.meta_learning.dataset_parameters.topological import RipserFeatures, BallMapperFeatures
+from turbo_ml.workflow.utils import read_data_file, list_dataset_files
 from tqdm import tqdm
 from prefect import flow
 
@@ -13,36 +14,17 @@ def generate_training_parameters(datasets_dir: str = os.path.join('datasets', 'A
                                  output_path='parameters.csv', meta_data_extractor=SimpleMetaFeatures(),
                                  preprocessor=[NanImputer, Normalizer, OneHotEncoder]):
 
-    def read_csv(path: str) -> pd.DataFrame:
-        if path.endswith('.csv'):
-            with open(path, 'r') as f:
-                return pd.read_csv(f)
-        if path.endswith('.dat'):
-            with open(path, 'r') as f:
-                return pd.read_csv(f, delimiter='\t').drop('Unnamed: 0', axis=1)
-        raise ValueError(f'File format not supported for file: {path}')
-
     def measure(X, y):
         return meta_data_extractor(X, y, as_dict=True)
 
-    def is_dataset_file(name_path: Tuple[str, str]) -> bool:
-        _, path = name_path
-        return path.endswith('.csv') or path.endswith('.dat')
-
-    names = []
-    directory = os.path.join(datasets_dir)
-    for root, dirs, files in os.walk(directory):
-        names.extend([(file, os.path.join(root, file)) for file in files])
-
-    names = list(filter(is_dataset_file, names))
-    names.sort()
+    names = list_dataset_files(datasets_dir)
 
     print('Datasets:', names)
     dataframe = None
     parameters = {}
-    for i, (dataset_name, path) in tqdm(enumerate(names), total=len(names)):
+    for dataset_name, path in tqdm(names, total=len(names)):
         try:
-            dataset = read_csv(path)
+            dataset = read_data_file(path)
             X = dataset.drop(dataset.columns[-1], axis=1)
             y = dataset[dataset.columns[-1]]
 
