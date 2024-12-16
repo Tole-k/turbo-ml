@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 from logging import getLogger
 from typing import Optional
+from time import sleep
 logger = getLogger(__name__)
 
 
@@ -20,7 +21,6 @@ def calculate_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
 
 
 @task(name='Evaluate Models')
-@mute('stdout')
 def evaluate_models(dataset_path: str, dataset_name: Optional[str] = None) -> pd.Series:
     dataset = read_data_file(dataset_path)
     y = dataset.iloc[:, -1]
@@ -36,7 +36,6 @@ def evaluate_models(dataset_path: str, dataset_name: Optional[str] = None) -> pd
             model.train(X_train, y_train)
             y_pred = model.predict(X_test)
             score = calculate_score(y_test, y_pred)
-            print(f'{model_cls.__name__} score: {score}')
             frame[model_cls.__name__] = score
         except Exception as e:
             logger.error(f'Error while evaluating model {model_cls.__name__}: {e}')
@@ -51,11 +50,11 @@ def load_algorithms_evaluations():
 @flow(name='Evaluate Models for every dataset', task_runner=DaskTaskRunner())
 def evaluate_datasets(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'),
                       output_path='results_algorithms.csv') -> pd.DataFrame:
-    names = list_dataset_files(datasets_dir)[1:2]
+    names = list_dataset_files(datasets_dir)
     evaluations = []
     for dataset_name, path in names:
         evaluations.append(evaluate_models.submit(path, dataset_name))
-
+    sleep(3000) # There are some errors without this line
     evaluations_results = [evaluation.result() for evaluation in evaluations]
     dataframe = pd.concat(evaluations_results, axis=1).T
 

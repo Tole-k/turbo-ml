@@ -6,9 +6,9 @@ from turbo_ml.meta_learning.dataset_parameters import BallMapperFeatures
 
 @flow(name='Full Meta Model Workflow', log_prints=True)
 def full_pipeline() -> Tuple[int]:
+    evaluations = evaluate_datasets()
     training_parameters = generate_training_parameters(
         meta_data_extractor=BallMapperFeatures())
-    evaluations = evaluate_datasets()
     model, preprocessor = train_meta_model(training_parameters, evaluations)
     save_meta_model(model, preprocessor, 'new_model')
     return model, preprocessor
