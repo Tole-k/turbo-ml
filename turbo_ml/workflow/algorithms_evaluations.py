@@ -1,4 +1,3 @@
-from decorify import mute
 from sklearn.model_selection import train_test_split
 from turbo_ml.base import __ALL_MODELS__
 from turbo_ml.workflow.utils import list_dataset_files, read_data_file
@@ -11,7 +10,6 @@ import pandas as pd
 import numpy as np
 from logging import getLogger
 from typing import Optional
-from time import sleep
 logger = getLogger(__name__)
 
 
@@ -47,8 +45,8 @@ def evaluate_models(dataset_path: str, dataset_name: Optional[str] = None) -> pd
 
 
 @task(name='Load Algorithm Evaluations')
-def load_algorithms_evaluations():
-    return pd.read_csv(os.path.join('datasets', 'results_algorithms.csv'))
+def load_algorithms_evaluations(path:str=os.path.join('datasets', 'results_algorithms.csv')):
+    return pd.read_csv(path)
 
 
 @flow(name='Evaluate Models for every dataset', task_runner=DaskTaskRunner())
