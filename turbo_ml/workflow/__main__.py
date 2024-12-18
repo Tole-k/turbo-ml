@@ -9,7 +9,7 @@ from sys import argv
 def full_pipeline() -> Tuple[int]:
     evaluations = load_algorithms_evaluations('algorithm_results.csv')
     training_parameters = generate_training_parameters(
-        meta_data_extractor=BallMapperFeatures())
+        meta_data_extractor=SimpleMetaFeatures())
     model, preprocessor = train_meta_model(training_parameters, evaluations, 3000)
     save_meta_model(model, preprocessor, 'new_model')
     test_TurboML('new_model/', SimpleMetaFeatures())
