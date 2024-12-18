@@ -11,10 +11,10 @@ import pandas as pd
 import torch
 import torch.nn as nn
 
-__MODELS__ = ["NeuralNetworkModel", "XGBoostClassifier", "AdaBoostClassifier", "BaggingClassifier", "BernoulliNB", "CalibratedClassifierCV", "CategoricalNB", "ComplementNB", "DecisionTreeClassifier", "DummyClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "GaussianNB", "GaussianProcessClassifier", "GradientBoostingClassifier", "HistGradientBoostingClassifier", "KNeighborsClassifier",
+__MODELS_NAMES__ = ["NeuralNetworkModel", "XGBoostClassifier", "AdaBoostClassifier", "BaggingClassifier", "BernoulliNB", "CalibratedClassifierCV", "CategoricalNB", "ComplementNB", "DecisionTreeClassifier", "DummyClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "GaussianNB", "GaussianProcessClassifier", "GradientBoostingClassifier", "HistGradientBoostingClassifier", "KNeighborsClassifier",
               "LabelPropagation", "LabelSpreading", "LinearDiscriminantAnalysis", "LinearSVC", "LogisticRegression", "LogisticRegressionCV", "MLPClassifier", "MultinomialNB", "NearestCentroid", "NuSVC", "PassiveAggressiveClassifier", "Perceptron", "QuadraticDiscriminantAnalysis", "RadiusNeighborsClassifier", "RandomForestClassifier", "RidgeClassifier", "RidgeClassifierCV", "SGDClassifier", "SVC"]
 
-__MODELS__ = ["Bagging_(BAG)", "Bayesian_Methods_(BY)", "Boosting_(BST)", "Decision_Trees_(DT)", "Discriminant_Analysis_(DA)", "Generalized_Linear_Models_(GLM)", "Logistic_and_Multinomial_Regression_(LMR)", "Multivariate_Adaptive_Regression_Splines_(MARS)",
+__GROUP_NAMES__ = ["Bagging_(BAG)", "Bayesian_Methods_(BY)", "Boosting_(BST)", "Decision_Trees_(DT)", "Discriminant_Analysis_(DA)", "Generalized_Linear_Models_(GLM)", "Logistic_and_Multinomial_Regression_(LMR)", "Multivariate_Adaptive_Regression_Splines_(MARS)",
               "Nearest_Neighbor_Methods_(NN)", "Neural_Networks_(NNET)", "Other_Ensembles_(OEN)", "Other_Methods_(OM)", "Partial_Least_Squares_and_Principal_Component_Regression_(PLSR)", "Random_Forests_(RF)", "Rule-Based_Methods_(RL)", "Stacking_(STC)", "Support_Vector_Machines_(SVM)"]
 
 class Best_Model(nn.Module):
@@ -73,10 +73,9 @@ class MetaModelGuesser(Predictor):
         model_list = [(idx, float(i)) for idx, i in enumerate(model_values)]
         model_list.sort(key=lambda x: x[1], reverse=True)
         best_models = model_list[:n]
-        models_names = [__MODELS__[idx] for idx, _ in best_models]
-        # translate = MetaModelGuesser._get_str_to_model_dict()
-        # return list(map(lambda x: translate[x], models_names))
-        return models_names
+        models_names = [__MODELS_NAMES__[idx] for idx, _ in best_models]
+        translate = MetaModelGuesser._get_str_to_model_dict()
+        return list(map(lambda x: translate[x], models_names))
 
     def _load_meta_model(self):
         model = Best_Model(self._config['input_size'], 

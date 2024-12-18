@@ -27,8 +27,6 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
     if isinstance(evaluations_frame, str):
         evaluations_frame = pd.read_csv(evaluations_frame)
 
-    evaluations_frame = pd.read_csv(
-        os.path.join('datasets', 'results_algorithms.csv'))
 
     preprocessor = sota_preprocessor()
     pre_frame = preprocessor.fit_transform(
@@ -37,15 +35,22 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
     pre_frame['name'] = feature_frame['name'].str.replace(
         r'_R\.dat|\.dat|\.csv', '', regex=True).reset_index(drop=True)
 
+    def remove_suffix(x:str) -> str:
+        return x.split(' 2.')[0]
+
+    evaluations_frame['name'] = evaluations_frame['name'].apply(remove_suffix)
     common_names = set(pre_frame['name']).intersection(
-        set(evaluations_frame['problema']))
+        set(evaluations_frame['name']))
+    print(pre_frame.shape, evaluations_frame.shape)
     pre_frame = pre_frame[pre_frame['name'].isin(
         common_names)].sort_values('name').reset_index(drop=True)
-    evaluations_frame = evaluations_frame[evaluations_frame['problema'].isin(
-        common_names)].sort_values('problema').reset_index(drop=True)
+    evaluations_frame = evaluations_frame[evaluations_frame['name'].isin(
+        common_names)].sort_values('name').reset_index(drop=True)
 
+    print(pre_frame.shape, evaluations_frame.shape)
     pre_frame.drop(columns=['name'], axis=1, inplace=True)
-    evaluations_frame.drop(columns=['problema'], axis=1, inplace=True)
+    evaluations_frame.drop(columns=['name'], axis=1, inplace=True)
+    print(pre_frame.shape, evaluations_frame.shape)
 
     values = []
     model = Best_Model(len(pre_frame.columns),
@@ -54,9 +59,9 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     criterion = nn.MSELoss()
 
+
     x_train, x_test, y_train, y_test = train_test_split(
         pre_frame, evaluations_frame, test_size=0.2)
-
     train = data_utils.TensorDataset(torch.tensor(x_train.values.astype(
         'float32')).to(options.device), torch.tensor(y_train.values.astype
                                                      ('float32')).to(options.device))
