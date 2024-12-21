@@ -1,5 +1,5 @@
 from sklearn.model_selection import train_test_split
-from turbo_ml.base import __ALL_MODELS__
+from turbo_ml.base import get_models_list
 from turbo_ml.workflow.utils import list_dataset_files, read_data_file
 from turbo_ml.base.model import Model
 from turbo_ml.preprocessing import sota_preprocessor
@@ -31,8 +31,8 @@ def evaluate_models(dataset_path: str, dataset_name: Optional[str] = None) -> pd
     X_train = preprocessor.fit_transform(X_train)
     X_test = preprocessor.transform(X_test)
     frame = {'name': dataset_name or dataset_path}
-    frame.update({model.__name__: np.nan for model in __ALL_MODELS__})
-    for model_cls in __ALL_MODELS__:
+    frame.update({model.__name__: np.nan for model in get_models_list()})
+    for model_cls in get_models_list():
         try:
             model:Model = model_cls()
             model.train(X_train, y_train)

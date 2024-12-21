@@ -1,7 +1,7 @@
 import os
 
 import tensorflow as tf
-from turbo_ml.base import __ALL_MODELS__
+from turbo_ml.base import get_models_list
 from PIL import Image
 import numpy as np
 import pandas as pd

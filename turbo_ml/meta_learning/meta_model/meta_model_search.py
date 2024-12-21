@@ -5,8 +5,7 @@ from typing import Literal
 from turbo_ml.base.model import Model
 from turbo_ml.utils import options
 from ..model_prediction.model_prediction import Predictor
-from turbo_ml.base import __ALL_MODELS__
-from ..dataset_parameters.dataset_characteristics import DatasetDescription
+from turbo_ml.base import get_models_list
 import pandas as pd
 import torch
 import torch.nn as nn
@@ -91,4 +90,4 @@ class MetaModelGuesser(Predictor):
     @cache
     @staticmethod
     def _get_str_to_model_dict():
-        return {model.__name__: model for model in __ALL_MODELS__}
+        return {model.__name__: model for model in get_models_list()}

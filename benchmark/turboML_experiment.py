@@ -8,7 +8,7 @@ sys.path.append('.')
 from turbo_ml.meta_learning.meta_model import as_meta_model
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.meta_learning import MetaModelGuesser, sota_dataset_parameters
-from turbo_ml.base import __ALL_MODELS__
+from turbo_ml.base import get_models_list
 from turbo_ml.utils import options
 
 
