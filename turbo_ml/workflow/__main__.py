@@ -17,4 +17,6 @@ def full_pipeline() -> Tuple[int]:
 
 
 if __name__ == '__main__':
+    from turbo_ml.utils import options
+    options.device = 'cpu'
     full_pipeline()
