@@ -1,6 +1,5 @@
 from functools import cache
 import pickle
-from typing import Literal
 
 from turbo_ml.base.model import Model
 from turbo_ml.utils import options
