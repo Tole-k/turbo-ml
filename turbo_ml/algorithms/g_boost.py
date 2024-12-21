@@ -1,6 +1,6 @@
 from sklearn import ensemble
 from sklearn.datasets import make_hastie_10_2
-from ..base import Model
+from turbo_ml.base import Model
 from collections.abc import Iterable
 from typing import Literal
 

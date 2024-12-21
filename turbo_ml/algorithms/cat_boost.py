@@ -1,6 +1,6 @@
 from sklearn.model_selection import train_test_split
 import catboost as cb
-from ..base import Model
+from turbo_ml.base import Model
 from collections.abc import Iterable
 from typing import List, Literal
 

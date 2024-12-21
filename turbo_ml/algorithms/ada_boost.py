@@ -1,5 +1,5 @@
 from sklearn import ensemble
-from ..base import Model
+from turbo_ml.base import Model
 from collections.abc import Iterable
 from sklearn.datasets import make_classification
 from typing import Literal

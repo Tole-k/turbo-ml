@@ -1,5 +1,5 @@
 import pandas as pd
-from ..base import Model
+from turbo_ml.base import Model
 import random
 from collections.abc import Iterable
 
