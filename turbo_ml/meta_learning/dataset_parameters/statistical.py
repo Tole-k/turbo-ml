@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from turbo_ml.meta_learning.dataset_parameters import MetaFeature
+from .base import MetaFeature
 
 from sklearn.decomposition import PCA
 
