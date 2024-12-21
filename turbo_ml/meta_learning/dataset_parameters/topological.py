@@ -7,14 +7,12 @@ from datasets import get_iris
 from pyballmapper import BallMapper
 from ripser import ripser
 import pandas as pd
-from decorify import mute
 
 class BallMapperFeatures(MetaFeature):
     def __init__(self, epsilons:List[int] = [0.25, 1, 5, 25], verbose:bool=False):
         self.epsilons = epsilons
         self.verbose = verbose
 
-    @mute('warning')
     def __call__(self, dataset, target_data, as_dict=False):
         self.epsilons = [0.25, 1, 5, 25]
         features = {}
