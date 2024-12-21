@@ -90,7 +90,7 @@ class HyperTuner:
             print(e)
             raise opt.TrialPruned()
 
-    def filter_nones(self, best_params: dict) -> dict:
+    def _filter_nones(self, best_params: dict) -> dict:
         return {k: v for k, v in best_params.items() if k[-5:] != '=None'}
 
     def optimize_hyperparameters(self, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None) -> dict:
@@ -102,60 +102,4 @@ class HyperTuner:
             direction='maximize' if task == 'classification' else 'minimize', study_name=model.__name__ + " Hyperparameter Optimization")
         study.optimize(lambda trial: self.objective(
             trial, model, dataset, task, no_classes, no_variables), n_trials=options.hpo_trials)
-        return self.filter_nones(study.best_params) | study.best_trial.user_attrs
-
-
-def __main_import__():
-    from datasets import get_iris, get_diabetes, get_breast_cancer, get_linnerud
-    return get_iris, get_diabetes, get_breast_cancer, get_linnerud
-
-
-if __name__ == '__main__':
-    get_iris, get_diabetes, get_breast_cancer, get_linnerud = __main_import__()
-    from turbo_ml.algorithms import AdaBoostClassifier, AdaBoostRegressor, XGBoostClassifier, XGBoostRegressor
-    tuner = HyperTuner()
-    dataset = get_iris()
-    model = AdaBoostClassifier
-    task = 'classification'
-    print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=3))
-    model = NeuralNetworkModel
-    task = 'classification'
-    device = 'cuda'
-    print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=3))
-    dataset = get_diabetes()
-    model = AdaBoostRegressor
-    task = 'regression'
-    print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=1))
-    model = NeuralNetworkModel
-    task = 'regression'
-
-    print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=1))
-
-    dataset = get_breast_cancer()
-    model = XGBoostClassifier
-    task = 'classification'
-
-    print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=2))
-
-    model = NeuralNetworkModel
-    task = 'classification'
-
-    print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_classes=2))
-    dataset = get_linnerud()
-    model = XGBoostRegressor
-    task = 'regression'
-
-    print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=3))
-
-    model = NeuralNetworkModel
-    task = 'regression'
-
-    print(tuner.optimize_hyperparameters(
-        model, dataset, task, no_variables=3))
+        return self._filter_nones(study.best_params) | study.best_trial.user_attrs
