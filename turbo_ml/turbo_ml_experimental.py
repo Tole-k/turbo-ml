@@ -9,6 +9,7 @@ from typing import Literal, Optional
 
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.meta_learning import MetaModelGuesser, HyperTuner, sota_dataset_parameters
+from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures
 from turbo_ml.algorithms import RandomGuesser as DummyModel
 from turbo_ml.base import Model, __ALL_MODELS__
 from turbo_ml.utils import options
@@ -22,7 +23,7 @@ class TurboML_Experimental:
         if tuner is None:
             tuner = HyperTuner()
         if param_function is None:
-            param_function = sota_dataset_parameters
+            param_function = SimpleMetaFeatures()
         options.device = device
         options.threads = threads
         self._algorithm = DummyModel

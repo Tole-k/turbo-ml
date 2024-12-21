@@ -46,7 +46,7 @@ class MetaModelGuesser(Predictor):
             with open(self._path + 'model_params.pkl', 'rb') as f:
                 self._config = pickle.load(f)
         else:
-            self._config = {'input_size': 15, 'output_size': 36}
+            self._config = {'input_size': 24, 'output_size': 38}
         if model is not None:
             self._meta_model = model
         else:
