@@ -25,6 +25,11 @@ def _parse_scores(experiments_names, datasets_names, timestamps, inv_family_map,
         for seed in data:
             for timestamp in data[seed]:
                 for dataset in data[seed][timestamp]:
+                    dataset_name = list(dataset.keys())[0]
+                    if dataset_name not in datasets_names:
+                        continue
+                    if not len(list(dataset.values())[0]):
+                        continue
                     family = inv_family_map[list(dataset.values())[0][0]]
                     dataset = list(dataset.keys())[0]
                     score = family_scores.loc[dataset, family]
@@ -106,17 +111,18 @@ def friedman_test(experiments_names: List[str], datasets_names: List[str], times
 
 if __name__ == "__main__":
     experiments = [
-        "AutoGluonExperiment",
-        "EvalMlExperiment",
+        # "AutoGluonExperiment",
+        # "EvalMlExperiment",
         # "H2OExperiment",
-        # "PyCaretExperiment",
+        "PyCaretExperiment",
         # "SklearnExperiment",
-        "TPotExperiment",
+        # "TPotExperiment",
         # "TurboMLExperiment",
+        "AutoGRDExperiment",
+        "AutoIRADExperiment",
     ]
     datasets = pd.read_csv(os.path.join("data", "parameters.csv"))
     datasets = datasets["name"]
     datasets = datasets.to_list()
-    datasets = datasets[:5]
 
     friedman_test(experiments, datasets, TEST_DURATIONS, 0.05)
