@@ -1,1 +1,1 @@
-from .model_prediction import Predictor, ExhaustiveSearch
+from .model_prediction import Predictor, ExhaustiveSearchPredictor

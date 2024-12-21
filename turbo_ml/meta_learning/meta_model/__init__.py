@@ -1,1 +1,2 @@
 from .meta_model_search import MetaModelGuesser
+from .model_structure import ModelStructure

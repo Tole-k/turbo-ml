@@ -2,7 +2,7 @@ import os
 import pickle
 from typing import Any, Tuple
 from prefect import flow, task
-from turbo_ml.meta_learning.meta_model.meta_model_search import Best_Model
+from turbo_ml.meta_learning.meta_model.model_structure import ModelStructure
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.utils import options
 import torch
@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 
 @flow(name='Train Meta Model')
 def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluations_frame: pd.DataFrame | str | None = None,
-                     epochs: int = 7000) -> Tuple[Best_Model, Any]:
+                     epochs: int = 7000) -> Tuple[ModelStructure, Any]:
     if feature_frame is None:
         feature_frame = 'parameters.csv'
     if isinstance(feature_frame, str):
@@ -50,7 +50,7 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
     evaluations_frame = preprocessor2.fit_transform(evaluations_frame)
 
     values = []
-    model = Best_Model(len(pre_frame.columns),
+    model = ModelStructure(len(pre_frame.columns),
                        len(evaluations_frame.columns)).to(options.device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
@@ -92,7 +92,7 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
 
 
 @task(name="Save Meta Model")
-def save_meta_model(model: Best_Model, preprocessor: Any, save_path: str):
+def save_meta_model(model: ModelStructure, preprocessor: Any, save_path: str):
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 

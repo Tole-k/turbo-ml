@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import *
+from typing import Type, Any, Tuple
 from turbo_ml.base import Model
 from turbo_ml.base.model import get_models_list
 import random
@@ -29,7 +29,7 @@ class Predictor:
         pass
 
 
-class ExhaustiveSearch(Predictor):
+class ExhaustiveSearchPredictor(Predictor):
     """ Search for the best model by evaluating all models in the list and picking the best one based on the evaluation function
     This search ignores HPO steps and focus only on AS based on predefined hyper-parameters"""
 

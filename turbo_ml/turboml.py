@@ -11,7 +11,7 @@ import time
 import logging
 
 from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.meta_learning import ExhaustiveSearch, MetaModelGuesser, HyperTuner
+from turbo_ml.meta_learning import ExhaustiveSearchPredictor, MetaModelGuesser, HyperTuner
 from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures
 from turbo_ml.algorithms import RandomGuesser as DummyModel
 from turbo_ml.base import Model
@@ -118,7 +118,7 @@ class TurboML:
 
         if isinstance(self._algorithm, DummyModel):
             try:
-                search = ExhaustiveSearch()
+                search = ExhaustiveSearchPredictor()
                 self._algorithm = search.predict(data, target_data)
                 self.logger.info(f'Looked at {search.counter} models')
             except Exception:

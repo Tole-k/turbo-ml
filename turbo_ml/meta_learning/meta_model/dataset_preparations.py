@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import List
 import pandas as pd
 from datasets import get_iris, get_wine, get_breast_cancer, get_digits, get_adult, get_tips, get_titanic
 # get_heart_disease loads incorrectly
@@ -9,7 +9,6 @@ from pydataset import data
 from turbo_ml.algorithms import NeuralNetworkModel, XGBoostClassifier, sklearn_models
 from turbo_ml.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelEncoder
 from turbo_ml.meta_learning.hpo import HyperTuner
-from turbo_ml.meta_learning.dataset_parameters import StatisticalParametersExtractor
 from turbo_ml.utils import options
 
 
@@ -36,8 +35,7 @@ def generate_dataset(models, datasets, path='results.csv'):
         le = LabelEncoder()
         target_train = le.fit_transform_target(target_train)
         target_test = le.transform_target(target_test)
-        extractor = StatisticalParametersExtractor(
-            data_train, target_train)
+        extractor = StatisticalParametersExtractor(data_train, target_train)
         description = extractor.describe_dataset()
         scores = {}
         for model in models:
