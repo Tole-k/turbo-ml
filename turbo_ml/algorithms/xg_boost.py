@@ -26,7 +26,6 @@ class XGBoostClassifier(Model):
         reg_alpha: float = 0,
         grow_policy: Literal['depthwise', 'lossguide'] = 'depthwise',
         early_stopping_rounds: Optional[int] = None,
-        early_stopping_validation_fraction: float = 0.2,
         objective: Literal['binary:hinge', 'multi:softmax'] = 'binary:hinge',
         eval_metric: Literal['logloss', 'error',
                              'mlogloss', 'merror'] = 'error',
@@ -35,7 +34,6 @@ class XGBoostClassifier(Model):
         self.device = 'cuda' if options.device == 'cuda' else 'cpu'
         if early_stopping_rounds is not None:
             self.early_stop = True
-            self.early_validation_fraction = early_stopping_validation_fraction
         else:
             self.early_stop = False
 
@@ -53,7 +51,6 @@ class XGBoostClassifier(Model):
             reg_alpha=reg_alpha,
             grow_policy=grow_policy,
             early_stopping_rounds=early_stopping_rounds,
-            early_stopping_validation_fraction=early_stopping_validation_fraction,
             objective=objective,
             eval_metric=eval_metric,
             **rest
