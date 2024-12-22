@@ -11,7 +11,8 @@ import time
 import logging
 
 from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.meta_learning import ExhaustiveSearchPredictor, MetaModelGuesser, HyperTuner
+from turbo_ml.meta_learning import ExhaustiveSearchPredictor, MetaModelGuesser
+from turbo_ml.hpo import HyperTuner
 from turbo_ml.meta_learning.dataset_parameters import get_sota_meta_features
 from turbo_ml.algorithms import RandomGuesser as DummyModel
 from turbo_ml.base import Model

@@ -1,6 +1,6 @@
 from datasets import get_iris, get_breast_cancer
 from turbo_ml.algorithms import XGBoostClassifier, SCIKIT_MODELS
-from turbo_ml.meta_learning import HyperTuner
+from turbo_ml.hpo import HyperTuner
 
 
 def test_HyperTuner():
