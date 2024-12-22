@@ -20,7 +20,7 @@ def calculate_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     n = len(y_diff)
     return sum(y_true == y_pred) / n
 
-@task(name='Evaluate')
+@task(name='Evaluate dataset from pydataset')
 def evaluate_from_pydataset(dataset_name:str) -> pd.Series:
     return evaluate_algorithms(data(dataset_name), dataset_name)
 
