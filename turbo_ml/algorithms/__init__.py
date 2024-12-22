@@ -1,8 +1,6 @@
-from turbo_ml.algorithms.decision_tree_classifier import DecisionTreeClassifier
+
 from turbo_ml.algorithms.random_guessing import RandomGuesser
-from turbo_ml.algorithms.ada_boost import AdaBoostClassifier, AdaBoostRegressor
-from turbo_ml.algorithms.g_boost import GradientBoostingClassifier, GradientBoostingRegressor
 from turbo_ml.algorithms.neural_network import NeuralNetworkModel
-from turbo_ml.algorithms.other_algorithms import sklearn_models
+from turbo_ml.algorithms.scikit_algorithms import SCIKIT_MODELS
 from turbo_ml.algorithms.xg_boost import XGBoostClassifier, XGBoostRegressor
 __IMPORT_VARIABLE__ = None

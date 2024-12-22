@@ -16,7 +16,7 @@ logging.basicConfig(
     level=options.dev_mode_logging if options.dev_mode else options.user_mode_logging)
 
 
-class NeuralNetworkBase(Model):
+class NeuralNetworkBase:
     input_formats = {pd.DataFrame}
     output_formats = {pd.DataFrame | pd.Series}
 
@@ -58,7 +58,7 @@ class NeuralNetworkBase(Model):
         return train_loader, test_loader
 
 
-class NeuralNetworkClassifier(NeuralNetworkBase):
+class NeuralNetworkClassifier(NeuralNetworkBase, Model):
     task = 'classification'
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
@@ -95,7 +95,7 @@ class NeuralNetworkClassifier(NeuralNetworkBase):
             return pd.DataFrame(result.cpu().numpy())
 
 
-class NeuralNetworkRegressor(NeuralNetworkBase):
+class NeuralNetworkRegressor(NeuralNetworkBase, Model):
     task = 'regression'
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
