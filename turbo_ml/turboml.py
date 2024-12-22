@@ -12,7 +12,7 @@ import logging
 
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.meta_learning import ExhaustiveSearchPredictor, MetaModelGuesser, HyperTuner
-from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures
+from turbo_ml.meta_learning.dataset_parameters import get_sota_meta_features
 from turbo_ml.algorithms import RandomGuesser as DummyModel
 from turbo_ml.base import Model
 from turbo_ml.utils import options
@@ -97,7 +97,7 @@ class TurboML:
             raise Exception("Preprocessing failed")
         self.logger.info('Preprocessing completed')
         try:
-            dataset_params = SimpleMetaFeatures()(
+            dataset_params = get_sota_meta_features()(
                 data, target_data, as_dict=True)
         except Exception:
             raise Exception("Dataset description failed")

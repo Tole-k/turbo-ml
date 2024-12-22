@@ -21,7 +21,6 @@ def calculate_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
 
 @task(name='Evaluate Models')
 def evaluate_models(dataset_path: str, dataset_name: Optional[str] = None) -> pd.Series:
-    print(dataset_name)
     dataset = read_data_file(dataset_path)
     y = dataset.iloc[:, -1]
     X = dataset.iloc[:, :-1]

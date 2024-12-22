@@ -2,8 +2,7 @@ import os
 from typing import Tuple
 import pandas as pd
 from turbo_ml.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelEncoder
-from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures, CombinedMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures
-from turbo_ml.meta_learning.dataset_parameters.topological import RipserFeatures, BallMapperFeatures
+from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures, CombinedMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures, RipserFeatures, BallMapperFeatures
 from turbo_ml.workflow.utils import read_data_file, list_dataset_files
 from tqdm import tqdm
 from prefect import flow
@@ -12,7 +11,7 @@ from prefect import flow
 @flow(name='Generate Training Parameters')
 def generate_training_parameters(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'),
                                  output_path='parameters.csv', meta_data_extractor=SimpleMetaFeatures(),
-                                 preprocessor=[NanImputer, Normalizer, OneHotEncoder]):
+                                 preprocessors=[NanImputer, Normalizer, OneHotEncoder]):
 
     def measure(X, y):
         return meta_data_extractor(X, y, as_dict=True)
@@ -28,7 +27,7 @@ def generate_training_parameters(datasets_dir: str = os.path.join('datasets', 'A
             X = dataset.drop(dataset.columns[-1], axis=1)
             y = dataset[dataset.columns[-1]]
 
-            for preprocessor in [NanImputer, Normalizer, OneHotEncoder]:
+            for preprocessor in preprocessors:
                 X = preprocessor().fit_transform(X)
                 y = preprocessor().fit_transform_target(y)
 

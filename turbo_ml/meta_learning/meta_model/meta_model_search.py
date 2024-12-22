@@ -26,11 +26,9 @@ class MetaModelGuesser(Predictor):
         # Do not rename this file (-20 is length of file name, model.pth is expected to be in the same directory)
         # in order to not exclude windows \ options
         self.device = options.device
-        if path is not None:
-            with open(self._path + 'model_params.pkl', 'rb') as f:
-                self._config = pickle.load(f)
-        else:
-            self._config = {'input_size': 24, 'output_size': 38}
+
+        with open(self._path + 'model_params.pkl', 'rb') as f:
+            self._config = pickle.load(f)
         if model is not None:
             self._meta_model = model
         else:
