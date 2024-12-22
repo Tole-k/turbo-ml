@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 
 
-class ModelStructure(nn.Module):
+class ModelArchitecture(nn.Module):
     def __init__(self, num_features: int, num_classes: int):
-        super(ModelStructure, self).__init__()
+        super(ModelArchitecture, self).__init__()
         self.fc1 = nn.Linear(num_features, 256)
         self.fc2 = nn.Linear(256, 128)
         self.fc3 = nn.Linear(128, 64)

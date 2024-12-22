@@ -7,7 +7,7 @@ from ..model_prediction.model_prediction import Predictor
 from turbo_ml.base import get_models_list
 import pandas as pd
 import torch
-from .model_structure import ModelStructure
+from .model_architecture import ModelArchitecture
 
 __MODELS_NAMES__ = ["NeuralNetworkModel", "XGBoostClassifier", "AdaBoostClassifier", "BaggingClassifier", "BernoulliNB", "CalibratedClassifierCV", "CategoricalNB", "ComplementNB", "DecisionTreeClassifier", "DummyClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "GaussianNB", "GaussianProcessClassifier", "GradientBoostingClassifier", "HistGradientBoostingClassifier", "KNeighborsClassifier",
                     "LabelPropagation", "LabelSpreading", "LinearDiscriminantAnalysis", "LinearSVC", "LogisticRegression", "LogisticRegressionCV", "MLPClassifier", "MultinomialNB", "NearestCentroid", "NuSVC", "PassiveAggressiveClassifier", "Perceptron", "QuadraticDiscriminantAnalysis", "RadiusNeighborsClassifier", "RandomForestClassifier", "RidgeClassifier", "RidgeClassifierCV", "SGDClassifier", "SVC"]
@@ -60,7 +60,7 @@ class MetaModelGuesser(Predictor):
         return list(map(lambda x: translate[x], models_names))
 
     def _load_meta_model(self):
-        model = ModelStructure(self._config['input_size'],
+        model = ModelArchitecture(self._config['input_size'],
                            self._config['output_size']).to(self.device)
         model.load_state_dict(torch.load(self._path + 'model.pth'))
         return model.eval()
