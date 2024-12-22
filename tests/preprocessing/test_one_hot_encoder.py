@@ -1,6 +1,6 @@
 import pandas as pd
 from turbo_ml.preprocessing.one_hot_encoder import OneHotEncoder
-
+import warnings
 BASE_DATAFRAME = pd.DataFrame(
     {
         "A": [1, 2, 3, 4],
@@ -44,7 +44,9 @@ def test_new_categories():
             "E": [1, 1, 1, 0],
         }
     )
-    data2 = ohe.transform(data2)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        data2 = ohe.transform(data2)
     assert data2 is not None
 
 
