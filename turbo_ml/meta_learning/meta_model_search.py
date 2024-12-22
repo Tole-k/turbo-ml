@@ -8,6 +8,7 @@ from turbo_ml.base import get_models_list
 import pandas as pd
 import torch
 from .model_architecture import ModelArchitecture
+import os
 
 __MODELS_NAMES__ = ["NeuralNetworkModel", "XGBoostClassifier", "AdaBoostClassifier", "BaggingClassifier", "BernoulliNB", "CalibratedClassifierCV", "CategoricalNB", "ComplementNB", "DecisionTreeClassifier", "DummyClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "GaussianNB", "GaussianProcessClassifier", "GradientBoostingClassifier", "HistGradientBoostingClassifier", "KNeighborsClassifier",
                     "LabelPropagation", "LabelSpreading", "LinearDiscriminantAnalysis", "LinearSVC", "LogisticRegression", "LogisticRegressionCV", "MLPClassifier", "MultinomialNB", "NearestCentroid", "NuSVC", "PassiveAggressiveClassifier", "Perceptron", "QuadraticDiscriminantAnalysis", "RadiusNeighborsClassifier", "RandomForestClassifier", "RidgeClassifier", "RidgeClassifierCV", "SGDClassifier", "SVC"]
@@ -21,13 +22,14 @@ class MetaModelGuesser(Predictor):
 
     def __init__(self, device='cpu', model=None, preprocessors=None, path: str = None):
         self.device = device
-        self._path = path if path is not None else str(__file__)[
-            :-20] + 'model/'
-        # Do not rename this file (-20 is length of file name, model.pth is expected to be in the same directory)
-        # in order to not exclude windows \ options
+        if path is None:
+            dirname = os.path.dirname(__file__)
+            path = os.path.join(dirname, 'model')
+        self._path = path
         self.device = options.device
 
-        with open(self._path + 'model_params.pkl', 'rb') as f:
+        param_path = os.path.join(self._path, 'model_params.pkl')
+        with open(param_path, 'rb') as f:
             self._config = pickle.load(f)
         if model is not None:
             self._meta_model = model
@@ -61,12 +63,14 @@ class MetaModelGuesser(Predictor):
 
     def _load_meta_model(self):
         model = ModelArchitecture(self._config['input_size'],
-                           self._config['output_size']).to(self.device)
-        model.load_state_dict(torch.load(self._path + 'model.pth'))
+                                  self._config['output_size']).to(self.device)
+        model_path = os.path.join(self._path, 'model.pth')
+        model.load_state_dict(torch.load(model_path, weights_only=True))
         return model.eval()
 
     def _load_preprocessor(self):
-        with open(self._path + 'preprocessor.pkl', 'rb') as f:
+        preprocessor_path = os.path.join(self._path, 'preprocessor.pkl')
+        with open(preprocessor_path, 'rb') as f:
             preprocessor = pickle.load(f)
         return preprocessor
 
