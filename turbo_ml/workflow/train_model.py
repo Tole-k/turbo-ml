@@ -2,7 +2,7 @@ import os
 import pickle
 from typing import Any, Tuple
 from prefect import flow, task
-from turbo_ml.meta_learning.meta_model.model_architecture import ModelArchitecture
+from turbo_ml.meta_learning.model_architecture import ModelArchitecture
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.utils import options
 import torch
