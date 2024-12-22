@@ -1,5 +1,4 @@
 import os
-from typing import Tuple
 import pandas as pd
 from turbo_ml.preprocessing import Normalizer, NanImputer, OneHotEncoder, LabelEncoder
 from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures, CombinedMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures, RipserFeatures, BallMapperFeatures
@@ -18,7 +17,6 @@ def generate_training_parameters(datasets_dir: str = os.path.join('datasets', 'A
 
     names = list_dataset_files(datasets_dir)
 
-    print('Datasets:', names)
     dataframe = None
     parameters = {}
     for dataset_name, path in tqdm(names, total=len(names)):

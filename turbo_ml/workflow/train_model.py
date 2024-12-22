@@ -27,30 +27,23 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
     if isinstance(evaluations_frame, str):
         evaluations_frame = pd.read_csv(evaluations_frame)
 
-    pre_frame = feature_frame.drop(columns=['name'], axis=1)
-
-    pre_frame['name'] = feature_frame['name'].str.replace(
-        r'_R\.dat|\.dat|\.csv', '', regex=True)
-    def remove_suffix(x:str) -> str:
-        return x.split(' 2.')[0]
-
-    evaluations_frame['name'] = evaluations_frame['name'].apply(remove_suffix)
-    common_names = set(pre_frame['name']).intersection(
+    common_names = set(feature_frame['name']).intersection(
         set(evaluations_frame['name']))
-    pre_frame = pre_frame[pre_frame['name'].isin(
+    print(f'Number of matching datasets: {len(common_names)}')
+    feature_frame = feature_frame[feature_frame['name'].isin(
         common_names)].sort_values('name').reset_index(drop=True)
     evaluations_frame = evaluations_frame[evaluations_frame['name'].isin(
         common_names)].sort_values('name').reset_index(drop=True)
 
-    pre_frame.drop(columns=['name'], axis=1, inplace=True)
+    feature_frame.drop(columns=['name'], axis=1, inplace=True)
     evaluations_frame.drop(columns=['name'], axis=1, inplace=True)
     preprocessor = sota_preprocessor()
-    pre_frame = preprocessor.fit_transform(pre_frame)
+    feature_frame = preprocessor.fit_transform(feature_frame)
     preprocessor2 = sota_preprocessor()
     evaluations_frame = preprocessor2.fit_transform(evaluations_frame)
 
     values = []
-    model = ModelStructure(len(pre_frame.columns),
+    model = ModelStructure(len(feature_frame.columns),
                        len(evaluations_frame.columns)).to(options.device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
@@ -58,7 +51,7 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
 
 
     x_train, x_test, y_train, y_test = train_test_split(
-        pre_frame, evaluations_frame, test_size=0.2)
+        feature_frame, evaluations_frame, test_size=0.2)
     train = data_utils.TensorDataset(torch.tensor(x_train.values.astype(
         'float32')).to(options.device), torch.tensor(y_train.values.astype
                                                      ('float32')).to(options.device))

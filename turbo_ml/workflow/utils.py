@@ -18,7 +18,7 @@ def list_dataset_files(datasets_dir: str) -> list[Tuple[str, str]]:
     names = []
     directory = os.path.join(datasets_dir)
     for root, dirs, files in os.walk(directory):
-        names.extend([(file, os.path.join(root, file)) for file in files])
+        names.extend([(file.rsplit('.', 1)[0], os.path.join(root, file)) for file in files])
 
     names = list(filter(is_dataset_file, names))
     names.sort()
