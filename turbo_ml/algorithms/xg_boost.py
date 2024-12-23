@@ -30,18 +30,18 @@ class XGBoostClassifier(Model):
         objective: Literal['binary:hinge', 'multi:softmax'] = 'binary:hinge',
         eval_metric: Literal['logloss', 'error',
                              'mlogloss', 'merror'] = 'error',
+        device: Literal['cpu', 'cuda'] = 'cpu',
         **rest
     ) -> None:
-        self.device = 'cuda' if options.device == 'cuda' else 'cpu'
+        self.device = device
         if early_stopping_rounds is not None:
             self.early_stop = True
             self.early_validation_fraction = early_stopping_validation_fraction
         else:
             self.early_stop = False
-
         self.clf = xgb.XGBClassifier(
             booster=booster,
-            device=self.device,
+            device=device,
             learning_rate=learning_rate,
             gamma=gamma,
             max_depth=max_depth,
