@@ -1,0 +1,5 @@
+outs:
+- md5: 8e01aea59adf556f2d07c714298b09ec
+  size: 145
+  hash: md5
+  path: average_ranks.csv
