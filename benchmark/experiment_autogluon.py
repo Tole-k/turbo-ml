@@ -25,7 +25,8 @@ FAMILIES_MAPPING = {
 class AutoGluonExperiment(BaseExperiment):
     def __init__(self):
         super().__init__()
-        self.task_mapping = {Task.MULTICLASS: "multiclass", Task.BINARY: "binary"}
+        self.task_mapping = {
+            Task.MULTICLASS: "multiclass", Task.BINARY: "binary"}
 
     def find_family_in_string(self, string: str) -> ClassificationFamily:
         for model, family in FAMILIES_MAPPING.items():
@@ -36,7 +37,8 @@ class AutoGluonExperiment(BaseExperiment):
 
     def rank_families(self, dataset, _, task, seed, duration):
         if task not in self.task_mapping:
-            raise NotImplementedError("Non classification task is not implemented")
+            raise NotImplementedError(
+                "Non classification task is not implemented")
         task = self.task_mapping[task]
         dataset = TabularDataset(dataset)
         predictor = TabularPredictor(

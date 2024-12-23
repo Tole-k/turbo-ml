@@ -31,7 +31,8 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
 
     pre_frame['name'] = feature_frame['name'].str.replace(
         r'_R\.dat|\.dat|\.csv', '', regex=True)
-    def remove_suffix(x:str) -> str:
+
+    def remove_suffix(x: str) -> str:
         return x.split(' 2.')[0]
 
     evaluations_frame['name'] = evaluations_frame['name'].apply(remove_suffix)
@@ -55,7 +56,6 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     criterion = nn.MSELoss()
-
 
     x_train, x_test, y_train, y_test = train_test_split(
         pre_frame, evaluations_frame, test_size=0.2)

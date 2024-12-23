@@ -8,8 +8,9 @@ from pyballmapper import BallMapper
 from ripser import ripser
 import pandas as pd
 
+
 class BallMapperFeatures(MetaFeature):
-    def __init__(self, epsilons:List[int] = [0.25, 1, 5, 25], verbose:bool=False):
+    def __init__(self, epsilons: List[int] = [0.25, 1, 5, 25], verbose: bool = False):
         self.epsilons = epsilons
         self.verbose = verbose
 
@@ -27,12 +28,13 @@ class BallMapperFeatures(MetaFeature):
                 my_red_palette = cm.get_cmap("viridis")
                 fig, ax = plt.subplots(figsize=(8, 6))
                 ax = bm.draw_networkx(coloring_variable='target',
-                                    ax=ax, color_palette=my_red_palette)
+                                      ax=ax, color_palette=my_red_palette)
                 plt.show()
 
             points = bm.points_covered_by_landmarks.values()
             points = points if len(points) > 0 else [0]
-            point_lengths = np.array(list(map(len, bm.points_covered_by_landmarks.values())))
+            point_lengths = np.array(
+                list(map(len, bm.points_covered_by_landmarks.values())))
             features[f'number_of_landmarks_at_{eps}'] = point_lengths.shape[0]
             features[f'mean_len_at_{eps}'] = point_lengths.mean()
             features[f'min_len_at_{eps}'] = point_lengths.min()
@@ -43,6 +45,7 @@ class BallMapperFeatures(MetaFeature):
         if as_dict:
             return features
         return np.array(list(features.values()))
+
 
 class RipserFeatures(MetaFeature):
     def __call__(self, dataframe, target_data, as_dict=False):

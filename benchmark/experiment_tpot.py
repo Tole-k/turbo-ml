@@ -10,20 +10,24 @@ from utils import BaseExperiment, Task, ClassificationFamily
 FAMILIES_MAPPING = {
     'GaussianNB': ClassificationFamily.BAYESIAN_METHOD,
     'BernoulliNB': ClassificationFamily.BAYESIAN_METHOD,
-    'MultinomialNB': ClassificationFamily.BAYESIAN_METHOD, 
+    'MultinomialNB': ClassificationFamily.BAYESIAN_METHOD,
     'DecisionTreeClassifier': ClassificationFamily.DECISION_TREE,
-    'ExtraTreesClassifier':  ClassificationFamily.RANDOM_FOREST, # same as in sklearn experiment
-    'RandomForestClassifier': ClassificationFamily.RANDOM_FOREST, 
+    # same as in sklearn experiment
+    'ExtraTreesClassifier':  ClassificationFamily.RANDOM_FOREST,
+    'RandomForestClassifier': ClassificationFamily.RANDOM_FOREST,
     'GradientBoostingClassifier': ClassificationFamily.BOOSTING,
     'KNeighborsClassifier': ClassificationFamily.NEAREST_NEIGHBOR_METHOD,
     'LinearSVC': ClassificationFamily.SVM,
     'LogisticRegression': ClassificationFamily.LOGISTIC_AND_MULTINOMINAL_REGRESSION,
     'XGBClassifier': ClassificationFamily.BOOSTING,
-    'SGDClassifier': ClassificationFamily.SVM, # not sure, but by default it uses SVM according to the documentation
+    # not sure, but by default it uses SVM according to the documentation
+    'SGDClassifier': ClassificationFamily.SVM,
     'MLPClassifier': ClassificationFamily.NEURAL_NETWORK
 }
 
 # It may have problem with ensemble models
+
+
 class TPotExperiment(BaseExperiment):
     def find_model_in_string(self, content: str) -> ClassificationFamily:
         for model_name, family in FAMILIES_MAPPING.items():
@@ -34,15 +38,18 @@ class TPotExperiment(BaseExperiment):
 
     def rank_families(self, dataset: pd.DataFrame, _, task: Task, seed, duration: int) -> List[ClassificationFamily]:
         if task is not Task.BINARY and task is not Task.MULTICLASS:
-            raise NotImplementedError("Non classification task is not implemented") 
+            raise NotImplementedError(
+                "Non classification task is not implemented")
         X = dataset.iloc[:, :-1]
         y = dataset.iloc[:, -1]
-        pipeline_optimizer = TPOTClassifier(max_time_mins=duration/60, scoring="accuracy", random_state=seed)
+        pipeline_optimizer = TPOTClassifier(
+            max_time_mins=duration/60, scoring="accuracy", random_state=seed)
         pipeline_optimizer.fit(X, y)
         output_folder = f'benchmark/TPot-outputs/'
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
-        output_path = f'{output_folder}tpot_exported_pipeline-{datetime.now()}.py'
+        output_path = f'{
+            output_folder}tpot_exported_pipeline-{datetime.now()}.py'
         pipeline_optimizer.export(output_path)
         with open(output_path, "r") as f:
             content = f.read()

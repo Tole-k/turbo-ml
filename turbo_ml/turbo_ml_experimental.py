@@ -8,7 +8,7 @@ import pandas as pd
 from typing import Literal, Optional
 
 from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.meta_learning import MetaModelGuesser, HyperTuner, sota_dataset_parameters
+from turbo_ml.meta_learning import MetaModelGuesser, HyperTuner
 from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures
 from turbo_ml.algorithms import RandomGuesser as DummyModel
 from turbo_ml.base import Model, __ALL_MODELS__

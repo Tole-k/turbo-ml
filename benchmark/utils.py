@@ -9,7 +9,7 @@ from datetime import datetime
 import pandas as pd
 
 SEEDS = [0, 2, 3, 4, 5]
-TEST_DURATIONS = [180, 900] # in seconds
+TEST_DURATIONS = [180, 900]  # in seconds
 
 
 class ClassificationFamily(Enum):
@@ -65,18 +65,18 @@ TASK_MAPPING = {"multiclass_classification": Task.MULTICLASS,
 
 class YamlWriter:
     def __init__(self, library_name):
-        self.path: str = f"benchmark/outputs/{library_name}-{datetime.now()}.yaml"
+        self.path: str = f"benchmark/outputs/{
+            library_name}-{datetime.now()}.yaml"
         self.file = None
         self.indent_string = "    "
         self.indent_size = 0
-
 
     def __enter__(self):
         if not os.path.exists("benchmark/outputs"):
             os.makedirs("benchmark/outputs")
         self.file = open(self.path, "w")
         return self
-    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.file.close()
 
@@ -96,16 +96,13 @@ class YamlWriter:
         self.file.write(prefix + f"{dataset_name}: {result}\n")
 
 
-
 class BaseExperiment(abc.ABC):
     def __init__(self):
         self.name = self.__class__.__name__
 
-
     @abc.abstractmethod
     def rank_families(self, dataset: pd.DataFrame, dataset_name, task: Task, seed, duration: int) -> List[ClassificationFamily]:
         pass
-
 
     def perform_experiments(self, seeds=SEEDS, durations=TEST_DURATIONS):
         with YamlWriter(self.name) as writer:
@@ -117,7 +114,6 @@ class BaseExperiment(abc.ABC):
                     self._perform_experiment(seed, duration)
                     writer.decrease_indent()
                 writer.decrease_indent()
-
 
     def _perform_experiment(self, seed, duration):
         parameters = self._get_parameters()
@@ -134,7 +130,8 @@ class BaseExperiment(abc.ABC):
             if dataset is None:
                 logging.warning(f"Dataset {dataset_name} not found")
                 continue
-            ranked_families = self.rank_families(dataset, dataset_name, task, seed, duration)
+            ranked_families = self.rank_families(
+                dataset, dataset_name, task, seed, duration)
             if ranked_families is None:
                 self.writer.add_partial_result(dataset_name, [])
                 continue
@@ -143,11 +140,10 @@ class BaseExperiment(abc.ABC):
                 if family.name not in ranked_families_names:
                     ranked_families_names.append(family.name)
             self.writer.add_partial_result(dataset_name, ranked_families_names)
-                
 
     def _get_parameters(self):
         return pd.read_csv("data/parameters.csv")
-    
+
     def __get_dataset(self, name: str):
         csv_path = f"datasets/AutoIRAD-datasets/*{name}*.csv"
         dat_path = f"datasets/AutoIRAD-datasets/*{name}*.dat"
@@ -167,5 +163,4 @@ class BaseExperiment(abc.ABC):
             return pd.read_csv(found_csv[0])
         if found_dat:
             df = pd.read_table(found_dat[0])
-            return df.iloc[:, 1:] # first column is index
-                      
+            return df.iloc[:, 1:]  # first column is index

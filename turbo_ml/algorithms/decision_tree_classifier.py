@@ -1,5 +1,4 @@
 from typing import Literal, Mapping, Sequence
-from numpy.random import RandomState
 from ..base import Model
 from sklearn import tree
 from collections.abc import Iterable

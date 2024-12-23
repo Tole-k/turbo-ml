@@ -1,3 +1,4 @@
+import sys
 import logging
 from typing import List
 import pandas as pd
@@ -12,7 +13,7 @@ FAMILIES_MAPPING = {
     "DecisionTreeClassifier": ClassificationFamily.DECISION_TREE,
     "SGDClassifier": ClassificationFamily.SVM,
     "SVC": ClassificationFamily.SVM,
-    "GaussianProcessClassifier": ClassificationFamily.BAYESIAN_METHOD, # not sure
+    "GaussianProcessClassifier": ClassificationFamily.BAYESIAN_METHOD,  # not sure
     "MLPClassifier": ClassificationFamily.NEURAL_NETWORK,
     "RidgeClassifier": ClassificationFamily.GENERALIZED_LINEAR_MODEL,
     "RandomForestClassifier": ClassificationFamily.RANDOM_FOREST,
@@ -28,10 +29,13 @@ FAMILIES_MAPPING = {
 }
 
 # pycaret likes to use up more time than allocated
+
+
 class PycaretExperiment(BaseExperiment):
     def rank_families(self, dataset: pd.DataFrame, _, task: Task, seed, duration: int) -> List[ClassificationFamily]:
         if task is not Task.BINARY and task is not Task.MULTICLASS:
-            raise NotImplementedError("Non classification task is not implemented")
+            raise NotImplementedError(
+                "Non classification task is not implemented")
         s = ClassificationExperiment()
         s.setup(dataset, target=dataset.columns[-1], session_id=seed)
         best_models = s.compare_models(n_select=100, budget_time=duration/60)
@@ -41,10 +45,11 @@ class PycaretExperiment(BaseExperiment):
             if family := FAMILIES_MAPPING.get(model_name):
                 best_families.append(family)
             else:
-                logging.warning(f"Couldnt find mapping of {model_name} to a family")
+                logging.warning(f"Couldnt find mapping of {
+                                model_name} to a family")
         return best_families
-        
-import sys
+
+
 if __name__ == "__main__":
     experiment = PycaretExperiment()
     experiment.perform_experiments([sys.argv[1]])

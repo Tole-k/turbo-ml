@@ -34,26 +34,28 @@ def evaluate_models(dataset_path: str, dataset_name: Optional[str] = None) -> pd
     frame.update({model.__name__: np.nan for model in __ALL_MODELS__})
     for model_cls in __ALL_MODELS__:
         try:
-            model:Model = model_cls()
+            model: Model = model_cls()
             model.train(X_train, y_train)
             y_pred = model.predict(X_test)
             score = calculate_score(y_test, y_pred)
             frame[model_cls.__name__] = score
         except Exception as e:
-            logger.error(f'Error while evaluating model {model_cls.__name__}: {e}')
+            logger.error(f'Error while evaluating model {
+                         model_cls.__name__}: {e}')
     return pd.Series(frame)
 
 
 @task(name='Load Algorithm Evaluations')
-def load_algorithms_evaluations(path:str=os.path.join('datasets', 'results_algorithms.csv')):
+def load_algorithms_evaluations(path: str = os.path.join('datasets', 'results_algorithms.csv')):
     return pd.read_csv(path)
 
 
 @flow(name='Evaluate Models for every dataset', task_runner=DaskTaskRunner())
 def evaluate_datasets(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'),
-                      output_path='results_algorithms.csv', slice_index:Optional[int]=None) -> pd.DataFrame:
+                      output_path='results_algorithms.csv', slice_index: Optional[int] = None) -> pd.DataFrame:
     if slice_index is not None:
-        names = list_dataset_files(datasets_dir)[slice_index*10:(slice_index+1)*10]
+        names = list_dataset_files(datasets_dir)[
+            slice_index*10:(slice_index+1)*10]
     else:
         names = list_dataset_files(datasets_dir)
     evaluations = []
@@ -63,5 +65,5 @@ def evaluate_datasets(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-dat
     dataframe = pd.concat(evaluations_results, axis=1).T
 
     if dataframe is not None and output_path is not None:
-        dataframe.to_csv(str(slice_index)+ '_' + output_path, index=False)
+        dataframe.to_csv(str(slice_index) + '_' + output_path, index=False)
     return dataframe

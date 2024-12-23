@@ -1,3 +1,4 @@
+import sys
 import logging
 from typing import List
 import pandas as pd
@@ -19,10 +20,12 @@ FAMILIES_MAPPING = {
     "SVM Classifier": ClassificationFamily.SVM,
 }
 
+
 class EvalMlExperiment(BaseExperiment):
     def __init__(self):
         super().__init__()
-        self.task_mapping = {Task.MULTICLASS: "multiclass", Task.BINARY: "binary"}
+        self.task_mapping = {
+            Task.MULTICLASS: "multiclass", Task.BINARY: "binary"}
 
     def find_family_in_string(self, string: str) -> ClassificationFamily:
         for model, family in FAMILIES_MAPPING.items():
@@ -33,13 +36,15 @@ class EvalMlExperiment(BaseExperiment):
 
     def rank_families(self, dataset: pd.DataFrame, _, task: Task, seed, duration: int) -> List[ClassificationFamily]:
         if task is not Task.BINARY and task is not Task.MULTICLASS:
-            raise NotImplementedError("Non classification task is not implemented")
+            raise NotImplementedError(
+                "Non classification task is not implemented")
         task = self.task_mapping[task]
         last_col = dataset.columns[-1]
         y = dataset[last_col]
         X = dataset.drop(last_col, axis=1)
         # cant choose accuracy as eval metric
-        automl = AutoMLSearch(X_train=X, y_train=y, problem_type=task, max_time=duration, random_seed=seed)
+        automl = AutoMLSearch(
+            X_train=X, y_train=y, problem_type=task, max_time=duration, random_seed=seed)
         try:
             automl.search()
             families = []
@@ -48,10 +53,10 @@ class EvalMlExperiment(BaseExperiment):
                 if family := self.find_family_in_string(pipeline):
                     families.append(family)
         except:
-            families = ['','','','','']
+            families = ['', '', '', '', '']
         return families
-        
-import sys
+
+
 if __name__ == "__main__":
     experiment = EvalMlExperiment()
     experiment.perform_experiments([int(sys.argv[1])])
