@@ -1,5 +1,5 @@
 from sklearn.model_selection import train_test_split
-from turbo_ml.base import __ALL_MODELS__
+from turbo_ml.base import get_models_list
 from turbo_ml.workflow.utils import list_dataset_files, read_data_file
 from turbo_ml.base.model import Model
 from turbo_ml.preprocessing import sota_preprocessor
@@ -10,6 +10,8 @@ import pandas as pd
 import numpy as np
 from logging import getLogger
 from typing import Optional
+import re
+from pydataset import data
 logger = getLogger(__name__)
 
 
@@ -18,11 +20,18 @@ def calculate_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     n = len(y_diff)
     return sum(y_true == y_pred) / n
 
+@task(name='Evaluate dataset from pydataset')
+def evaluate_from_pydataset(dataset_name:str) -> pd.Series:
+    return evaluate_algorithms(data(dataset_name), dataset_name)
 
-@task(name='Evaluate Models')
-def evaluate_models(dataset_path: str, dataset_name: Optional[str] = None) -> pd.Series:
-    print(dataset_name)
+
+@task(name='Evaluate algorithms from file')
+def evaluate_from_file(dataset_path: str) -> pd.Series:
     dataset = read_data_file(dataset_path)
+    return evaluate_algorithms(dataset, re.split(r' |\.', dataset_path))
+    
+
+def evaluate_algorithms(dataset: pd.DataFrame, dataset_name: str) -> pd.Series:
     y = dataset.iloc[:, -1]
     X = dataset.iloc[:, :-1]
     X_train, X_test, y_train, y_test = train_test_split(
@@ -30,9 +39,9 @@ def evaluate_models(dataset_path: str, dataset_name: Optional[str] = None) -> pd
     preprocessor = sota_preprocessor()
     X_train = preprocessor.fit_transform(X_train)
     X_test = preprocessor.transform(X_test)
-    frame = {'name': dataset_name or dataset_path}
-    frame.update({model.__name__: np.nan for model in __ALL_MODELS__})
-    for model_cls in __ALL_MODELS__:
+    frame = {'name': dataset_name}
+    frame.update({model.__name__: np.nan for model in get_models_list()})
+    for model_cls in get_models_list():
         try:
             model: Model = model_cls()
             model.train(X_train, y_train)
@@ -60,7 +69,7 @@ def evaluate_datasets(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-dat
         names = list_dataset_files(datasets_dir)
     evaluations = []
     for dataset_name, path in names:
-        evaluations.append(evaluate_models.submit(path, dataset_name))
+        evaluations.append(evaluate_algorithms.submit(path, dataset_name))
     evaluations_results = [evaluation.result() for evaluation in evaluations]
     dataframe = pd.concat(evaluations_results, axis=1).T
 

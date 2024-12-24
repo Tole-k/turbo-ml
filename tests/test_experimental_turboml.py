@@ -3,7 +3,7 @@ from datasets import get_iris
 from turbo_ml.utils import options
 
 
-def test_happypath():
+def test_happy_path():
     dataset, target = get_iris()
     dataset['target'] = target
     random = dataset.sample(n=6)
@@ -20,4 +20,4 @@ def test_happypath():
 
 
 if __name__ == '__main__':
-    test_happypath()
+    test_happy_path()

@@ -1,18 +1,18 @@
-from turbo_ml.meta_learning.dataset_parameters import sota_dataset_parameters, SimpleMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures, CombinedMetaFeatures
+from turbo_ml.meta_learning.dataset_parameters import get_sota_meta_features, SimpleMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures, CombinedMetaFeatures
 from datasets import get_iris, get_adult
 import numpy as np
 
 
 def test_sota_np():
     dataset, target = get_iris()
-    parameters = sota_dataset_parameters(dataset, target)
+    parameters = get_sota_meta_features()(dataset, target)
     assert isinstance(parameters, np.ndarray)
     assert parameters.dtype == 'float64'
 
 
 def test_sota_dict():
     dataset, target = get_iris()
-    parameters = sota_dataset_parameters(dataset, target, as_dict=True)
+    parameters = get_sota_meta_features()(dataset, target, as_dict=True)
     assert isinstance(parameters, dict)
 
 

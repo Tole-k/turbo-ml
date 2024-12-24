@@ -1,3 +1,3 @@
-from .model import Model
-from .preprocess import Preprocessor
-from .model import __ALL_MODELS__
+from turbo_ml.base.model import Model
+from turbo_ml.base.preprocess import Preprocessor
+from turbo_ml.base.model import get_models_list

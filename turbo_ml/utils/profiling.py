@@ -2,7 +2,7 @@ import cProfile
 import pstats
 
 
-def monitor(func, *args, **kwargs):
+def profiling(func, *args, **kwargs):
     with cProfile.Profile() as pr:
         result = func(*args, **kwargs)
     stats = pstats.Stats(pr)

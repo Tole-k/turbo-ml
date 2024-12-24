@@ -1,4 +1,3 @@
-from .hpo import HyperTuner
-from .meta_model import MetaModelGuesser
-from .model_prediction import Predictor, ExhaustiveSearch
-from .dataset_parameters import sota_dataset_parameters
+from turbo_ml.meta_learning.meta_model_search import MetaModelGuesser
+from turbo_ml.meta_learning.model_prediction import Predictor, ExhaustiveSearchPredictor
+from turbo_ml.meta_learning.dataset_parameters import get_sota_meta_features

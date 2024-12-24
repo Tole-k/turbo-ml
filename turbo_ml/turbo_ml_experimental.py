@@ -8,10 +8,11 @@ import pandas as pd
 from typing import Literal, Optional
 
 from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.meta_learning import MetaModelGuesser, HyperTuner
+from turbo_ml.meta_learning import MetaModelGuesser, get_sota_meta_features
+from turbo_ml.hpo import HyperTuner
 from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures
 from turbo_ml.algorithms import RandomGuesser as DummyModel
-from turbo_ml.base import Model, __ALL_MODELS__
+from turbo_ml.base import Model
 from turbo_ml.utils import options
 
 
@@ -23,7 +24,7 @@ class TurboML_Experimental:
         if tuner is None:
             tuner = HyperTuner()
         if param_function is None:
-            param_function = SimpleMetaFeatures()
+            param_function = get_sota_meta_features()
         options.device = device
         options.threads = threads
         self._algorithm = DummyModel

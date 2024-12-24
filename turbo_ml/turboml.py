@@ -11,10 +11,11 @@ import time
 import logging
 
 from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.meta_learning import ExhaustiveSearch, MetaModelGuesser, HyperTuner
-from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures
+from turbo_ml.meta_learning import ExhaustiveSearchPredictor, MetaModelGuesser
+from turbo_ml.hpo import HyperTuner
+from turbo_ml.meta_learning.dataset_parameters import get_sota_meta_features
 from turbo_ml.algorithms import RandomGuesser as DummyModel
-from turbo_ml.base import Model, __ALL_MODELS__
+from turbo_ml.base import Model
 from turbo_ml.utils import options
 
 logging.basicConfig(level=logging.INFO)
@@ -97,7 +98,7 @@ class TurboML:
             raise Exception("Preprocessing failed")
         self.logger.info('Preprocessing completed')
         try:
-            dataset_params = SimpleMetaFeatures()(
+            dataset_params = get_sota_meta_features()(
                 data, target_data, as_dict=True)
         except Exception:
             raise Exception("Dataset description failed")
@@ -118,7 +119,7 @@ class TurboML:
 
         if isinstance(self._algorithm, DummyModel):
             try:
-                search = ExhaustiveSearch()
+                search = ExhaustiveSearchPredictor()
                 self._algorithm = search.predict(data, target_data)
                 self.logger.info(f'Looked at {search.counter} models')
             except Exception:

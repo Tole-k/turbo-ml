@@ -3,8 +3,8 @@ Main module implementing interactive command line interface for Turbo-ML library
 """
 import sys
 from collections import defaultdict
-from .items import print_in_box, Box
-from .tutorial import TUTORIAL_DICT, TUTORIAL_NAMES
+from turbo_ml.interface.items import print_in_box, Box
+from turbo_ml.interface.tutorial import TUTORIAL_DICT, TUTORIAL_NAMES
 from turbo_ml import TurboML
 import pandas as pd
 
