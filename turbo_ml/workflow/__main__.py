@@ -8,10 +8,10 @@ from turbo_ml.meta_learning.dataset_parameters.sota import get_sota_meta_feature
 def full_pipeline() -> Tuple[int]:
     evaluations = load_algorithms_evaluations('algorithm_results.csv')
     training_parameters = generate_training_parameters(output_path=None,
-        meta_data_extractor=get_sota_meta_features('statistical'))
+        meta_data_extractor=get_sota_meta_features('all'))
     model, preprocessor = train_meta_model(training_parameters, evaluations, 3000)
     save_meta_model(model, preprocessor, 'new_model')
-    test_TurboML('new_model/', get_sota_meta_features('statistical'))
+    test_TurboML('new_model/', get_sota_meta_features('all'))
     return model, preprocessor
 
 
