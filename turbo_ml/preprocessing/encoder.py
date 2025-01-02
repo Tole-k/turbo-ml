@@ -1,14 +1,16 @@
 import pandas as pd
 from ..base.preprocess import Preprocessor
-from sklearn.preprocessing import OneHotEncoder as sklearnOneHotEncoder
+from sklearn.preprocessing import (
+    OneHotEncoder as sklearnOneHotEncoder,
+    LabelEncoder as sklearnLabelEncoder,
+)
 
 
-class OneHotEncoder(Preprocessor):
+class Encoder(Preprocessor):
     def __init__(self) -> None:
         super().__init__()
-        self.encoder = sklearnOneHotEncoder(
-            drop='if_binary', handle_unknown='ignore')
-        self.target_encoder = sklearnOneHotEncoder(drop='if_binary')
+        self.encoder = sklearnOneHotEncoder(drop="if_binary", handle_unknown="ignore")
+        self.target_encoder = sklearnLabelEncoder()
 
     def fit_transform(self, data: pd.DataFrame, unique_values_cap=20) -> pd.DataFrame:
         self.column_order = data.columns
@@ -18,7 +20,11 @@ class OneHotEncoder(Preprocessor):
         self.cols_to_drop = categorical_cols.columns
         num_cols = data.drop(columns=self.cols_to_drop)
         categorical_cols.drop(
-            columns=categorical_cols.loc[:, categorical_cols.nunique() > unique_values_cap].columns, inplace=True)
+            columns=categorical_cols.loc[
+                :, categorical_cols.nunique() > unique_values_cap
+            ].columns,
+            inplace=True,
+        )
         self.categorical_cols = categorical_cols.columns
         encoded_data = pd.DataFrame(
             self.encoder.fit_transform(categorical_cols).toarray(),
@@ -29,14 +35,10 @@ class OneHotEncoder(Preprocessor):
         return data
 
     def fit_transform_target(self, target: pd.Series) -> pd.DataFrame | pd.Series:
-        # if not np.isin(target.dtype, [np.number, bool]):
-        #     target = pd.DataFrame(
-        #         self.target_encoder.fit_transform(
-        #             np.transpose([target])).toarray(),
-        #         columns=self.target_encoder.get_feature_names_out(),
-        #     )
-        #     if target.shape[1] == 1:
-        #         target = target.squeeze()
+        if not pd.api.types.is_float_dtype(target):
+            target = pd.Series(
+                self.target_encoder.fit_transform(target), name=target.name
+            )
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
@@ -60,19 +62,14 @@ class OneHotEncoder(Preprocessor):
         return data
 
     def transform_target(self, target: pd.Series) -> pd.Series | pd.DataFrame:
-        # if not np.isin(target.dtype, [np.number, bool]):
-        #     target = pd.DataFrame(
-        #         self.target_encoder.transform(
-        #             np.transpose([target])).toarray(),
-        #         columns=self.target_encoder.get_feature_names_out(),
-        #     )
+        if not pd.api.types.is_float_dtype(target):
+            target = pd.Series(
+                self.target_encoder.fit_transform(target), name=target.name
+            )
         return target
 
-    def inverse_transform_target(self, target: pd.DataFrame) -> pd.Series:
-        # ohe_columns = target.select_dtypes(include=[bool])
-        # target = pd.DataFrame(self.target_encoder.inverse_transform(target))
-        # return target[0]
-        return target
+    def inverse_transform_target(self, target: pd.Series) -> pd.Series:
+        return self.target_encoder.inverse_transform(target)
 
 
 def main():
@@ -88,7 +85,7 @@ def main():
     )
     data = dataset.drop(columns=["target"])
     target = dataset["target"]
-    ohe = OneHotEncoder()
+    ohe = Encoder()
     result = ohe.fit_transform(data)
     print("Before OHE:")
     print(data)
