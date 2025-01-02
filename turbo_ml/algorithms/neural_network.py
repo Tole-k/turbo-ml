@@ -2,7 +2,7 @@ import numpy as np
 from typing import Any, Dict
 from typing import Literal
 import pandas as pd
-from ..base import Model
+from turbo_ml.base import Model
 import torch
 from torch import nn
 from torch import optim
@@ -10,13 +10,13 @@ from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
 from typing import List, Tuple
 import logging
-from ..utils import options
+from turbo_ml.utils import options
 import optuna as opt
 logging.basicConfig(
     level=options.dev_mode_logging if options.dev_mode else options.user_mode_logging)
 
 
-class NeuralNetworkBase(Model):
+class NeuralNetworkBase:
     input_formats = {pd.DataFrame}
     output_formats = {pd.DataFrame | pd.Series}
 
@@ -58,7 +58,7 @@ class NeuralNetworkBase(Model):
         return train_loader, test_loader
 
 
-class NeuralNetworkClassifier(NeuralNetworkBase):
+class NeuralNetworkClassifier(NeuralNetworkBase, Model):
     task = 'classification'
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
@@ -95,7 +95,7 @@ class NeuralNetworkClassifier(NeuralNetworkBase):
             return pd.DataFrame(result.cpu().numpy())
 
 
-class NeuralNetworkRegressor(NeuralNetworkBase):
+class NeuralNetworkRegressor(NeuralNetworkBase, Model):
     task = 'regression'
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:

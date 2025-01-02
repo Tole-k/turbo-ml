@@ -4,7 +4,7 @@ from ..base.preprocess import Preprocessor
 from sklearn.feature_selection import VarianceThreshold
 
 
-class VarianceSelector():
+class VarianceSelector(Preprocessor):
 
     def fit_transform(
         self, data: pd.DataFrame, threshold1: float = 0.05, threshold2: float = 0.9
@@ -33,6 +33,12 @@ class VarianceSelector():
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         data = data.drop(columns=self.cols_to_rem)
         return data
+
+    def fit_transform_target(self, target):
+        return target
+
+    def transform_target(self, target):
+        return target
 
 
 if __name__ == "__main__":

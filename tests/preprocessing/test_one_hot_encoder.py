@@ -1,5 +1,6 @@
 import pandas as pd
-from turbo_ml.preprocessing.one_hot_encoder import OneHotEncoder
+from turbo_ml.preprocessing.encoder import Encoder
+import warnings
 
 BASE_DATAFRAME = pd.DataFrame(
     {
@@ -16,7 +17,7 @@ BASE_DATAFRAME = pd.DataFrame(
 def test_one_hot_encoder():
     dataset = BASE_DATAFRAME.copy()
     data = dataset.drop(columns=["target"])
-    ohe = OneHotEncoder()
+    ohe = Encoder()
     data = ohe.fit_transform(data)
     data2 = pd.DataFrame(
         {
@@ -33,7 +34,7 @@ def test_one_hot_encoder():
 def test_new_categories():
     dataset = BASE_DATAFRAME.copy()
     data = dataset.drop(columns=["target"])
-    ohe = OneHotEncoder()
+    ohe = Encoder()
     data = ohe.fit_transform(data)
     data2 = pd.DataFrame(
         {
@@ -44,14 +45,16 @@ def test_new_categories():
             "E": [1, 1, 1, 0],
         }
     )
-    data2 = ohe.transform(data2)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        data2 = ohe.transform(data2)
     assert data2 is not None
 
 
 def test_one_hot_encoder_inverse():
     dataset = BASE_DATAFRAME.copy()
     data = dataset.drop(columns=["target"])
-    ohe = OneHotEncoder()
+    ohe = Encoder()
     data_cp = data.copy()
     data2 = ohe.fit_transform(data)
     assert data_cp.equals(data)

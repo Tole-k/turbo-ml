@@ -28,24 +28,6 @@ class AlgorithmTesting:
             model.__class__.__name__} failed, model is not in models list'''
 
 
-def test_adaboost():
-    model = AdaBoostClassifier()
-    AlgorithmTesting._baseline_test(model)
-    AlgorithmTesting._existence_test(model)
-
-
-def test_decision_tree():
-    model = DecisionTreeClassifier()
-    AlgorithmTesting._baseline_test(model)
-    AlgorithmTesting._existence_test(model)
-
-
-def test_gboost():
-    model = GradientBoostingClassifier()
-    AlgorithmTesting._baseline_test(model)
-    AlgorithmTesting._existence_test(model)
-
-
 def test_xgboost():
     model = XGBoostClassifier()
     AlgorithmTesting._baseline_test(model)

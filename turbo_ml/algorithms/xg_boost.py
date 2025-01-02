@@ -2,7 +2,7 @@ import numpy as np
 import xgboost as xgb
 
 from turbo_ml.utils import options
-from ..base import Model
+from turbo_ml.base import Model
 from typing import Optional, List, Literal
 from sklearn.model_selection import train_test_split
 from collections.abc import Iterable
@@ -26,22 +26,20 @@ class XGBoostClassifier(Model):
         reg_alpha: float = 0,
         grow_policy: Literal['depthwise', 'lossguide'] = 'depthwise',
         early_stopping_rounds: Optional[int] = None,
-        early_stopping_validation_fraction: float = 0.2,
         objective: Literal['binary:hinge', 'multi:softmax'] = 'binary:hinge',
         eval_metric: Literal['logloss', 'error',
                              'mlogloss', 'merror'] = 'error',
+        device: Literal['cpu', 'cuda'] = 'cpu',
         **rest
     ) -> None:
-        self.device = 'cuda' if options.device == 'cuda' else 'cpu'
+        self.device = device
         if early_stopping_rounds is not None:
             self.early_stop = True
-            self.early_validation_fraction = early_stopping_validation_fraction
         else:
             self.early_stop = False
-
         self.clf = xgb.XGBClassifier(
             booster=booster,
-            device=self.device,
+            device=device,
             learning_rate=learning_rate,
             gamma=gamma,
             max_depth=max_depth,
@@ -53,7 +51,6 @@ class XGBoostClassifier(Model):
             reg_alpha=reg_alpha,
             grow_policy=grow_policy,
             early_stopping_rounds=early_stopping_rounds,
-            early_stopping_validation_fraction=early_stopping_validation_fraction,
             objective=objective,
             eval_metric=eval_metric,
             **rest

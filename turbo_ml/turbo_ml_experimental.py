@@ -8,14 +8,23 @@ import pandas as pd
 from typing import Literal, Optional
 
 from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.meta_learning import MetaModelGuesser, HyperTuner, sota_dataset_parameters
+from turbo_ml.meta_learning import MetaModelGuesser, get_sota_meta_features
+from turbo_ml.hpo import HyperTuner
+from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures
 from turbo_ml.algorithms import RandomGuesser as DummyModel
-from turbo_ml.base import Model, __ALL_MODELS__
+from turbo_ml.base import Model
 from turbo_ml.utils import options
 
 
 class TurboML_Experimental:
-    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_enabled: bool = False):
+    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_enabled: bool = False,
+                 guesser: MetaModelGuesser = None, tuner: HyperTuner = None, param_function: Optional[callable] = None):
+        if guesser is None:
+            guesser = MetaModelGuesser()
+        if tuner is None:
+            tuner = HyperTuner()
+        if param_function is None:
+            param_function = get_sota_meta_features()
         options.device = device
         options.threads = threads
         self._algorithm = DummyModel
@@ -29,14 +38,11 @@ class TurboML_Experimental:
         data = self.preprocessor.fit_transform(data)
         target_data = self.preprocessor.fit_transform_target(target_data)
 
-        dataset_params = sota_dataset_parameters(
-            data, target_data, as_dict=True, old=True)
+        dataset_params = param_function(data, target_data, as_dict=True)
 
-        guesser = MetaModelGuesser()
         self._algorithm = guesser.predict(dataset_params)
 
         if hpo_enabled:
-            tuner = HyperTuner()
             self.hyperparameters = tuner.optimize_hyperparameters(
                 self._algorithm, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'])
         self.model = self._algorithm(**self.hyperparameters)
