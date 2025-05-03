@@ -1,5 +1,8 @@
+""" Extraction of parameters """
 import os
 import pandas as pd
+from tqdm import tqdm
+from pydataset import data
 from turbo_ml.preprocessing import Normalizer, NanImputer, Encoder, sota_preprocessor
 from turbo_ml.meta_learning.dataset_parameters import (
     SimpleMetaFeatures,
@@ -10,12 +13,8 @@ from turbo_ml.meta_learning.dataset_parameters import (
     BallMapperFeatures,
 )
 from turbo_ml.workflow.utils import read_data_file, list_dataset_files
-from tqdm import tqdm
-from prefect import flow
-from pydataset import data
 
 
-@flow(name="Generate Training Parameters")
 def generate_training_parameters(
     datasets_dir: str = os.path.join("datasets", "AutoIRAD-datasets"),
     output_path="parameters.csv",
@@ -57,7 +56,6 @@ def generate_training_parameters(
     return dataframe
 
 
-@flow(name="pydataset parameters")
 def generate_training_parameters_pydataset(
     output_path="parameters.csv",
     meta_data_extractor=SimpleMetaFeatures(),

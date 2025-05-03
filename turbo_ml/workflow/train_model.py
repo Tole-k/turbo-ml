@@ -1,19 +1,18 @@
+""" Main training model loop """
 import os
 import pickle
 from typing import Any, Tuple
-from prefect import flow, task
-from turbo_ml.meta_learning.model_architecture import ModelArchitecture
-from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.utils import options
 import torch
 import torch.nn as nn
 from torch.utils import data as data_utils
 import pandas as pd
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
+from turbo_ml.meta_learning.model_architecture import ModelArchitecture
+from turbo_ml.preprocessing import sota_preprocessor
+from turbo_ml.utils import options
 
 
-@flow(name='Train Meta Model')
 def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluations_frame: pd.DataFrame | str | None = None,
                      epochs: int = 7000) -> Tuple[ModelArchitecture, Any]:
     if feature_frame is None:
@@ -83,7 +82,6 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
     return model, preprocessor
 
 
-@task(name="Save Meta Model")
 def save_meta_model(model: ModelArchitecture, preprocessor: Any, save_path: str):
     if not os.path.exists(save_path):
         os.makedirs(save_path)
@@ -97,5 +95,4 @@ def save_meta_model(model: ModelArchitecture, preprocessor: Any, save_path: str)
 
 
 if __name__ == '__main__':
-    train_meta_model(save_model=True,
-                     save_path='turbo_ml/meta_learning/meta_model/model')
+    train_meta_model()

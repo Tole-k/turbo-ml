@@ -3,9 +3,10 @@ If something from here is not working, or you're getting some errors DO NOT make
 This version is made mainly for testing new pipelines for newer version.
 As this version does not provide logging or error handling it may be faster
 """
-import pandas as pd
+from typing import Literal
+from collections.abc import Callable
 
-from typing import Literal, Optional
+import pandas as pd
 
 from turbo_ml.preprocessing import sota_preprocessor
 from turbo_ml.meta_learning import MetaModelGuesser, get_sota_meta_features
@@ -17,8 +18,8 @@ from turbo_ml.utils import options
 
 
 class TurboML_Experimental:
-    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_enabled: bool = False,
-                 guesser: MetaModelGuesser = None, tuner: HyperTuner = None, param_function: Optional[callable] = None):
+    def __init__(self, dataset: pd.DataFrame, target: str | None = None, device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_enabled: bool = False,
+                 guesser: MetaModelGuesser | None = None, tuner: HyperTuner | None = None, param_function: Callable | None = None):
         if guesser is None:
             guesser = MetaModelGuesser()
         if tuner is None:

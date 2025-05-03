@@ -52,7 +52,8 @@ class TurboML:
     """
     logger = logging.getLogger()
 
-    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True, device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = True):
+    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True,
+                 device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = True):
         """
         Initializes the `TurboML` instance by performing the following steps:
 
@@ -76,8 +77,7 @@ class TurboML:
         """
         options.device = device
         options.threads = threads
-        self.logger.setLevel(
-            'INFO') if verbose else self.logger.setLevel('ERROR')
+        self.logger.setLevel('INFO') if verbose else self.logger.setLevel('ERROR')
         self.logger.info("Initializing TurboML...")
         self._algorithm = DummyModel
         self.model: Model

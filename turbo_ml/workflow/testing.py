@@ -1,10 +1,9 @@
-from prefect import flow
+""" Tests the model if got trained and saved properly """
 from turbo_ml.turbo_ml_experimental import TurboML_Experimental
 from turbo_ml.meta_learning import MetaModelGuesser
 from datasets import get_iris
 
 
-@flow(name='Test TurboML')
 def test_TurboML(path: str, param_function):
     dataset, y = get_iris()
     dataset['species'] = y

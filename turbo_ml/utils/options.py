@@ -3,7 +3,7 @@ from typing import Literal
 import torch
 
 
-class options:
+class Options:
     def __init__(self):
         self.print_logs: bool = True
         # TODO: change default to auto-adjusted based on terminal size before release
@@ -36,4 +36,4 @@ class options:
         self._device = value
 
 
-options = options()
+options = Options()
