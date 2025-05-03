@@ -59,7 +59,7 @@ class SageMLExperiment(BaseExperiment):
 
     def rank_families(self, dataset, dataset_name, *_):
         training_frame = self.data[self.data["name"] != dataset_name].copy()
-        model, preprocessor_dataset = train_meta_model(evaluations_frame=training_frame, feature_frame=self.parameters)
+        model, preprocessor_dataset = train_meta_model(score_dataframe=training_frame, param_dataframe=self.parameters)
         # required on macbook
         # options.device = "mps"
         options.threads = 1

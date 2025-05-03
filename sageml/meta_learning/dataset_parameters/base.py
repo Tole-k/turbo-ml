@@ -27,7 +27,6 @@ series = {AAAI'15}
 
 """
 from abc import ABC, abstractmethod
-from typing import List
 import numpy as np
 import pandas as pd
 
@@ -39,7 +38,7 @@ class MetaFeature(ABC):
 
 
 class CombinedMetaFeatures(MetaFeature):
-    def __init__(self, meta_features: List[MetaFeature]):
+    def __init__(self, meta_features: list[MetaFeature]):
         self.meta_features = meta_features
 
     def __call__(self, dataset, target_data, as_dict=False):

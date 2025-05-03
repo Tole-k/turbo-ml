@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
-from ..base.preprocess import Preprocessor
 from sklearn.impute import SimpleImputer
+from ..base.preprocess import Preprocessor
 from .type_inferer import TypeInferer
 
 

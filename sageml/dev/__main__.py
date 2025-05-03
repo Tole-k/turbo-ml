@@ -1,10 +1,12 @@
 """ CLI tool for developers """
 import os
 import click
+import pandas as pd
 
 from sageml.dev.functions import (
     create_datasets,
 )
+from sageml.workflow.train_model import train_meta_model
 PATH = os.path.join('sageml', 'meta_learning', 'meta-dataset')
 
 
@@ -14,11 +16,15 @@ def cli():
 
 
 @cli.command()
-@click.option('--dataset_path', required=False, help='Path to the dataset the model will be trained on')
+@click.option('--dataset_path', required=False, default=PATH, help='Path to the dataset the model will be trained on')
 @click.option('--save', required=False, help='Path that the model will be saved on.')
 def train(dataset_path: str, save: str):
     """ Trains the model """
-    # TODO
+    score_dataset = pd.read_csv(os.path.join(dataset_path, 'scores.csv'))
+    param_dataset = pd.read_csv(os.path.join(dataset_path, 'parameters.csv'))
+    new_model, preprocessor = train_meta_model(score_dataset, param_dataset)
+    if save is not None:
+        ...
 
 
 @cli.group()
