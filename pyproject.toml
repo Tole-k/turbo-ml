@@ -6,10 +6,13 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "certifi>=2025.4.26",
+    "matplotlib>=3.10.1",
     "numpy>=2.2.5",
     "optuna>=4.3.0",
     "pandas>=2.2.3",
+    "pyballmapper>=0.3.7",
     "requests>=2.32.3",
+    "ripser>=0.6.12",
     "scikit-learn>=1.6.1",
     "torch>=2.7.0",
     "tqdm>=4.67.1",
