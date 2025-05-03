@@ -1,10 +1,11 @@
 """ CLI tool for developers """
+import os
 import click
 
 from sageml.dev.functions import (
-    _read_dataset,
-    create_dataset,
+    create_datasets,
 )
+PATH = os.path.join('sageml', 'meta_learning', 'meta-dataset')
 
 
 @click.group()
@@ -28,15 +29,19 @@ def dataset():
 @dataset.command()
 @click.argument('path', required=True, type=click.Path())
 @click.option('--save', type=click.Path(), help='Where to save the file')
-def create(path: str, save: str | None):
+@click.option('--max_datasets', type=click.INT, help='Maximum number of datasets')
+def create(path: str, save: str | None, max_datasets: int | None):
     """ Creates meta-dataset """
     click.echo('Creating new dataset!')
-    new_dataset = create_dataset(path)
+    score_dataset, param_dataset = create_datasets(path, -1 if max_datasets is None else max_datasets)
     click.echo('Dataset created successfully!')
-    print(new_dataset)
     if save is not None:
         click.echo('Saving dataset ...')
-        new_dataset.to_csv(save)
+        score_dataset.to_csv(os.path.join(save, 'scores.csv'))
+        param_dataset.to_csv(os.path.join(save, 'parameters.csv'))
+        click.echo('Dataset saved successfully')
+    else:
+        print(score_dataset)
 
 
 @dataset.command()
@@ -46,10 +51,12 @@ def add(r, path):
     """ Adds entry to the dataset """
     # TODO
     if r is True:
-        new_dataset = create_dataset(path)
-    else:
-        new_dataset = _read_dataset(path)
+        new_dataset = create_datasets(path)
+    # else:
+    #     new_dataset = _evaluate_score(path)
 
 
 if __name__ == '__main__':
+    from sageml.utils import options
+    options.device = 'cpu'
     cli()

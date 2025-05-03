@@ -56,7 +56,9 @@ def evaluate_algorithm(dataset: pd.DataFrame, dataset_name: str) -> pd.Series:
             score = calculate_score(y_test, y_pred)
             frame[model_cls.__name__] = score
         except Exception as e:
+            frame[model_cls.__name__] = np.nan
             logger.error(f'Error while evaluating model {model_cls.__name__}: {e}')
+
     return pd.Series(frame)
 
 
