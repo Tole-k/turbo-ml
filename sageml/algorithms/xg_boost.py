@@ -1,11 +1,12 @@
+from typing import Literal
+from collections.abc import Iterable
+
 import numpy as np
 import xgboost as xgb
 
-from turbo_ml.utils import options
-from turbo_ml.base import Model
-from typing import Optional, List, Literal
+from sageml.utils import options
+from sageml.base import Model
 from sklearn.model_selection import train_test_split
-from collections.abc import Iterable
 
 
 class XGBoostClassifier(Model):
@@ -25,7 +26,7 @@ class XGBoostClassifier(Model):
         reg_lambda: float = 1,
         reg_alpha: float = 0,
         grow_policy: Literal['depthwise', 'lossguide'] = 'depthwise',
-        early_stopping_rounds: Optional[int] = None,
+        early_stopping_rounds: int | None = None,
         objective: Literal['binary:hinge', 'multi:softmax'] = 'binary:hinge',
         eval_metric: Literal['logloss', 'error',
                              'mlogloss', 'merror'] = 'error',
@@ -70,7 +71,7 @@ class XGBoostClassifier(Model):
         else:
             self.clf.fit(data, target)
 
-    def predict(self, guess: Iterable[int | float | bool]) -> List[int] | List[bool]:
+    def predict(self, guess: Iterable[int | float | bool]) -> list[int] | list[bool]:
         if self.device == 'cuda':
             import cupy as cp
             guess = cp.array(guess)
@@ -94,7 +95,7 @@ class XGBoostRegressor(Model):
         reg_lambda: float = 1,
         reg_alpha: float = 0,
         grow_policy: Literal['depthwise', 'lossguide'] = 'depthwise',
-        early_stopping_rounds: Optional[int] = None,
+        early_stopping_rounds: int | None = None,
         early_stopping_validation_fraction: float = 0.2,
         objective: Literal['reg:squarederror', 'reg:squaredlogerror',
                            'reg:pseudohubererror', 'reg:absoluteerror'] = 'reg:squarederror',

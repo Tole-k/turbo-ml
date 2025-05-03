@@ -3,8 +3,8 @@ import os
 import pandas as pd
 from tqdm import tqdm
 from pydataset import data
-from turbo_ml.preprocessing import Normalizer, NanImputer, Encoder, sota_preprocessor
-from turbo_ml.meta_learning.dataset_parameters import (
+from sageml.preprocessing import Normalizer, NanImputer, Encoder, sota_preprocessor
+from sageml.meta_learning.dataset_parameters import (
     SimpleMetaFeatures,
     CombinedMetaFeatures,
     StatisticalMetaFeatures,
@@ -12,7 +12,7 @@ from turbo_ml.meta_learning.dataset_parameters import (
     RipserFeatures,
     BallMapperFeatures,
 )
-from turbo_ml.workflow.utils import read_data_file, list_dataset_files
+from sageml.workflow.utils import read_data_file, list_dataset_files
 
 
 def generate_training_parameters(

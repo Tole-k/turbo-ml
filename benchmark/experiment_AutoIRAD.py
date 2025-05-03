@@ -1,13 +1,12 @@
 import os
 
-import tensorflow as tf
-from turbo_ml.base import get_models_list
-from PIL import Image
 import numpy as np
 import pandas as pd
-from autoIRAD import AutoIRAD
+import tensorflow as tf
+from PIL import Image
 import cv2
 
+from autoIRAD import AutoIRAD
 from .utils import BaseExperiment, _FAMILY_MAPPING
 
 import sys

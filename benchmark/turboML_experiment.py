@@ -1,7 +1,7 @@
-from turbo_ml.utils import options
-from turbo_ml.meta_learning import MetaModelGuesser, get_sota_meta_features
-from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.workflow import train_meta_model
+from sageml.utils import options
+from sageml.meta_learning import MetaModelGuesser, get_sota_meta_features
+from sageml.preprocessing import sota_preprocessor
+from sageml.workflow import train_meta_model
 from .utils import BaseExperiment, _FAMILY_MAPPING, ClassificationFamily
 import pandas as pd
 import sys
@@ -50,7 +50,7 @@ _ALGO_2_FAMILY_MAPPING = {
 }
 
 
-class TurboMLExperiment(BaseExperiment):
+class SageMLExperiment(BaseExperiment):
     def __init__(self, mode='algorithm'):
         self.name = self.__class__.__name__
         self.parameters = self._get_parameters()
@@ -74,10 +74,11 @@ class TurboMLExperiment(BaseExperiment):
         guesser = MetaModelGuesser(
             model=model, preprocessors=preprocessor_dataset, mode=self.mode)
         models = guesser.predict(dataset_params)
-        result = [_ALGO_2_FAMILY_MAPPING[model.__name__] for model in [models]] if self.mode == 'algorithm' else [_FAMILY_MAPPING[model] for model in [models]]
+        result = [_ALGO_2_FAMILY_MAPPING[model.__name__]
+                  for model in [models]] if self.mode == 'algorithm' else [_FAMILY_MAPPING[model] for model in [models]]
         return result
 
 
 if __name__ == "__main__":
-    experiment = TurboMLExperiment(mode='family')
+    experiment = SageMLExperiment(mode='family')
     experiment.perform_experiments(durations=[30], seeds=[0])

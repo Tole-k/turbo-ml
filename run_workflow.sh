@@ -9,4 +9,4 @@
 VENV_DIR=".venv"
 PYTHON_EXEC="$VENV_DIR/bin/python"
 PREFECT_EXEC="$VENV_DIR/bin/prefect"
-$PYTHON_EXEC -m turbo_ml.workflow
+$PYTHON_EXEC -m sageml.workflow

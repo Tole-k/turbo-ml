@@ -1,10 +1,8 @@
 from sklearn.model_selection import train_test_split
-from turbo_ml.base import get_models_list
-from turbo_ml.workflow.utils import list_dataset_files, read_data_file
-from turbo_ml.base.model import Model
-from turbo_ml.preprocessing import sota_preprocessor
-from prefect_dask import DaskTaskRunner
-from prefect import flow, task
+from sageml.base import get_models_list
+from sageml.workflow.utils import list_dataset_files, read_data_file
+from sageml.base.model import Model
+from sageml.preprocessing import sota_preprocessor
 import os
 import pandas as pd
 import numpy as np
@@ -20,16 +18,15 @@ def calculate_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     n = len(y_diff)
     return sum(y_true == y_pred) / n
 
-@task(name='Evaluate dataset from pydataset')
-def evaluate_from_pydataset(dataset_name:str) -> pd.Series:
+
+def evaluate_from_pydataset(dataset_name: str) -> pd.Series:
     return evaluate_algorithms(data(dataset_name), dataset_name)
 
 
-@task(name='Evaluate algorithms from file')
 def evaluate_from_file(dataset_path: str) -> pd.Series:
     dataset = read_data_file(dataset_path)
     return evaluate_algorithms(dataset, re.split(r' |\.', dataset_path))
-    
+
 
 def evaluate_algorithms(dataset: pd.DataFrame, dataset_name: str) -> pd.Series:
     y = dataset.iloc[:, -1]
@@ -53,12 +50,10 @@ def evaluate_algorithms(dataset: pd.DataFrame, dataset_name: str) -> pd.Series:
     return pd.Series(frame)
 
 
-@task(name='Load Algorithm Evaluations')
 def load_algorithms_evaluations(path: str = os.path.join('datasets', 'results_algorithms.csv')):
     return pd.read_csv(path)
 
 
-@flow(name='Evaluate Models for every dataset', task_runner=DaskTaskRunner())
 def evaluate_datasets(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'),
                       output_path='results_algorithms.csv', slice_index: Optional[int] = None) -> pd.DataFrame:
     if slice_index is not None:

@@ -1,6 +1,6 @@
-from turbo_ml.meta_learning.dataset_parameters import get_sota_meta_features, SimpleMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures, CombinedMetaFeatures
-from datasets import get_iris, get_diabetes
 import numpy as np
+from sageml.meta_learning.dataset_parameters import get_sota_meta_features, SimpleMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures, CombinedMetaFeatures
+from datasets import get_iris, get_diabetes
 
 
 def test_sota_np():

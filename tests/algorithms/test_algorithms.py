@@ -1,5 +1,5 @@
-from turbo_ml.base.model import Model, get_models_list
-from turbo_ml.algorithms import *
+from sageml.base.model import Model, get_models_list
+from sageml.algorithms import *
 from datasets import get_iris
 
 

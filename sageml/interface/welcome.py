@@ -1,14 +1,15 @@
 """ 
-Main module implementing interactive command line interface for Turbo-ML library.
+Main module implementing interactive command line interface for SageML library.
 """
 import sys
 from collections import defaultdict
-from turbo_ml.interface.items import print_in_box, Box
-from turbo_ml.interface.tutorial import TUTORIAL_DICT, TUTORIAL_NAMES
-from turbo_ml import TurboML
+from sageml.interface.items import print_in_box, Box
+from sageml.interface.tutorial import TUTORIAL_DICT, TUTORIAL_NAMES
+from sageml import SageML
 import pandas as pd
 
 LOGO = """
+The logo is depracated
   ______           __                __  _____ 
  /_  __/_  _______/ /_  ____        /  |/  / / 
   / / / / / / ___/ __ \\/ __ \\______/ /|_/ / /  
@@ -17,13 +18,13 @@ LOGO = """
 """
 
 WELCOME_MESSAGE = """
-Welcome in Turbo-ML, this piece of software was created in order to make machine learning simple.
+Welcome in SageML, this piece of software was created in order to make machine learning simple.
 Given some dataset algorithms from library should be able to find the best machine learning algorithm with optimal parameters to solve problem provided in dataset whether this is classification or regression task.
 
 ## Guide ##
 - load your dataset
-- call TurboML(dataset) to train model
-- call TurboML.predict(data) to find predictions
+- call SageML(dataset) to train model
+- call SageML.predict(data) to find predictions
 """
 
 RESPONSES = defaultdict(lambda: None, {
@@ -125,7 +126,7 @@ def load_dataset():
     dataset = pd.read_csv(__DATASET_PATH)
     print(f'Dataset columns: {dataset.columns}')
     target = input('Choose target column: ')
-    model = TurboML(dataset, target)
+    model = SageML(dataset, target)
     print('Model trained, give path to data to predict')
     test_set = pd.read_csv(input('Path: '))
     predictions = model.predict(test_set)

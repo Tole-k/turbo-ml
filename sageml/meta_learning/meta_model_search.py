@@ -1,15 +1,16 @@
+import os
 from functools import cache
 import pickle
 from typing import Literal
 
-from turbo_ml.base.model import Model
-from turbo_ml.utils import options
-from .model_prediction.model_prediction import Predictor
-from turbo_ml.base import get_models_list
 import pandas as pd
 import torch
+
+from sageml.base.model import Model
+from sageml.utils import options
+from sageml.base import get_models_list
+from .model_prediction.model_prediction import Predictor
 from .model_architecture import ModelArchitecture
-import os
 
 __MODELS_NAMES__ = ["NeuralNetworkModel", "XGBoostClassifier", "AdaBoostClassifier", "BaggingClassifier", "BernoulliNB", "CalibratedClassifierCV", "CategoricalNB", "ComplementNB", "DecisionTreeClassifier", "DummyClassifier", "ExtraTreeClassifier", "ExtraTreesClassifier", "GaussianNB", "GaussianProcessClassifier", "GradientBoostingClassifier", "HistGradientBoostingClassifier", "KNeighborsClassifier",
                     "LabelPropagation", "LabelSpreading", "LinearDiscriminantAnalysis", "LinearSVC", "LogisticRegression", "LogisticRegressionCV", "MLPClassifier", "MultinomialNB", "NearestCentroid", "NuSVC", "PassiveAggressiveClassifier", "Perceptron", "QuadraticDiscriminantAnalysis", "RadiusNeighborsClassifier", "RandomForestClassifier", "RidgeClassifier", "RidgeClassifierCV", "SGDClassifier", "SVC"]

@@ -1,6 +1,6 @@
-import pandas as pd
-from turbo_ml.preprocessing.encoder import Encoder
 import warnings
+import pandas as pd
+from sageml.preprocessing.encoder import Encoder
 
 BASE_DATAFRAME = pd.DataFrame(
     {

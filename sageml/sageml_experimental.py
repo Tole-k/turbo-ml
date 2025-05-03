@@ -8,16 +8,16 @@ from collections.abc import Callable
 
 import pandas as pd
 
-from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.meta_learning import MetaModelGuesser, get_sota_meta_features
-from turbo_ml.hpo import HyperTuner
-from turbo_ml.meta_learning.dataset_parameters import SimpleMetaFeatures
-from turbo_ml.algorithms import RandomGuesser as DummyModel
-from turbo_ml.base import Model
-from turbo_ml.utils import options
+from sageml.preprocessing import sota_preprocessor
+from sageml.meta_learning import MetaModelGuesser, get_sota_meta_features
+from sageml.hpo import HyperTuner
+from sageml.meta_learning.dataset_parameters import SimpleMetaFeatures
+from sageml.algorithms import RandomGuesser as DummyModel
+from sageml.base import Model
+from sageml.utils import options
 
 
-class TurboML_Experimental:
+class SageML_Experimental:
     def __init__(self, dataset: pd.DataFrame, target: str | None = None, device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_enabled: bool = False,
                  guesser: MetaModelGuesser | None = None, tuner: HyperTuner | None = None, param_function: Callable | None = None):
         if guesser is None:

@@ -1,7 +1,6 @@
-from turbo_ml.base import Model
 from sklearn.utils import all_estimators
-from typing import Dict, Type
-SCIKIT_MODELS: Dict[str, Type[Model]] = {}
+from sageml.base import Model
+SCIKIT_MODELS: dict[str, type[Model]] = {}
 
 
 def _train(self: Model, data, target):

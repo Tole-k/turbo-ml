@@ -1,7 +1,9 @@
-import pandas as pd
-from turbo_ml.base import Model
 import random
 from collections.abc import Iterable
+
+import pandas as pd
+
+from sageml.base import Model
 
 
 class RandomGuesser(Model):

@@ -1,17 +1,17 @@
+from typing import Any, Literal
+import logging
+
 import numpy as np
-from typing import Any, Dict
-from typing import Literal
 import pandas as pd
-from turbo_ml.base import Model
 import torch
 from torch import nn
 from torch import optim
 from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
-from typing import List, Tuple
-import logging
-from turbo_ml.utils import options
 import optuna as opt
+
+from sageml.base import Model
+from sageml.utils import options
 logging.basicConfig(
     level=options.dev_mode_logging if options.dev_mode else options.user_mode_logging)
 
@@ -42,7 +42,7 @@ class NeuralNetworkBase:
         def __len__(self):
             return len(self.data)
 
-    def setup_loaders(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series, task: str) -> Tuple[DataLoader, DataLoader]:
+    def setup_loaders(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series, task: str) -> tuple[DataLoader, DataLoader]:
         train_data, test_data, train_target, test_target = train_test_split(
             data, target, test_size=0.2)
 
@@ -153,7 +153,7 @@ class NNFactory:
                 for optimizer in self.optimizers}[optimizer.lower()]
 
     @staticmethod
-    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None) -> Dict[str, Any]:
+    def optimize_hyperparameters(dataset: tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None) -> dict[str, Any]:
         def objective(trial, dataset, task):
             x_train, x_test, y_train, y_test = train_test_split(
                 *dataset, test_size=0.2)
@@ -213,7 +213,7 @@ class NNFactory:
             trial, dataset, task), n_trials=options.hpo_trials)
         return study.best_params | study.best_trial.user_attrs
 
-    def create_neural_network(self, input_size: int = None, output_size: int = None, hidden_sizes: List[int] = [256, 128, 64], task: str = 'classification', activations: List[str] = ['relu', 'relu', 'relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001) -> NeuralNetworkBase:
+    def create_neural_network(self, input_size: int = None, output_size: int = None, hidden_sizes: list[int] = [256, 128, 64], task: str = 'classification', activations: list[str] = ['relu', 'relu', 'relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001) -> NeuralNetworkBase:
         layers = []
         if len(activations) != len(hidden_sizes):
             raise ValueError(
@@ -253,7 +253,7 @@ class NeuralNetworkModel(Model):
     factory = NNFactory()
 
     @staticmethod
-    def optimize_hyperparameters(dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, ) -> Dict[str, Any]:
+    def optimize_hyperparameters(dataset: tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'] = 'classification', no_classes: int = None, no_variables: int = None, ) -> dict[str, Any]:
         params = NNFactory.optimize_hyperparameters(
             dataset, task, no_classes, no_variables)
         hidden_sizes = []
@@ -270,7 +270,7 @@ class NeuralNetworkModel(Model):
         params['activations'] = activations
         return params
 
-    def __init__(self, hidden_sizes: List[int] = [256, 128, 64], task: str = 'classification', activations: List[str] = ['relu', 'relu', 'relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001) -> None:
+    def __init__(self, hidden_sizes: list[int] = [256, 128, 64], task: str = 'classification', activations: list[str] = ['relu', 'relu', 'relu'], loss: str = 'crossentropyloss', optimizer: str = 'adam', batch_size: int = 64, epochs: int = 1000, learning_rate=0.001) -> None:
         super().__init__()
         self.params = {'hidden_sizes': hidden_sizes, 'task': task,
                        'activations': activations, 'loss': loss, 'optimizer': optimizer, 'batch_size': batch_size, 'epochs': epochs, 'learning_rate': learning_rate}

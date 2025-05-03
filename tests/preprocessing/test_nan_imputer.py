@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from turbo_ml.preprocessing.nan_imputer import NanImputer
+from sageml.preprocessing.nan_imputer import NanImputer
 
 BASE_DATAFRAME = pd.DataFrame(
     {

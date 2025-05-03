@@ -1,15 +1,14 @@
 import os
-from typing import Tuple
-from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
 from sklearn.manifold import TSNE
-from turbo_ml.preprocessing import Normalizer
+from matplotlib import pyplot as plt
 import matplotlib
+from sageml.preprocessing import Normalizer
 matplotlib.use('Agg')
 
 
-def generate_AutoIRAD_dataset(results_path: str, datasets_dir: str, path1, images_dir: str, resolution: Tuple[int, int] = (100, 100)):
+def generate_AutoIRAD_dataset(results_path: str, datasets_dir: str, path1, images_dir: str, resolution: tuple[int, int] = (100, 100)):
     with open(results_path, 'r') as f:
         scores = pd.read_csv(f, index_col=0)
 

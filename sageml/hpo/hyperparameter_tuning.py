@@ -1,14 +1,13 @@
+from typing import Literal
+import json
+import os
 import numpy as np
 import optuna as opt
 from sklearn.model_selection import train_test_split
-from typing import Tuple
 import pandas as pd
-from typing import Literal
-import json
-from turbo_ml.algorithms import NeuralNetworkModel
-from turbo_ml.base import Model
-from turbo_ml.utils import options
-import os
+from sageml.algorithms import NeuralNetworkModel
+from sageml.base import Model
+from sageml.utils import options
 
 
 class HyperTuner:
@@ -48,7 +47,7 @@ class HyperTuner:
             raise ValueError(
                 f"Model {model} not found in hyperparameters database")
 
-    def objective(self, trial: opt.Trial, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None) -> float:
+    def objective(self, trial: opt.Trial, model: Model, dataset: tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None) -> float:
         x_train, x_test, y_train, y_test = train_test_split(
             *dataset, test_size=0.2)
         hyperparams: list = self.get_model_hyperparameters(model)
@@ -93,7 +92,7 @@ class HyperTuner:
     def _filter_nones(self, best_params: dict) -> dict:
         return {k: v for k, v in best_params.items() if k[-5:] != '=None'}
 
-    def optimize_hyperparameters(self, model: Model, dataset: Tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None) -> dict:
+    def optimize_hyperparameters(self, model: Model, dataset: tuple[pd.DataFrame, pd.DataFrame], task: Literal['classification', 'regression'], no_classes: int = None, no_variables: int = None) -> dict:
         if model.__name__ in options.blacklist:
             return {}
         if model == NeuralNetworkModel:  # Neural Network requires a more specific approach, infeasible to adapt the general function do it's been implemented separately

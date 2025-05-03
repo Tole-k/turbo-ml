@@ -1,16 +1,16 @@
 import os
-from typing import Tuple
+
+import numpy as np
+import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.applications import InceptionV3
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Flatten, Dense, Dropout
 from PIL import Image
-import numpy as np
-import pandas as pd
 
 
 class AutoIRAD:
-    def __init__(self, resolution: Tuple[int, int] = (100, 100)):
+    def __init__(self, resolution: tuple[int, int] = (100, 100)):
         base_model = InceptionV3(weights='imagenet', include_top=False,
                                  input_shape=(resolution[0], resolution[1], 3), classifier_activation='None')
 

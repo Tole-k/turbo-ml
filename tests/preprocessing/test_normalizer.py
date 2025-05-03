@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from turbo_ml.preprocessing.normalizer import Normalizer
+from sageml.preprocessing.normalizer import Normalizer
 
 BASE_DATAFRAME = pd.DataFrame({
     'A': [1, 2, 3, 4],

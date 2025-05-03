@@ -1,6 +1,6 @@
 from datasets import get_iris, get_breast_cancer
-from turbo_ml.algorithms import XGBoostClassifier, SCIKIT_MODELS
-from turbo_ml.hpo import HyperTuner
+from sageml.algorithms import XGBoostClassifier, SCIKIT_MODELS
+from sageml.hpo import HyperTuner
 
 
 def test_HyperTuner():
@@ -23,6 +23,5 @@ def test_HyperTuner():
 #     task = 'classification'
 #     parameters = tuner.optimize_hyperparameters(
 #         model, dataset, task, no_classes=2)
-    
+
 #     assert not parameters
-    

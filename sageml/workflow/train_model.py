@@ -1,20 +1,20 @@
 """ Main training model loop """
 import os
 import pickle
-from typing import Any, Tuple
+from typing import Any
 import torch
 import torch.nn as nn
 from torch.utils import data as data_utils
 import pandas as pd
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
-from turbo_ml.meta_learning.model_architecture import ModelArchitecture
-from turbo_ml.preprocessing import sota_preprocessor
-from turbo_ml.utils import options
+from sageml.meta_learning.model_architecture import ModelArchitecture
+from sageml.preprocessing import sota_preprocessor
+from sageml.utils import options
 
 
 def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluations_frame: pd.DataFrame | str | None = None,
-                     epochs: int = 7000) -> Tuple[ModelArchitecture, Any]:
+                     epochs: int = 7000) -> tuple[ModelArchitecture, Any]:
     if feature_frame is None:
         feature_frame = 'parameters.csv'
     if isinstance(feature_frame, str):
