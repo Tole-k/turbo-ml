@@ -1,6 +1,6 @@
 [project]
 name = "sageml"
-version = "0.1.0"
+version = "0.1.4"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -19,9 +19,16 @@ dependencies = [
     "xgboost>=3.0.0",
 ]
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sageml*"]
+
 [dependency-groups]
 dev = [
     "click>=8.1.8",
     "pydataset>=0.2.0",
     "pytest>=8.3.5",
 ]
+
+[project.scripts]
+sagedev = "sageml.dev.__main__:cli"
