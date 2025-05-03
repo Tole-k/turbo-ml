@@ -1,0 +1,5 @@
+outs:
+- md5: 8466248fb6fc43505a340d4a47646bf7
+  size: 30825529
+  hash: md5
+  path: images.zip

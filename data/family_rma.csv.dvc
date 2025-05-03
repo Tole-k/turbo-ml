@@ -1,0 +1,5 @@
+outs:
+- md5: aad7054ebd3f9e99acdff7ecd1ab9cf7
+  size: 31362
+  hash: md5
+  path: family_rma.csv

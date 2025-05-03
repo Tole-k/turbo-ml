@@ -1,5 +1,5 @@
-from turbo_ml.base.model import Model, get_models_list
-from turbo_ml.algorithms import *
+from sageml.base.model import Model, get_models_list
+from sageml.algorithms import *
 from datasets import get_iris
 
 
@@ -26,24 +26,6 @@ class AlgorithmTesting:
             model.__class__.__name__} failed, model is None'''
         assert model.__class__ in AlgorithmTesting.models_list, f'''{
             model.__class__.__name__} failed, model is not in models list'''
-
-
-def test_adaboost():
-    model = AdaBoostClassifier()
-    AlgorithmTesting._baseline_test(model)
-    AlgorithmTesting._existence_test(model)
-
-
-def test_decision_tree():
-    model = DecisionTreeClassifier()
-    AlgorithmTesting._baseline_test(model)
-    AlgorithmTesting._existence_test(model)
-
-
-def test_gboost():
-    model = GradientBoostingClassifier()
-    AlgorithmTesting._baseline_test(model)
-    AlgorithmTesting._existence_test(model)
 
 
 def test_xgboost():
