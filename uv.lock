@@ -717,6 +717,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pydataset"
+version = "0.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pandas" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/4f/15/548792a1bb9caf6a3affd61c64d306b08c63c8a5a49e2c2d931b67ec2108/pydataset-0.2.0.tar.gz", hash = "sha256:e12a7b8a21fea3fc50ef93f13bd0819f820826d4078f791c2abe40fe8be04c0b", size = 15939406 }
+
+[[package]]
 name = "pyparsing"
 version = "3.2.3"
 source = { registry = "https://pypi.org/simple" }
@@ -837,6 +846,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "pydataset" },
     { name = "pytest" },
 ]
 
@@ -857,7 +867,10 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8.3.5" }]
+dev = [
+    { name = "pydataset", specifier = ">=0.2.0" },
+    { name = "pytest", specifier = ">=8.3.5" },
+]
 
 [[package]]
 name = "scikit-learn"
