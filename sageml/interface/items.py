@@ -1,5 +1,5 @@
 """
-Module containing helpful pre-defined items for the TurboML interface.
+Module containing helpful pre-defined items for the SageML interface.
 """
 import sys
 import textwrap

@@ -1,4 +1,4 @@
-""" Experimental Turbo-ML pipeline, newer but not fully tested version.
+""" Experimental SageML pipeline, newer but not fully tested version.
 If something from here is not working, or you're getting some errors DO NOT make github issues.
 This version is made mainly for testing new pipelines for newer version.
 As this version does not provide logging or error handling it may be faster

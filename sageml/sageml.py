@@ -37,7 +37,7 @@ class SageML:
     # Load your dataset
     df = pd.read_csv('your_dataset.csv')
 
-    # Initialize TurboML with the dataset and target column
+    # Initialize SageML with the dataset and target column
     sml = SageML(dataset=df, target='target_column_name')
 
     # Prepare new data for prediction
@@ -78,7 +78,7 @@ class SageML:
         options.device = device
         options.threads = threads
         self.logger.setLevel('INFO') if verbose else self.logger.setLevel('ERROR')
-        self.logger.info("Initializing TurboML...")
+        self.logger.info("Initializing SageML...")
         self._algorithm = DummyModel
         self.model: Model
         self.hyperparameters: dict[str, Any] = {}

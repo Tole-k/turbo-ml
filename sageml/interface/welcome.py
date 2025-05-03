@@ -112,7 +112,7 @@ def welcome():
                 sys.stdout.write(f"{' '*100}\n")
                 sys.stdout.write('\033[F')
                 _ask(counter+1)
-    num_lines = print_in_box(WELCOME_MESSAGE, topic='Welcome in Turbo-ML ')
+    num_lines = print_in_box(WELCOME_MESSAGE, topic='Welcome in SageML ')
     _ask(0)
     print(f"""Now there should be calculations for dataset in file {
           __DATASET_PATH}""")
