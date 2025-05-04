@@ -15,11 +15,11 @@ class NanImputer(Preprocessor):
         self.type_inferer = TypeInferer()
 
     def fit_transform(self, data: pd.DataFrame, nan_threshold: float = 1.0) -> pd.DataFrame:
-        x_dtypes = self.type_inferer.infer(data)
         nans = data.isna().sum() / len(data)
-        self.cols_to_drop = nans[nans > nan_threshold]
+        self.cols_to_drop = nans[nans >= nan_threshold]
         data.drop(columns=self.cols_to_drop.index, inplace=True)
         og_cols = data.columns
+        x_dtypes = self.type_inferer.infer(data)
         numerical_cols = x_dtypes[x_dtypes.isin(["floating", "integer", "mixed-integer-float"])].index
         categorical_cols = x_dtypes[x_dtypes.isin(["string", "mixed-integer", "categorical", "mixed"])].index
         boolean_cols = x_dtypes[x_dtypes.isin(["boolean"])].index
@@ -59,9 +59,9 @@ class NanImputer(Preprocessor):
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        x_dtypes = self.type_inferer.recall()
         data.drop(columns=self.cols_to_drop.index, inplace=True)
         og_cols = data.columns
+        x_dtypes = self.type_inferer.recall()
         numerical_cols = x_dtypes[x_dtypes.isin(["floating", "integer", "mixed-integer-float"])].index
         categorical_cols = x_dtypes[x_dtypes.isin(["string", "mixed-integer", "categorical", "mixed"])].index
         boolean_cols = x_dtypes[x_dtypes.isin(["boolean"])].index
@@ -104,7 +104,7 @@ def main():
 
     dataset = pd.DataFrame(
         {
-            "A": [1, np.nan, 3, 4],
+            "A": [np.nan, np.nan, np.nan, np.nan],
             "B": [10, np.nan, 30, np.nan],
             "C": ["a", "b", np.nan, "d"],
             "D": [0, np.nan, np.nan, 0],
