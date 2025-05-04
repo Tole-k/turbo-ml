@@ -1,5 +1,5 @@
 from sageml.utils import options
-from sageml.meta_learning import MetaModelGuesser, get_sota_meta_features
+from sageml.meta_learning import MetaModelGuesser, sota_meta_features
 from sageml.preprocessing import sota_preprocessor
 from sageml.workflow import train_meta_model
 from .utils import BaseExperiment, _FAMILY_MAPPING, ClassificationFamily
@@ -59,7 +59,7 @@ class SageMLExperiment(BaseExperiment):
 
     def rank_families(self, dataset, dataset_name, *_):
         training_frame = self.data[self.data["name"] != dataset_name].copy()
-        model, preprocessor_dataset = train_meta_model(evaluations_frame=training_frame, feature_frame=self.parameters)
+        model, preprocessor_dataset = train_meta_model(score_dataframe=training_frame, param_dataframe=self.parameters)
         # required on macbook
         # options.device = "mps"
         options.threads = 1
@@ -69,7 +69,7 @@ class SageMLExperiment(BaseExperiment):
         preprocessor = sota_preprocessor()
         data = preprocessor.fit_transform(data)
         target_data = preprocessor.fit_transform_target(target_data)
-        dataset_params = get_sota_meta_features(options.meta_features)(
+        dataset_params = sota_meta_features(options.meta_features)(
             data, target_data, as_dict=True)
         guesser = MetaModelGuesser(
             model=model, preprocessors=preprocessor_dataset, mode=self.mode)

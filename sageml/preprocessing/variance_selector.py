@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
-from ..base.preprocess import Preprocessor
 from sklearn.feature_selection import VarianceThreshold
+from ..base.preprocess import Preprocessor
 
 
 class VarianceSelector(Preprocessor):

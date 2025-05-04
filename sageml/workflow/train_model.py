@@ -1,6 +1,4 @@
 """ Main training model loop """
-import os
-import pickle
 from typing import Any
 import torch
 import torch.nn as nn
@@ -13,43 +11,38 @@ from sageml.preprocessing import sota_preprocessor
 from sageml.utils import options
 
 
-def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluations_frame: pd.DataFrame | str | None = None,
-                     epochs: int = 7000) -> tuple[ModelArchitecture, Any]:
-    if feature_frame is None:
-        feature_frame = 'parameters.csv'
-    if isinstance(feature_frame, str):
-        feature_frame = pd.read_csv(feature_frame)
+def train_meta_model(score_dataframe: pd.DataFrame, param_dataframe: pd.DataFrame,
+                     epochs: int = 7000) -> tuple[ModelArchitecture, Any, dict]:
+    """Train meta model.
 
-    if evaluations_frame is None:
-        evaluations_frame = os.path.join('datasets', 'results_algorithms.csv')
+    Args:
+        score_dataframe (pd.DataFrame): Dataframe with scores.
+        param_dataframe (pd.DataFrame): Dataframe with parameters.
+        epochs (int, optional): Num of epochs. Defaults to 7000.
 
-    if isinstance(evaluations_frame, str):
-        evaluations_frame = pd.read_csv(evaluations_frame)
+    Returns:
+        tuple[ModelArchitecture, Any]: Model and preprocessing.
+    """
+    common_names = set(param_dataframe['name']) & set(score_dataframe['name'])
+    param_dataframe = param_dataframe[param_dataframe['name'].isin(common_names)].sort_values('name').reset_index(drop=True)
+    score_dataframe = score_dataframe[score_dataframe['name'].isin(common_names)].sort_values('name').reset_index(drop=True)
 
-    common_names = set(feature_frame['name']).intersection(
-        set(evaluations_frame['name']))
-    print(f'Number of matching datasets: {len(common_names)}')
-    feature_frame = feature_frame[feature_frame['name'].isin(
-        common_names)].sort_values('name').reset_index(drop=True)
-    evaluations_frame = evaluations_frame[evaluations_frame['name'].isin(
-        common_names)].sort_values('name').reset_index(drop=True)
-
-    feature_frame.drop(columns=['name'], axis=1, inplace=True)
-    evaluations_frame.drop(columns=['name'], axis=1, inplace=True)
+    param_dataframe.drop(columns=['name'], axis=1, inplace=True)
+    score_dataframe.drop(columns=['name'], axis=1, inplace=True)
     preprocessor = sota_preprocessor()
-    feature_frame = preprocessor.fit_transform(feature_frame)
+    param_dataframe = preprocessor.fit_transform(param_dataframe)
     preprocessor2 = sota_preprocessor()
-    evaluations_frame = preprocessor2.fit_transform(evaluations_frame)
+    score_dataframe = preprocessor2.fit_transform(score_dataframe)
 
     values = []
-    model = ModelArchitecture(len(feature_frame.columns),
-                              len(evaluations_frame.columns)).to(options.device)
+    model = ModelArchitecture(len(param_dataframe.columns),
+                              len(score_dataframe.columns)).to(options.device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     criterion = nn.MSELoss()
 
     x_train, x_test, y_train, y_test = train_test_split(
-        feature_frame, evaluations_frame, test_size=0.2)
+        param_dataframe, score_dataframe, test_size=0.2)
     train = data_utils.TensorDataset(torch.tensor(x_train.values.astype(
         'float32')).to(options.device), torch.tensor(y_train.values.astype
                                                      ('float32')).to(options.device))
@@ -79,20 +72,5 @@ def train_meta_model(feature_frame: pd.DataFrame | str | None = None, evaluation
                 if epoch % 100 == 0:
                     pbar.set_description(f'Training model, loss: {loss:.2f}')
                 values.append(float(loss))
-    return model, preprocessor
-
-
-def save_meta_model(model: ModelArchitecture, preprocessor: Any, save_path: str):
-    if not os.path.exists(save_path):
-        os.makedirs(save_path)
-    model = model.to('cpu')
-    torch.save(model.state_dict(), save_path + '/model.pth')
-    with open(save_path + '/model_params.pkl', 'wb') as f:
-        pickle.dump({'input_size': model.fc1.in_features,
-                     'output_size': model.fc4.out_features}, f)
-    with open(save_path + '/preprocessor.pkl', 'wb') as f:
-        pickle.dump(preprocessor, f)
-
-
-if __name__ == '__main__':
-    train_meta_model()
+    return model, preprocessor, {'input_size': len(param_dataframe.columns),
+                                 'output_size': len(score_dataframe.columns)}

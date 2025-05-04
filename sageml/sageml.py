@@ -13,7 +13,7 @@ import pandas as pd
 from sageml.preprocessing import sota_preprocessor
 from sageml.meta_learning import ExhaustiveSearchPredictor, MetaModelGuesser
 from sageml.hpo import HyperTuner
-from sageml.meta_learning.dataset_parameters import get_sota_meta_features
+from sageml.meta_learning.dataset_parameters import sota_meta_features
 from sageml.algorithms import RandomGuesser as DummyModel
 from sageml.base import Model
 from sageml.utils import options
@@ -98,7 +98,7 @@ class SageML:
             raise Exception("Preprocessing failed")
         self.logger.info('Preprocessing completed')
         try:
-            dataset_params = get_sota_meta_features(options.meta_features)(
+            dataset_params = sota_meta_features(options.meta_features)(
                 data, target_data, as_dict=True)
         except Exception:
             raise Exception("Dataset description failed")

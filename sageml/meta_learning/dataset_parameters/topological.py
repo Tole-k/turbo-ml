@@ -1,25 +1,33 @@
-from typing import List
 import matplotlib.pyplot as plt
 from matplotlib import colormaps as cm
-from .base import MetaFeature
 import numpy as np
-from datasets import get_iris
 from pyballmapper import BallMapper
 from ripser import ripser
 import pandas as pd
+from .base import MetaFeature
 
 
 class BallMapperFeatures(MetaFeature):
-    def __init__(self, epsilons: List[int] = [0.25, 1, 5, 25], verbose: bool = False):
-        self.epsilons = epsilons
+    def __init__(self, epsilons: list[float | int] | None = None, verbose: bool = False):
+        self.epsilons: list[float | int] = [0.25, 1, 5, 25] if epsilons is None else epsilons
         self.verbose = verbose
 
     def __call__(self, dataset, target_data, as_dict=False):
         self.epsilons = [0.25, 1, 5, 25]
         features = {}
         for eps in self.epsilons:
-            bm = BallMapper(X=dataset.values, eps=eps, coloring_df=pd.DataFrame(
-                target_data, columns=['target']), order=list(range(len(dataset.values))))
+            try:
+                bm = BallMapper(X=dataset.values, eps=eps, coloring_df=pd.DataFrame(
+                    target_data, columns=['target']), order=list(range(len(dataset.values))))
+            except Exception as e:
+                features[f'number_of_landmarks_at_{eps}'] = np.nan
+                features[f'mean_len_at_{eps}'] = np.nan
+                features[f'min_len_at_{eps}'] = np.nan
+                features[f'max_len_at_{eps}'] = np.nan
+                features[f'std_len_at_{eps}'] = np.nan
+                features[f'median_len_at_{eps}'] = np.nan
+                print(f'BallMapper failed with {type(e)}')
+                continue
 
             if self.verbose:
                 if len(bm.points_covered_by_landmarks) == 0:
@@ -84,6 +92,7 @@ class RipserFeatures(MetaFeature):
 
 
 if __name__ == '__main__':
+    from datasets import get_iris
     # import pprint
     # dataset, target = get_iris()
     # parameters = RipserFeatures()(dataset, target, as_dict=dict)

@@ -9,7 +9,7 @@ from collections.abc import Callable
 import pandas as pd
 
 from sageml.preprocessing import sota_preprocessor
-from sageml.meta_learning import MetaModelGuesser, get_sota_meta_features
+from sageml.meta_learning import MetaModelGuesser, sota_meta_features
 from sageml.hpo import HyperTuner
 from sageml.meta_learning.dataset_parameters import SimpleMetaFeatures
 from sageml.algorithms import RandomGuesser as DummyModel
@@ -25,7 +25,7 @@ class SageML_Experimental:
         if tuner is None:
             tuner = HyperTuner()
         if param_function is None:
-            param_function = get_sota_meta_features(options.meta_features)
+            param_function = sota_meta_features(options.meta_features)
         options.device = device
         options.threads = threads
         self._algorithm = DummyModel

@@ -1,12 +1,11 @@
-from ..base.preprocess import Preprocessor
-from typing import List
 import pandas as pd
+from ..base.preprocess import Preprocessor
 
 
 class CombinedPreprocessor(Preprocessor):
     def __init__(self, *args) -> None:
         super().__init__()
-        self.models: List[Preprocessor] = list(args)
+        self.models: list[Preprocessor] = list(args)
 
     def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
         for model in self.models:
@@ -32,7 +31,6 @@ class CombinedPreprocessor(Preprocessor):
 if __name__ == "__main__":
     from .nan_imputer import NanImputer
     from .encoder import Encoder
-    import pandas as pd
 
     dataframe = pd.DataFrame(
         {

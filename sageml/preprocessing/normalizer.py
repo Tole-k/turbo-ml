@@ -1,8 +1,7 @@
-
 import numpy as np
 import pandas as pd
-from ..base.preprocess import Preprocessor
 from sklearn.preprocessing import MinMaxScaler
+from ..base.preprocess import Preprocessor
 from .type_inferer import TypeInferer
 
 
@@ -19,7 +18,8 @@ class Normalizer(Preprocessor):
         if not numeric_cols.size:
             return data
         numerical_frame = data[numeric_cols]
-        normalized_numeric_frame = pd.DataFrame(self.scaler.fit_transform(numerical_frame), columns=self.scaler.get_feature_names_out()).astype(float)
+        normalized_numeric_frame = pd.DataFrame(self.scaler.fit_transform(
+            numerical_frame), columns=self.scaler.get_feature_names_out()).astype(float)
         data[numeric_cols] = normalized_numeric_frame
         return data
 
@@ -35,7 +35,8 @@ class Normalizer(Preprocessor):
         if not numeric_cols.size:
             return data
         numerical_frame = data[numeric_cols]
-        normalized_numeric_frame = pd.DataFrame(self.scaler.transform(numerical_frame), columns=self.scaler.get_feature_names_out()).astype(float)
+        normalized_numeric_frame = pd.DataFrame(self.scaler.transform(
+            numerical_frame), columns=self.scaler.get_feature_names_out()).astype(float)
         data[numeric_cols] = normalized_numeric_frame
         return data
 

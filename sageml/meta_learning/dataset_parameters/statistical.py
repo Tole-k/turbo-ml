@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
+from sklearn.decomposition import PCA
 
 from .base import MetaFeature
 
-from sklearn.decomposition import PCA
 
 class SimpleMetaFeatures(MetaFeature):
     def __call__(self, dataset: pd.DataFrame, target_data: pd.Series, as_dict: bool = False) -> np.ndarray | dict:

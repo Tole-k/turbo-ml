@@ -1,15 +1,16 @@
+import os
+from logging import getLogger
+import re
+
+import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
+from pydataset import data
+
 from sageml.base import get_models_list
 from sageml.workflow.utils import list_dataset_files, read_data_file
 from sageml.base.model import Model
 from sageml.preprocessing import sota_preprocessor
-import os
-import pandas as pd
-import numpy as np
-from logging import getLogger
-from typing import Optional
-import re
-from pydataset import data
 logger = getLogger(__name__)
 
 
@@ -20,33 +21,44 @@ def calculate_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
 
 
 def evaluate_from_pydataset(dataset_name: str) -> pd.Series:
-    return evaluate_algorithms(data(dataset_name), dataset_name)
+    return evaluate_algorithm(data(dataset_name), dataset_name)
 
 
 def evaluate_from_file(dataset_path: str) -> pd.Series:
     dataset = read_data_file(dataset_path)
-    return evaluate_algorithms(dataset, re.split(r' |\.', dataset_path))
+    return evaluate_algorithm(dataset, re.split(r' |\.', dataset_path))
 
 
-def evaluate_algorithms(dataset: pd.DataFrame, dataset_name: str) -> pd.Series:
+def evaluate_algorithm(dataset: pd.DataFrame, dataset_name: str) -> pd.Series:
+    """Evaluates given algorithm and creates meta-dataset entry
+
+    Args:
+        dataset (pd.DataFrame): Dataset
+        dataset_name (str): Name of given dataset.
+
+    Returns:
+        pd.Series: Meta-Dataset entry.
+    """
     y = dataset.iloc[:, -1]
-    X = dataset.iloc[:, :-1]
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42)
+    x = dataset.iloc[:, :-1]
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=0.2, random_state=42)
     preprocessor = sota_preprocessor()
-    X_train = preprocessor.fit_transform(X_train)
-    X_test = preprocessor.transform(X_test)
+    x_train = preprocessor.fit_transform(x_train)
+    x_test = preprocessor.transform(x_test)
     frame = {'name': dataset_name}
     frame.update({model.__name__: np.nan for model in get_models_list()})
     for model_cls in get_models_list():
         try:
             model: Model = model_cls()
-            model.train(X_train, y_train)
-            y_pred = model.predict(X_test)
+            model.train(x_train, y_train)
+            y_pred = model.predict(x_test)
             score = calculate_score(y_test, y_pred)
             frame[model_cls.__name__] = score
         except Exception as e:
+            frame[model_cls.__name__] = np.nan
             logger.error(f'Error while evaluating model {model_cls.__name__}: {e}')
+
     return pd.Series(frame)
 
 
@@ -55,7 +67,7 @@ def load_algorithms_evaluations(path: str = os.path.join('datasets', 'results_al
 
 
 def evaluate_datasets(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'),
-                      output_path='results_algorithms.csv', slice_index: Optional[int] = None) -> pd.DataFrame:
+                      output_path='results_algorithms.csv', slice_index: int | None = None) -> pd.DataFrame:
     if slice_index is not None:
         names = list_dataset_files(datasets_dir)[
             slice_index*10:(slice_index+1)*10]
@@ -63,9 +75,8 @@ def evaluate_datasets(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-dat
         names = list_dataset_files(datasets_dir)
     evaluations = []
     for dataset_name, path in names:
-        evaluations.append(evaluate_algorithms.submit(path, dataset_name))
-    evaluations_results = [evaluation.result() for evaluation in evaluations]
-    dataframe = pd.concat(evaluations_results, axis=1).T
+        evaluations.append(evaluate_algorithm(read_data_file(path), dataset_name))
+    dataframe = pd.concat(evaluations, axis=1).T
 
     if dataframe is not None and output_path is not None:
         dataframe.to_csv(str(slice_index) + '_' + output_path, index=False)

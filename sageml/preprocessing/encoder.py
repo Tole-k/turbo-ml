@@ -1,9 +1,9 @@
 import pandas as pd
-from ..base.preprocess import Preprocessor
 from sklearn.preprocessing import (
     OneHotEncoder as sklearnOneHotEncoder,
     LabelEncoder as sklearnLabelEncoder,
 )
+from ..base.preprocess import Preprocessor
 from .type_inferer import TypeInferer
 
 
@@ -23,7 +23,8 @@ class Encoder(Preprocessor):
         categorical_frame = data[self.categorical_cols].astype(str)
         categorical_frame.drop(columns=categorical_frame.loc[:, categorical_frame.nunique() > unique_values_cap].columns, inplace=True)
         self.categorical_cols = categorical_frame.columns
-        encoded_data = pd.DataFrame(self.encoder.fit_transform(categorical_frame).toarray(), columns=self.encoder.get_feature_names_out()).astype(bool)
+        encoded_data = pd.DataFrame(self.encoder.fit_transform(categorical_frame).toarray(),
+                                    columns=self.encoder.get_feature_names_out()).astype(bool)
         self.encoded_cols = encoded_data.columns
         data = pd.concat([numerical_frame, encoded_data], axis=1)
         return data
@@ -37,7 +38,8 @@ class Encoder(Preprocessor):
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         categorical_frame = data[self.categorical_cols].astype(str)
         numerical_frame = data[self.numerical_cols]
-        encoded_data = pd.DataFrame(self.encoder.transform(categorical_frame).toarray(), columns=self.encoder.get_feature_names_out()).astype(bool)
+        encoded_data = pd.DataFrame(self.encoder.transform(categorical_frame).toarray(),
+                                    columns=self.encoder.get_feature_names_out()).astype(bool)
         data = pd.concat([numerical_frame, encoded_data], axis=1)
         return data
 

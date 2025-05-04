@@ -3,12 +3,12 @@ import torch.nn as nn
 
 
 class ModelArchitecture(nn.Module):
-    def __init__(self, num_features: int, num_classes: int):
+    def __init__(self, in_features: int, out_features: int):
         super(ModelArchitecture, self).__init__()
-        self.fc1 = nn.Linear(num_features, 256)
+        self.fc1 = nn.Linear(in_features, 256)
         self.fc2 = nn.Linear(256, 128)
         self.fc3 = nn.Linear(128, 64)
-        self.fc4 = nn.Linear(64, num_classes)
+        self.fc4 = nn.Linear(64, out_features)
 
     def forward(self, x):
         x = torch.relu(self.fc1(x))
