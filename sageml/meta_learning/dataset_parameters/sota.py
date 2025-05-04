@@ -9,7 +9,7 @@ def sota_meta_features(parameter_type: Literal['statistical', 'topological', 'al
 
     Args:
         parameter_type (Literal[&#39;statistical&#39;, &#39;topological&#39;, &#39;all&#39;], optional): Mode of extracted meta features. 
-        Defaults to 'statistical'.
+        Defaults to 'all'.
 
     Raises:
         ValueError: If mode is incorrect.
