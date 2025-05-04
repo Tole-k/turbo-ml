@@ -6,6 +6,14 @@ from .type_inferer import TypeInferer
 
 
 class NanImputer(Preprocessor):
+    numerical_imputer: SimpleImputer
+    numerical_target_imputer: SimpleImputer
+    categorical_imputer: SimpleImputer
+    categorical_target_imputer: SimpleImputer
+    type_inferer: TypeInferer
+    cols_to_drop: pd.Index
+    
+    
     def __init__(self) -> None:
         super().__init__()
         self.numerical_imputer = SimpleImputer(strategy="mean")

@@ -16,6 +16,8 @@ def _classifier_init(self: Model, **kwargs):
 
 
 for name, classifier in all_estimators(type_filter='classifier'):
+    if name == 'SelfTrainingClassifier': # This metaclassifer is useless without hyperparameters
+        continue
     try:
         classifier_obj = classifier()
         model = type(name, (Model,),
