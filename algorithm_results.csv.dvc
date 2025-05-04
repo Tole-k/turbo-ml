@@ -1,5 +1,0 @@
-outs:
-- md5: c56e13775ea22893e220ba84af44a431
-  size: 50238
-  hash: md5
-  path: algorithm_results.csv
