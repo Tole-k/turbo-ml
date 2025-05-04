@@ -6,9 +6,13 @@ import pandas as pd
 import torch
 
 from sageml.dev.functions import (
+    _extract,
     create_datasets,
+    create_pydataset,
 )
+from sageml.workflow.algorithms_evaluations import evaluate_algorithm
 from sageml.workflow.train_model import train_meta_model
+from sageml.workflow.utils import read_data_file
 PATH = os.path.join('sageml', 'meta_learning', 'meta-dataset')
 MODEL_PATH = os.path.join('sageml', 'meta_learning', 'model')
 
@@ -58,19 +62,30 @@ def create(path: str, save: str | None, max_datasets: int | None):
 
 
 @dataset.command()
-@click.option('-r', is_flag=True, help='Interprets path as a directory of datasets')
 @click.argument('path', required=True, type=click.Path())
-@click.option('--save', type=click.Path(), default=PATH, help='Where to save the file')
-def add(r, path: str, save: str):
+@click.option('-r', is_flag=True, help='Interprets path as a directory of datasets')
+@click.option('-p', is_flag=True, help='Interprets path as a name of preset dataset.')
+def add(path: str, r: bool, p: bool):
     """ Adds entry to the dataset """
-    # TODO
-    if r is True:
-        new_dataset = create_datasets(path)
-    # else:
-    #     new_dataset = _evaluate_score(path)
+    score_dataset = pd.read_csv(os.path.join(PATH, 'scores.csv'))
+    param_dataset = pd.read_csv(os.path.join(PATH, 'parameters.csv'))
+    if p is True:
+        if path == 'pydataset':
+            new_score_dataset, new_param_dataset = create_pydataset()
+            score_dataset = pd.concat([score_dataset, new_score_dataset])
+            param_dataset = pd.concat([param_dataset, new_param_dataset])
+    elif r is True:
+        new_score_dataset, new_param_dataset = create_datasets(path)
+        score_dataset = pd.concat([score_dataset, new_score_dataset])
+        param_dataset = pd.concat([param_dataset, new_param_dataset])
+    else:
+        new_dataset = read_data_file(path)
+        dataset_name = os.path.splitext(os.path.basename(path))[0]
+        score_dataset = pd.concat([score_dataset, evaluate_algorithm(new_dataset, dataset_name).to_frame().T], ignore_index=True)
+        param_dataset = pd.concat([param_dataset, _extract(new_dataset, dataset_name).to_frame().T], ignore_index=True)
+    score_dataset.to_csv(os.path.join(PATH, 'scores.csv'))
+    param_dataset.to_csv(os.path.join(PATH, 'parameters.csv'))
 
 
 if __name__ == '__main__':
-    from sageml.utils import options
-    options.device = 'cpu'
     cli()
