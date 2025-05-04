@@ -62,6 +62,5 @@ def create_pydataset() -> tuple[pd.DataFrame, pd.DataFrame]:
         dataset = pydata(dataset_id)
         score_dataset = pd.concat([score_dataset, evaluate_algorithm(dataset, dataset_name).to_frame().T], ignore_index=True)
         param_dataset = pd.concat([param_dataset, _extract(dataset, dataset_name).to_frame().T], ignore_index=True)
-        break
 
     return score_dataset, param_dataset
