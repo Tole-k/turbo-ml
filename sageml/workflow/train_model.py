@@ -12,7 +12,7 @@ from sageml.utils import options
 
 
 def train_meta_model(score_dataframe: pd.DataFrame, param_dataframe: pd.DataFrame,
-                     epochs: int = 7000) -> tuple[ModelArchitecture, Any]:
+                     epochs: int = 7000) -> tuple[ModelArchitecture, Any, dict]:
     """Train meta model.
 
     Args:
@@ -24,7 +24,6 @@ def train_meta_model(score_dataframe: pd.DataFrame, param_dataframe: pd.DataFram
         tuple[ModelArchitecture, Any]: Model and preprocessing.
     """
     common_names = set(param_dataframe['name']) & set(score_dataframe['name'])
-    print(f'Number of matching datasets: {len(common_names)}')
     param_dataframe = param_dataframe[param_dataframe['name'].isin(common_names)].sort_values('name').reset_index(drop=True)
     score_dataframe = score_dataframe[score_dataframe['name'].isin(common_names)].sort_values('name').reset_index(drop=True)
 
@@ -33,9 +32,7 @@ def train_meta_model(score_dataframe: pd.DataFrame, param_dataframe: pd.DataFram
     preprocessor = sota_preprocessor()
     param_dataframe = preprocessor.fit_transform(param_dataframe)
     preprocessor2 = sota_preprocessor()
-    print(score_dataframe.head())
     score_dataframe = preprocessor2.fit_transform(score_dataframe)
-    print(score_dataframe.head())
 
     values = []
     model = ModelArchitecture(len(param_dataframe.columns),
@@ -75,4 +72,5 @@ def train_meta_model(score_dataframe: pd.DataFrame, param_dataframe: pd.DataFram
                 if epoch % 100 == 0:
                     pbar.set_description(f'Training model, loss: {loss:.2f}')
                 values.append(float(loss))
-    return model, preprocessor
+    return model, preprocessor, {'input_size': len(param_dataframe.columns),
+                                 'output_size': len(score_dataframe.columns)}

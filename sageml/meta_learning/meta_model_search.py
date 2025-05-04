@@ -71,7 +71,8 @@ class MetaModelGuesser(Predictor):
         model = ModelArchitecture(self._config['input_size'],
                                   self._config['output_size']).to(self.device)
         model_path = os.path.join(self._path, 'model.pth')
-        model.load_state_dict(torch.load(model_path, weights_only=True))
+        weights = torch.load(model_path, weights_only=True)
+        model.load_state_dict(weights)
         return model.eval()
 
     def _load_preprocessor(self):
