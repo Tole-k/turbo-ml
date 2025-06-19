@@ -104,7 +104,7 @@ trove-classifiers==2024.7.2
 twine==5.1.1
 typing_extensions==4.12.2
 tzdata==2024.1
-urllib3==2.2.2
+urllib3==2.5.0
 virtualenv==20.26.6
 wcwidth==0.2.13
 xattr==1.1.0
