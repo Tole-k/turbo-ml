@@ -1,6 +1,6 @@
 import warnings
 import pandas as pd
-from sageml.preprocessing.encoder import Encoder
+from sageml.preprocessing import Encoder
 
 BASE_DATAFRAME = pd.DataFrame(
     {
