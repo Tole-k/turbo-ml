@@ -2,7 +2,7 @@ from abc import abstractmethod
 import pickle
 from collections.abc import Iterable
 from typing import Any
-from sageml.utils.error_tools.exceptions import NotTrainedException
+from sageml.utils.exceptions import NotTrainedException
 
 __ALL_MODELS__: list[type] = []
 
