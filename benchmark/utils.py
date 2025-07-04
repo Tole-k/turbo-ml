@@ -5,7 +5,6 @@ from glob import glob
 from enum import Enum, auto
 from typing import List
 from datetime import datetime
-from tqdm import tqdm
 
 import pandas as pd
 
@@ -118,11 +117,7 @@ class BaseExperiment(abc.ABC):
 
     def _perform_experiment(self, seed, duration):
         parameters = self._get_parameters()
-        pbar = tqdm(
-            parameters.iterrows(), total=len(parameters), desc="Processing datasets")
-        pbar.set_description(f"Processing datasets with seed {seed} and duration {duration}")
-        pbar.set_postfix(seed=seed, duration=duration)
-        for _, dataset_parameter in pbar:
+        for (_, dataset_parameter) in parameters.iterrows():
             dataset_name = dataset_parameter["name"]
             num_classes = dataset_parameter["num_classes"]
             dataset = self.__get_dataset(dataset_name)
