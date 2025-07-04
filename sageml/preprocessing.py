@@ -1,4 +1,5 @@
 """ Module with different preprocessing techniques """
+from abc import ABC, abstractmethod
 import numpy as np
 
 import pandas as pd
@@ -13,7 +14,29 @@ from sklearn.preprocessing import (
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.impute import SimpleImputer
 
-from .base import Preprocessor
+
+class Preprocessor(ABC):
+    """ Abstract class for preprocessing techniques """
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.model = None
+
+    @abstractmethod
+    def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
+        """ Fits to given data and returns transformed version """
+
+    @abstractmethod
+    def transform(self, data: pd.DataFrame) -> pd.DataFrame:
+        """ returns transformed version of data """
+
+    @abstractmethod
+    def fit_transform_target(self, target: pd.Series) -> pd.Series:
+        """" Fits into target data and returns it's transformed copy """
+
+    @abstractmethod
+    def transform_target(self, target: pd.Series) -> pd.Series:
+        """ Transforms target data """
 
 
 class CombinedPreprocessor(Preprocessor):

@@ -11,7 +11,6 @@ import pandas as pd
 from sageml.preprocessing import sota_preprocessor
 from sageml.meta_learning import MetaModelGuesser, sota_meta_features
 from sageml.hpo import HyperTuner
-from sageml.meta_learning.dataset_parameters import SimpleMetaFeatures
 from sageml.algorithms import RandomGuesser as DummyModel
 from sageml.base import Model
 from sageml.utils import options
