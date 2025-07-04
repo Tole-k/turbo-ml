@@ -77,7 +77,10 @@ class SageML:
         """
         options.device = device
         options.threads = threads
-        self.logger.setLevel('INFO') if verbose else self.logger.setLevel('ERROR')
+        if verbose:
+            self.logger.setLevel('INFO')
+        else:
+            self.logger.setLevel('ERROR')
         self.logger.info("Initializing SageML...")
         self._algorithm = DummyModel
         self.model: Model
@@ -94,14 +97,14 @@ class SageML:
             self.preprocessor = sota_preprocessor()
             data = self.preprocessor.fit_transform(data)
             target_data = self.preprocessor.fit_transform_target(target_data)
-        except Exception:
-            raise Exception("Preprocessing failed")
+        except Exception as e:
+            raise RuntimeError("Preprocessing failed") from e
         self.logger.info('Preprocessing completed')
         try:
             dataset_params = sota_meta_features(options.meta_features)(
                 data, target_data, as_dict=True)
-        except Exception:
-            raise Exception("Dataset description failed")
+        except Exception as e:
+            raise RuntimeError("Dataset description failed") from e
         self.logger.info(
             'Dataset parameters found, trying to guess best model')
         data_operations = time.time()
@@ -109,19 +112,18 @@ class SageML:
         try:
             guesser = MetaModelGuesser()
             self._algorithm = guesser.predict(dataset_params)
-        except Exception:
-            raise Exception('Model optimization failed')
+        except Exception as e:
+            raise RuntimeError('Model optimization failed') from e
         model_guessing_time = time.time()
 
         model_name = self._algorithm.__name__
-        self.logger.info(f'''Model guessed: {
-            model_name}, searching for better model (Currently disabled, unless guessing model is DummyModel)''')
+        self.logger.info("""Model guessed: %s, searching for better model (Currently disabled, unless guessing model is DummyModel)""", model_name)
 
         if isinstance(self._algorithm, DummyModel):
             try:
                 search = ExhaustiveSearchPredictor()
                 self._algorithm = search.predict(data, target_data)
-                self.logger.info(f'Looked at {search.counter} models')
+                self.logger.info('Looked at %s models', str(search.counter))
             except Exception:
                 self.logger.info('Trying to find better model failed')
         model_selection_time = time.time()
@@ -141,22 +143,22 @@ class SageML:
         try:
             self.model = self._algorithm(**self.hyperparameters)
         except Exception:
-            logging.CRITICAL('Model initialization failed')
+            logging.critical('Model initialization failed')
             try:
                 self.hyperparameters = {}
                 self.model = self._algorithm(self.hyperparameters)
             except Exception:
                 self.model = DummyModel()
                 self._algorithm = DummyModel
-                logging.CRITICAL(
+                logging.critical(
                     'Model initialization without hyperparameters failed')
 
         model_name = self._algorithm.__name__
-        self.logger.info(f"Training {model_name} model")
+        self.logger.info("Training %s model", model_name)
         try:
             self.model.train(data, target_data)
-        except Exception:
-            raise Exception('Model training failed')
+        except Exception as e:
+            raise RuntimeError('Model training failed') from e
         end_time = time.time()
         self.times = {
             'total': end_time - start_time,
@@ -166,13 +168,13 @@ class SageML:
             'HPO': hpo_time - model_selection_time,
             'training': end_time - hpo_time
         }
-        self.logger.info(f"{model_name} model trained successfully")
-        self.logger.info(f"Data operations time: {self.times['data_ops']}")
-        self.logger.info(f"Model guessing time: {self.times['guessing']}")
-        self.logger.info(f"Model selection time: {self.times['AS']}")
-        self.logger.info(f"Model HPO time: {self.times['HPO']}")
-        self.logger.info(f"Model training time: {self.times['training']}")
-        self.logger.info(f"Total time: {self.times['total']}")
+        self.logger.info("%s model trained successfully", model_name)
+        self.logger.info("Data operations time: %s", str(self.times['data_ops']))
+        self.logger.info("Model guessing time: %s", str(self.times['guessing']))
+        self.logger.info("Model selection time: %s", str(self.times['AS']))
+        self.logger.info("Model HPO time: %s", str(self.times['HPO']))
+        self.logger.info("Model training time: %s", str(self.times['training']))
+        self.logger.info("Total time: %s", str(self.times['total']))
 
     def _input_check(self, dataset: pd.DataFrame, target: str):
         assert dataset is not None and isinstance(dataset, pd.DataFrame)

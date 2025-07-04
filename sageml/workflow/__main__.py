@@ -8,8 +8,8 @@ from sageml.utils import options
 def full_pipeline() -> tuple:
     evaluations = load_algorithms_evaluations('algorithm_results.csv')
     training_parameters = generate_training_parameters(output_path='', meta_data_extractor=sota_meta_features(options.meta_features))
-    model, preprocessor = train_meta_model(training_parameters, evaluations, 3000)
-    return model, preprocessor
+    model, preprocessor, config = train_meta_model(training_parameters, evaluations, 3000)
+    return model, preprocessor, config
 
 
 if __name__ == '__main__':
