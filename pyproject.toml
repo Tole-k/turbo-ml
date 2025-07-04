@@ -1,7 +1,7 @@
 [project]
 name = "sageml"
-version = "0.1.4"
-description = "Add your description here"
+version = "0.2.0"
+description = "SageML is library for automatic one-shot algorithm selection for tabular data using tda for extracting information about dataset."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
