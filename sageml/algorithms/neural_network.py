@@ -32,7 +32,7 @@ class NeuralNetworkBase:
     class DataTargetDataset(torch.utils.data.Dataset):
         def __init__(self, data, target, device, task):
             self.device = device
-            self.data = torch.tensor(data.values.astype(np.float32)).to(self.device)
+            self.data = torch.tensor(data.values).float().to(self.device)
             self.target = torch.tensor(target.values).long().to(self.device) if task == 'classification' else torch.tensor(
                 target.values).float().to(self.device) if task == 'regression' else None
 
@@ -58,7 +58,7 @@ class NeuralNetworkBase:
         return train_loader, test_loader
 
 
-class NeuralNetworkClassifier(NeuralNetworkBase):
+class NeuralNetworkClassifier(NeuralNetworkBase, Model):
     task = 'classification'
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:
@@ -88,14 +88,14 @@ class NeuralNetworkClassifier(NeuralNetworkBase):
         self.model.eval()
         with torch.inference_mode():
             result = torch.argmax(self.model(torch.tensor(
-                guess.values.astype(np.float32)).to(self.device)), dim=1)
+                guess.values).float().to(self.device)), dim=1)
         if result.ndim == 1:
             return pd.Series(result.cpu().numpy())
         else:
             return pd.DataFrame(result.cpu().numpy())
 
 
-class NeuralNetworkRegressor(NeuralNetworkBase):
+class NeuralNetworkRegressor(NeuralNetworkBase, Model):
     task = 'regression'
 
     def train(self, data: pd.DataFrame, target: pd.DataFrame | pd.Series) -> None:

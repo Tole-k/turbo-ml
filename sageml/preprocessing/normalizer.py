@@ -6,12 +6,6 @@ from .type_inferer import TypeInferer
 
 
 class Normalizer(Preprocessor):
-    scaler: MinMaxScaler
-    target_scaler: MinMaxScaler
-    type_inferer: TypeInferer
-    
-    
-    
     def __init__(self) -> None:
         super().__init__()
         self.scaler = MinMaxScaler()
