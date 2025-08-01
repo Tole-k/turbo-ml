@@ -1,17 +1,25 @@
 import pandas as pd
 from sklearn.preprocessing import (
-    OneHotEncoder as sklearnOneHotEncoder,
-    LabelEncoder as sklearnLabelEncoder,
+    OneHotEncoder,
+    LabelEncoder,
 )
 from ..base.preprocess import Preprocessor
 from .type_inferer import TypeInferer
 
 
 class Encoder(Preprocessor):
+    encoder = OneHotEncoder
+    target_encoder = LabelEncoder
+    type_inferer = TypeInferer
+    column_order: pd.Index
+    categorical_cols: pd.Index
+    numerical_cols: pd.Index
+    encoded_cols: pd.Index
+
     def __init__(self) -> None:
         super().__init__()
-        self.encoder = sklearnOneHotEncoder(drop="if_binary", handle_unknown="ignore")
-        self.target_encoder = sklearnLabelEncoder()
+        self.encoder = OneHotEncoder(drop="if_binary", handle_unknown="ignore")
+        self.target_encoder = LabelEncoder()
         self.type_inferer = TypeInferer()
 
     def fit_transform(self, data: pd.DataFrame, unique_values_cap=20) -> pd.DataFrame:

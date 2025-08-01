@@ -12,7 +12,7 @@ from sageml.utils import options
 
 
 def train_meta_model(score_dataframe: pd.DataFrame, param_dataframe: pd.DataFrame,
-                     epochs: int = 7000) -> tuple[ModelArchitecture, Any, dict]:
+                     epochs: int = 7000, batch_size: int = 32) -> tuple[ModelArchitecture, Any, dict]:
     """Train meta model.
 
     Args:
@@ -50,8 +50,8 @@ def train_meta_model(score_dataframe: pd.DataFrame, param_dataframe: pd.DataFram
         'float32')).to(options.device), torch.tensor(y_test.values.astype
                                                      ('float32')).to(options.device))
 
-    train_loader = data_utils.DataLoader(train, batch_size=32)
-    test_loader = data_utils.DataLoader(test, batch_size=32)
+    train_loader = data_utils.DataLoader(train, batch_size=batch_size)
+    test_loader = data_utils.DataLoader(test, batch_size=batch_size)
 
     loss = float('inf')
     pbar = tqdm(range(epochs), total=epochs,
