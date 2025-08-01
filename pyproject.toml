@@ -2,6 +2,11 @@
 name = "sageml"
 version = "0.2.0"
 description = "SageML is library for automatic one-shot algorithm selection for tabular data using tda for extracting information about dataset."
+authors = [
+    {name = "Dawid64",email = "dawid.siera@gmail.com"},
+    {name = "Tole-k", email = "Anatol Kaczmarek <anatol.kaczmarek@gmail.com>"}
+]
+license = {text = "LICENSE"}
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
