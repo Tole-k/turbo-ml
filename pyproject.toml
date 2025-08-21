@@ -42,6 +42,9 @@ dev = [
     "pydataset>=0.2.0",
     "pytest>=8.3.5",
 ]
+mps = [
+    "tensorflow-metal>=1.2.0",
+]
 
 [project.scripts]
 sagedev = "sageml.dev.__main__:cli"
