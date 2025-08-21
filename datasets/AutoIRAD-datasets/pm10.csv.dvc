@@ -1,0 +1,5 @@
+outs:
+- md5: 49994bc1cc5f90ec57cc481945fc122d
+  size: 18687
+  hash: md5
+  path: pm10.csv

@@ -1,0 +1,5 @@
+outs:
+- md5: 66e9db77ef69adf6e1c7761dfaf0bbb4
+  size: 14892
+  hash: md5
+  path: braziltourism.csv

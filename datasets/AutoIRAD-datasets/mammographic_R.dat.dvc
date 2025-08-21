@@ -1,0 +1,5 @@
+outs:
+- md5: b18ec84d82bac3405b792c75ebf0b40b
+  size: 49156
+  hash: md5
+  path: mammographic_R.dat

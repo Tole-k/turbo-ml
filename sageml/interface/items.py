@@ -1,9 +1,9 @@
 """
 Module containing helpful pre-defined items for the SageML interface.
 """
-from ..utils import options
 import sys
 import textwrap
+from sageml.utils import options
 
 
 class Box:

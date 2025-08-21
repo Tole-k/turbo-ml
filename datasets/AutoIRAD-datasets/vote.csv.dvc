@@ -1,0 +1,5 @@
+outs:
+- md5: 725669753566a168e6214aa26f008c22
+  size: 18966
+  hash: md5
+  path: vote.csv

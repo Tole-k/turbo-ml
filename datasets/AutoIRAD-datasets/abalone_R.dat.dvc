@@ -1,0 +1,5 @@
+outs:
+- md5: b489dff4a8ab18b61a39986052407f31
+  size: 333340
+  hash: md5
+  path: abalone_R.dat

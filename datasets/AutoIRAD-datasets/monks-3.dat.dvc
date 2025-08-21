@@ -1,0 +1,5 @@
+outs:
+- md5: c1dce789ba26db9b55691e36c9f4d79d
+  size: 30239
+  hash: md5
+  path: monks-3.dat

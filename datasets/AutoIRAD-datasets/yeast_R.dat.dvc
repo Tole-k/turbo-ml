@@ -1,0 +1,5 @@
+outs:
+- md5: e904f265bc0c4fff10526939df382ec5
+  size: 123664
+  hash: md5
+  path: yeast_R.dat

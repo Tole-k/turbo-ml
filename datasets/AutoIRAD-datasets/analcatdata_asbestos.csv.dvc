@@ -1,0 +1,5 @@
+outs:
+- md5: 6a6b36fa29e02aa3bb3e62a2627979e7
+  size: 3841
+  hash: md5
+  path: analcatdata_asbestos.csv

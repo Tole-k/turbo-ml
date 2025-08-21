@@ -1,0 +1,5 @@
+outs:
+- md5: 7a0ebfaecca7669cc9430b2c7078e5b9
+  size: 12579
+  hash: md5
+  path: diggle_table_a2.csv

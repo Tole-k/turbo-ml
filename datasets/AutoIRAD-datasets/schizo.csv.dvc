@@ -1,0 +1,5 @@
+outs:
+- md5: 35cd25bd82a0a67b6c36e5226b5076fd
+  size: 27878
+  hash: md5
+  path: schizo.csv

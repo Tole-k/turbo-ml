@@ -1,0 +1,5 @@
+outs:
+- md5: a38609e00ecd5581be37b42135da6f4a
+  size: 19916
+  hash: md5
+  path: disclosure_z.csv

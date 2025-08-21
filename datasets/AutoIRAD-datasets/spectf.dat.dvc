@@ -1,0 +1,5 @@
+outs:
+- md5: f536c12cb1f5929f691dbee71189d728
+  size: 105764
+  hash: md5
+  path: spectf.dat

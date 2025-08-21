@@ -1,0 +1,5 @@
+outs:
+- md5: 799d0eade5a62a6c29e5e41a378d17a8
+  size: 4842
+  hash: md5
+  path: analcatdata_lawsuit.csv

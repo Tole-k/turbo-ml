@@ -1,0 +1,5 @@
+outs:
+- md5: a99b0903b961ce0a22c91f2a7f4816ba
+  size: 1078
+  hash: md5
+  path: schlvote.csv

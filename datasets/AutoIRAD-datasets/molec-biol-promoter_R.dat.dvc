@@ -1,0 +1,5 @@
+outs:
+- md5: 3ad079974a725fb26b13ac5f879e160f
+  size: 53888
+  hash: md5
+  path: molec-biol-promoter_R.dat

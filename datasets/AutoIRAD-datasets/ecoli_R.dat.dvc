@@ -1,0 +1,5 @@
+outs:
+- md5: d20a39d2f776d75dfb21f20a6a6d4b4e
+  size: 24453
+  hash: md5
+  path: ecoli_R.dat

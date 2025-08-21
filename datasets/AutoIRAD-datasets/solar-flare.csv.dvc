@@ -1,0 +1,5 @@
+outs:
+- md5: 9f3ec101b936615a1cb6d0c7d7d76e8e
+  size: 29094
+  hash: md5
+  path: solar-flare.csv

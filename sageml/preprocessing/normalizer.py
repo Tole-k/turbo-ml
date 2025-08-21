@@ -1,64 +1,60 @@
-from typing import Iterable, Tuple
 import numpy as np
 import pandas as pd
-from ..base.preprocess import Preprocessor
 from sklearn.preprocessing import MinMaxScaler
+from ..base.preprocess import Preprocessor
+from .type_inferer import TypeInferer
 
 
 class Normalizer(Preprocessor):
+    scaler: MinMaxScaler
+    target_scaler: MinMaxScaler
+    type_inferer: TypeInferer
+
     def __init__(self) -> None:
         super().__init__()
         self.scaler = MinMaxScaler()
         self.target_scaler = MinMaxScaler()
+        self.type_inferer = TypeInferer()
 
     def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        data = data.apply(lambda x: x.astype(
-            bool) if x.isin([0, 1]).all() and not pd.api.types.is_float_dtype(x) else x)
-        numeric_cols = data.select_dtypes(include=[np.number])
+        x_dtypes = self.type_inferer.infer(data)
+        numeric_cols = x_dtypes[x_dtypes.isin(["floating", "integer", "mixed-integer-float"])].index
         if not numeric_cols.size:
             return data
-        normalized_numeric_cols = pd.DataFrame(self.scaler.fit_transform(
-            numeric_cols), columns=self.scaler.get_feature_names_out())
-        data = data.apply(
-            lambda x: normalized_numeric_cols[x.name] if x.name in normalized_numeric_cols.columns else x)
+        numerical_frame = data[numeric_cols]
+        normalized_numeric_frame = pd.DataFrame(self.scaler.fit_transform(
+            numerical_frame), columns=self.scaler.get_feature_names_out()).astype(float)
+        data[numeric_cols] = normalized_numeric_frame
         return data
 
     def fit_transform_target(self, target: pd.Series) -> pd.Series:
-        if target.isin([0, 1]).all() and not pd.api.types.is_float_dtype(target):
-            target = target.astype(bool)
-        if pd.api.types.is_float_dtype(target):
-            target = pd.Series(self.target_scaler.fit_transform(
-                np.transpose([target]))[:, 0])
+        y_dtype = self.type_inferer.infer_target(target)
+        if y_dtype in ["floating", "mixed-integer-float"]:
+            target = pd.Series(self.target_scaler.fit_transform(np.transpose([target]))[:, 0]).astype(float)
         return target
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        data = data.apply(lambda x: x.astype(
-            bool) if x.isin([0, 1]).all() and not pd.api.types.is_float_dtype(x) else x)
-        numeric_cols = data.select_dtypes(include=[np.number])
+        x_dtypes = self.type_inferer.recall()
+        numeric_cols = x_dtypes[x_dtypes.isin(["floating", "integer", "mixed-integer-float"])].index
         if not numeric_cols.size:
             return data
-        normalized_numeric_cols = pd.DataFrame(
-            self.scaler.transform(numeric_cols),
-            columns=self.scaler.get_feature_names_out()
-        )
-        return data.apply(
-            lambda x: normalized_numeric_cols[x.name] if x.name in normalized_numeric_cols.columns else x
-        )
+        numerical_frame = data[numeric_cols]
+        normalized_numeric_frame = pd.DataFrame(self.scaler.transform(
+            numerical_frame), columns=self.scaler.get_feature_names_out()).astype(float)
+        data[numeric_cols] = normalized_numeric_frame
+        return data
 
     def transform_target(self, target: pd.Series) -> pd.Series:
-        if target.isin([0, 1]).all() and not pd.api.types.is_float_dtype(target):
-            target = target.astype(bool)
-        if pd.api.types.is_float_dtype(target):
-            target = self.target_scaler.transform(np.transpose([target]))
+        y_dtype = self.type_inferer.recall_target()
+        if y_dtype in ["floating", "mixed-integer-float"]:
+            target = pd.Series(self.target_scaler.transform(np.transpose([target]))[:, 0]).astype(float)
         return target
 
     def inverse_transform_target(self, target: pd.Series) -> pd.Series:
-        if target.isin([0, 1]).all():
-            target = target.astype(bool)
-        if pd.api.types.is_float_dtype(target):
-            target = self.target_scaler.inverse_transform(
-                np.transpose([target]))
-        return np.transpose(target)[0]
+        y_dtype = self.type_inferer.recall_target()
+        if y_dtype in ["floating", "mixed-integer-float"]:
+            target = pd.Series(self.target_scaler.inverse_transform(np.transpose([target]))[:, 0]).astype(float)
+        return target
 
 
 def main():
@@ -94,7 +90,7 @@ def main():
     print(data)
     print()
     target = normalizer.fit_transform_target(target)
-    print("After Standardazing Target:")
+    print("After Normalizing Target:")
     print(target)
     target = normalizer.inverse_transform_target(target)
     print("Inverse Target:")

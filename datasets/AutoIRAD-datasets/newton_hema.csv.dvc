@@ -1,0 +1,5 @@
+outs:
+- md5: 2aea5ff0905a78e53e5085eb14d60ffd
+  size: 2034
+  hash: md5
+  path: newton_hema.csv

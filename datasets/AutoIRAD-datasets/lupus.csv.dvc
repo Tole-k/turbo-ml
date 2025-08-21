@@ -1,0 +1,5 @@
+outs:
+- md5: 67fad021345702c4111a37da4ff6259f
+  size: 1585
+  hash: md5
+  path: lupus.csv

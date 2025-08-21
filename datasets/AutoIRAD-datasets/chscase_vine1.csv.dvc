@@ -1,0 +1,5 @@
+outs:
+- md5: a827727b8e974706a448558761cafef2
+  size: 1437
+  hash: md5
+  path: chscase_vine1.csv

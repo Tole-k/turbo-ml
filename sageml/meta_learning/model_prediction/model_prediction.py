@@ -1,12 +1,12 @@
-from abc import abstractmethod
-from typing import *
-from sageml.base import Model
-from sageml.base.model import get_models_list
 import random
 import math
+from abc import abstractmethod
+from typing import Any
+from sageml.base import Model
+from sageml.base.model import get_models_list
 
 
-def evaluate(model: Type[Model], data: Any, target: Any) -> float:
+def evaluate(model: type[Model], data: Any, target: Any) -> float:
     # TODO: Simple evaluation function, to be improved and moved somewhere else
     try:
         train_size = int(len(data) * 9/10)
@@ -29,7 +29,7 @@ class Predictor:
         pass
 
 
-class ExhaustiveSearch(Predictor):
+class ExhaustiveSearchPredictor(Predictor):
     """ Search for the best model by evaluating all models in the list and picking the best one based on the evaluation function
     This search ignores HPO steps and focus only on AS based on predefined hyper-parameters"""
 
@@ -37,7 +37,7 @@ class ExhaustiveSearch(Predictor):
         self.counter = 0
 
     def predict(self, data, target) -> Model:
-        best_model: Tuple = (None, -float('inf'))
+        best_model: tuple = (None, -float('inf'))
         models = get_models_list().copy()
         random.shuffle(models)
         for model_cls in models:
@@ -50,4 +50,4 @@ class ExhaustiveSearch(Predictor):
                 self.counter += 1
             except:
                 continue
-        return best_model[0]()
+        return best_model[0]

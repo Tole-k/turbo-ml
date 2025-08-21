@@ -1,11 +1,9 @@
-from typing import TYPE_CHECKING
-from .one_hot_encoder import OneHotEncoder
+from .encoder import Encoder
 from .nan_imputer import NanImputer
 from .combined import CombinedPreprocessor
 from .normalizer import Normalizer
-# if TYPE_CHECKING:
+
 from ..base import Preprocessor
-import pandas as pd
 
 
 def sota_preprocessor() -> Preprocessor:
@@ -19,4 +17,4 @@ def sota_preprocessor() -> Preprocessor:
     Returns:
         pd.DataFrame: Preprocessed data.
     """
-    return CombinedPreprocessor(NanImputer(), OneHotEncoder(), Normalizer())
+    return CombinedPreprocessor(NanImputer(), Encoder(), Normalizer())

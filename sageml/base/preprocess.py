@@ -1,5 +1,4 @@
-from abc import ABC, ABCMeta, abstractmethod
-from typing import Iterable, Tuple
+from abc import ABC, abstractmethod
 import pandas as pd
 
 
@@ -17,9 +16,9 @@ class Preprocessor(ABC):
         pass
 
     @abstractmethod
-    def fit_transform_target(self, target: pd.Series) -> pd.DataFrame | pd.Series:
+    def fit_transform_target(self, target: pd.Series) -> pd.Series:
         pass
 
     @abstractmethod
-    def transform_target(self, target: pd.Series) -> pd.DataFrame | pd.Series:
+    def transform_target(self, target: pd.Series) -> pd.Series:
         pass

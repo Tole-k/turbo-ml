@@ -1,0 +1,5 @@
+outs:
+- md5: a3f6e0a2ff18e05e7a82cf34d863f014
+  size: 66725
+  hash: md5
+  path: socmob.csv

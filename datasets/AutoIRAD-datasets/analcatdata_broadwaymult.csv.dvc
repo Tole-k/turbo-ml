@@ -1,0 +1,5 @@
+outs:
+- md5: 1d4a0a91cf6df4d8b5932bf218640191
+  size: 16306
+  hash: md5
+  path: analcatdata_broadwaymult.csv

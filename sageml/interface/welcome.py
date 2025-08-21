@@ -3,18 +3,19 @@ Main module implementing interactive command line interface for SageML library.
 """
 import sys
 from collections import defaultdict
-from .items import print_in_box, Box
-from .tutorial import TUTORIAL_DICT, TUTORIAL_NAMES
-from sageml import SageML
 import pandas as pd
 
-# TODO: Change Ascii art to SageML
-LOGO = """
-  ______           __                __  _____ 
- /_  __/_  _______/ /_  ____        /  |/  / / 
-  / / / / / / ___/ __ \\/ __ \\______/ /|_/ / /  
- / / / /_/ / /  / /_/ / /_/ /_____/ /  / / /___
-/_/  \\__,_/_/  /_.___/\\____/     /_/  /_/_____/
+from sageml.interface.items import print_in_box, Box
+from sageml.interface.tutorial import TUTORIAL_DICT, TUTORIAL_NAMES
+from sageml import SageML
+
+LOGO = r"""
+   _____                  __  _____ 
+  / ___/____ _____ ____  /  |/  / / 
+  \__ \/ __ `/ __ `/ _ \/ /|_/ / /  
+ ___/ / /_/ / /_/ /  __/ /  / / /___
+/____/\__,_/\__, /\___/_/  /_/_____/
+           /____/                   
 """
 
 WELCOME_MESSAGE = """
@@ -35,7 +36,7 @@ RESPONSES = defaultdict(lambda: None, {
     9: "Ehh, life, I don't have too many responses left so just choose some option",
     10: "Like I said, just choose some option!",
     12: "I though that most of people would lose on the last one",
-    13: "Okey, okey, you won, I give up, that's all I had"
+    13: "Okay, okay, you won, I give up, that's all I had"
 })
 
 CREDITS = """
@@ -181,8 +182,8 @@ def tutorial():
                     sys.stdout.write('\033[F')
                     _ask_inner(counter+1)
 
-        tutorial_name = TUTORIAL_NAMES.get(tutorial_number)
-        tutorial_text = TUTORIAL_DICT.get(tutorial_number)
+        tutorial_name = TUTORIAL_NAMES.get(tutorial_number, '')
+        tutorial_text = TUTORIAL_DICT.get(tutorial_number, '')
 
         size = print_in_box(tutorial_text, topic=tutorial_name)
         _ask_inner(0)

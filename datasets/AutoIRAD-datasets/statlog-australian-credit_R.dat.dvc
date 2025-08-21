@@ -1,0 +1,5 @@
+outs:
+- md5: 23a00f4936fa150ea11e253360fdcf64
+  size: 92747
+  hash: md5
+  path: statlog-australian-credit_R.dat

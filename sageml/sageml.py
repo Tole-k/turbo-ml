@@ -4,16 +4,18 @@ sageml.py
 This module provides the `SageML` class, our main class for out-of-the-box autoML solution.
 It does not provide additional functionalities but it combines other modules to provide a complete solution.
 """
-import pandas as pd
-
-from typing import Literal, Optional
+from typing import Any, Literal
 import time
 import logging
 
+import pandas as pd
+
 from sageml.preprocessing import sota_preprocessor
-from sageml.meta_learning import StatisticalParametersExtractor, ExhaustiveSearch, MetaModelGuesser, HyperTuner
+from sageml.meta_learning import ExhaustiveSearchPredictor, MetaModelGuesser
+from sageml.hpo import HyperTuner
+from sageml.meta_learning.dataset_parameters import sota_meta_features
 from sageml.algorithms import RandomGuesser as DummyModel
-from sageml.base import Model, __ALL_MODELS__
+from sageml.base import Model
 from sageml.utils import options
 
 logging.basicConfig(level=logging.INFO)
@@ -36,13 +38,13 @@ class SageML:
     df = pd.read_csv('your_dataset.csv')
 
     # Initialize SageML with the dataset and target column
-    sageml = SageML(dataset=df, target='target_column_name')
+    sml = SageML(dataset=df, target='target_column_name')
 
     # Prepare new data for prediction
     new_data = pd.read_csv('new_data.csv')
 
     # Make predictions
-    predictions = sageml.predict(new_data)
+    predictions = sml.predict(new_data)
     ```
 
     **Attributes:**
@@ -50,7 +52,8 @@ class SageML:
     """
     logger = logging.getLogger()
 
-    def __init__(self, dataset: pd.DataFrame, target: Optional[str] = None, verbose: bool = True, device: Literal['cpu', 'cuda', 'mps'] = 'cpu', threads: int = 1, hpo_trials: int = 10):
+    def __init__(self, dataset: pd.DataFrame, target: str | None = None, verbose: bool = True,
+                 device: Literal['cpu', 'cuda', 'mps', 'auto'] = 'auto', threads: int = 1, hpo_trials: int = 10, hpo_enabled: bool = True):
         """
         Initializes the `SageML` instance by performing the following steps:
 
@@ -74,10 +77,11 @@ class SageML:
         """
         options.device = device
         options.threads = threads
-        self.logger.setLevel(
-            'INFO') if verbose else self.logger.setLevel('ERROR')
+        self.logger.setLevel('INFO') if verbose else self.logger.setLevel('ERROR')
         self.logger.info("Initializing SageML...")
-        self.model: Model = DummyModel()
+        self._algorithm = DummyModel
+        self.model: Model
+        self.hyperparameters: dict[str, Any] = {}
         start_time = time.time()
         if target is None:
             # target = find_target() TODO: to be implemented
@@ -94,8 +98,8 @@ class SageML:
             raise Exception("Preprocessing failed")
         self.logger.info('Preprocessing completed')
         try:
-            extractor = StatisticalParametersExtractor(data, target_data)
-            dataset_params = extractor.describe_dataset()
+            dataset_params = sota_meta_features(options.meta_features)(
+                data, target_data, as_dict=True)
         except Exception:
             raise Exception("Dataset description failed")
         self.logger.info(
@@ -104,33 +108,50 @@ class SageML:
 
         try:
             guesser = MetaModelGuesser()
-            self.model = guesser.predict(dataset_params)
+            self._algorithm = guesser.predict(dataset_params)
         except Exception:
             raise Exception('Model optimization failed')
         model_guessing_time = time.time()
 
-        model_name = self.model.__class__.__name__
+        model_name = self._algorithm.__name__
         self.logger.info(f'''Model guessed: {
             model_name}, searching for better model (Currently disabled, unless guessing model is DummyModel)''')
-        if isinstance(self.model.__class__, DummyModel):
+
+        if isinstance(self._algorithm, DummyModel):
             try:
-                search = ExhaustiveSearch()
-                self.model = search.predict(data, target_data)
+                search = ExhaustiveSearchPredictor()
+                self._algorithm = search.predict(data, target_data)
                 self.logger.info(f'Looked at {search.counter} models')
             except Exception:
                 self.logger.info('Trying to find better model failed')
         model_selection_time = time.time()
 
-        try:
-            tuner = HyperTuner()
-            hyperparameters = tuner.optimize_hyperparameters(
-                self.model.__class__, (data, target_data), dataset_params.task, dataset_params.num_classes, dataset_params.target_features, device, hpo_trials, threads)
-            self.model = self.model.__class__(**hyperparameters)
-        except Exception:
-            self.logger.info('Hyperparameter optimization failed')
+        if hpo_enabled:
+            try:
+                tuner = HyperTuner()
+                self.hyperparameters = tuner.optimize_hyperparameters(
+                    self._algorithm, (data, target_data), dataset_params['task'], dataset_params['num_classes'], dataset_params['target_features'])
+            except Exception:
+                self.logger.info('Hyperparameter optimization failed')
+        else:
+            self.logger.info(
+                'Hyperparameter optimization disabled, setting default hyperparameters')
         hpo_time = time.time()
 
-        model_name = self.model.__class__.__name__
+        try:
+            self.model = self._algorithm(**self.hyperparameters)
+        except Exception:
+            logging.CRITICAL('Model initialization failed')
+            try:
+                self.hyperparameters = {}
+                self.model = self._algorithm(self.hyperparameters)
+            except Exception:
+                self.model = DummyModel()
+                self._algorithm = DummyModel
+                logging.CRITICAL(
+                    'Model initialization without hyperparameters failed')
+
+        model_name = self._algorithm.__name__
         self.logger.info(f"Training {model_name} model")
         try:
             self.model.train(data, target_data)

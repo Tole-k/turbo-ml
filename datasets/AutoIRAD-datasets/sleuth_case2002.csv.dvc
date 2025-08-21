@@ -1,0 +1,5 @@
+outs:
+- md5: 38a8495e5b587b3b74c064bdae9151b4
+  size: 2374
+  hash: md5
+  path: sleuth_case2002.csv

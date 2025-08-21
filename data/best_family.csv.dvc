@@ -1,0 +1,5 @@
+outs:
+- md5: e9c0c436847c83026df42cd4848ce3f6
+  size: 581
+  hash: md5
+  path: best_family.csv

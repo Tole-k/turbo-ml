@@ -1,0 +1,5 @@
+outs:
+- md5: 28a2bea922cd62cf91b89709e191432b
+  size: 2651
+  hash: md5
+  path: kidney.csv

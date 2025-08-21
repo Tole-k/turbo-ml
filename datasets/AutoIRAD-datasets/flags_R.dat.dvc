@@ -1,0 +1,5 @@
+outs:
+- md5: a3a752e64eb2a5dc70ed1007174ebcf9
+  size: 51969
+  hash: md5
+  path: flags_R.dat

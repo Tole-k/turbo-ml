@@ -1,8 +1,7 @@
-from typing import Iterable, Tuple
 import numpy as np
 import pandas as pd
-from ..base.preprocess import Preprocessor
 from sklearn.preprocessing import StandardScaler
+from ..base.preprocess import Preprocessor
 
 
 class Standardizer(Preprocessor):

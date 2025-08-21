@@ -1,0 +1,5 @@
+outs:
+- md5: 52502a58cff69b6e6f17a901b7f4fea3
+  size: 6145
+  hash: md5
+  path: prnn_synth.csv

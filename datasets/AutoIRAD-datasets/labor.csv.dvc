@@ -1,0 +1,5 @@
+outs:
+- md5: 93f39b12a7684492851e086eeb2820b0
+  size: 3411
+  hash: md5
+  path: labor.csv

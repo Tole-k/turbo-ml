@@ -1,0 +1,5 @@
+tensorflow
+pillow
+numpy
+pandas
+cv2

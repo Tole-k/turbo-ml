@@ -1,20 +1,25 @@
 # SageML
+
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/SageML)](https://pypi.org/project/SageML/)
+[![PyPI Downloads](https://static.pepy.tech/badge/sageml)](https://pepy.tech/projects/sageml)
 
 **SageML** is an out-of-the-box AutoML solution designed to simplify the machine learning workflow. With minimal user input, SageML automates model selection, hyperparameter optimization, and provides a trained machine learning model ready for deployment.
 
 ## Table of Contents
 
-- [Features](#features)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Usage](#usage)
-  - [Data Preprocessing](#data-preprocessing)
-  - [Model Selection](#model-selection)
-  - [Hyperparameter Optimization](#hyperparameter-optimization)
-  - [Model Evaluation](#model-evaluation)
-- [Contributing](#contributing)
-- [License](#license)
+- [SageML](#sageml)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Quick Start](#quick-start)
+  - [Usage](#usage)
+    - [Data Preprocessing](#data-preprocessing)
+    - [Model Selection](#model-selection)
+    - [Hyperparameter Optimization](#hyperparameter-optimization)
+    - [Model Evaluation](#model-evaluation)
+  - [Documentation](#documentation)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Features
 
@@ -40,13 +45,13 @@ pip install sageml
 Here's how you can get started with SageML in just a few lines of code:
 
 ```python
-from sageml import SageML
+from turbo_ml import SageML
 import pandas as pd
 # Initialize SageML with your dataset
-sageml = SageML(pd.read_csv('classified/data.csv'), target='target')
+sageML = SageML(pd.read_csv('classified/data.csv'), target='target')
 
 # Make predictions
-predictions = sageml.predict(pd.read_csv('not/classified/data.csv'))
+predictions = sageML.predict(pd.read_csv('not/classified/data.csv'))
 ```
 
 ## Usage
@@ -83,7 +88,7 @@ Detailed documentation should be available soon.
 
 We welcome contributions from the community!
 
-- **Bug Reports & Feature Requests**: Use the [GitHub Issues](https://github.com/Tole-k/SageML/issues) to report bugs or suggest features.
+- **Bug Reports & Feature Requests**: Use the [GitHub Issues](https://github.com/Tole-k/sageml/issues) to report bugs or suggest features.
 
 ## License
 

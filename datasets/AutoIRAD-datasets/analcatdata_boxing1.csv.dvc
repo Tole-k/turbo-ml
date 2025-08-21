@@ -1,0 +1,5 @@
+outs:
+- md5: 31e3461b6bd17a443f41a769644a7f27
+  size: 3186
+  hash: md5
+  path: analcatdata_boxing1.csv

@@ -1,0 +1,5 @@
+outs:
+- md5: dbb1d40015b5c20fb85eb2fa8d86f9b2
+  size: 18073
+  hash: md5
+  path: analcatdata_germangss.csv

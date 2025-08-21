@@ -1,0 +1,5 @@
+outs:
+- md5: 1bb9e39240c120723aa1824ab07d7e15
+  size: 144711
+  hash: md5
+  path: statlog-vehicle_R.dat

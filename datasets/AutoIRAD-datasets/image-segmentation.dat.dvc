@@ -1,0 +1,5 @@
+outs:
+- md5: 2f3e7985b00682d8a4aa1c0acbcaed41
+  size: 346325
+  hash: md5
+  path: image-segmentation.dat

@@ -1,0 +1,5 @@
+outs:
+- md5: a6ab018616465cbf6d7d4663601ce647
+  size: 83670
+  hash: md5
+  path: parameters.csv

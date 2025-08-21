@@ -1,0 +1,5 @@
+outs:
+- md5: cc5cc4a27d6da5d9143e3ce8d7addaf6
+  size: 4396
+  hash: md5
+  path: lowbwt.csv

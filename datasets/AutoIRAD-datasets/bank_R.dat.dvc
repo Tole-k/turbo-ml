@@ -1,0 +1,5 @@
+outs:
+- md5: f3ec11fc15a661228f7ff395eec575b9
+  size: 706095
+  hash: md5
+  path: bank_R.dat

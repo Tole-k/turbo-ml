@@ -1,0 +1,5 @@
+outs:
+- md5: b3c0f9690a5d977dcce12d8ecc3acb41
+  size: 46123
+  hash: md5
+  path: spect.dat
