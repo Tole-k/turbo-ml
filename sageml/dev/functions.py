@@ -1,6 +1,5 @@
 """ Functions for easier CLI operations """
 import os
-from typing import Callable
 import pandas as pd
 from tqdm import tqdm
 from pydataset import data as pydata

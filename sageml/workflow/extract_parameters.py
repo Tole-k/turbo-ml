@@ -12,7 +12,7 @@ from sageml.workflow.utils import read_data_file, list_dataset_files
 
 
 def generate_training_parameters(
-    datasets_dir: str = os.path.join("datasets", "AutoIRAD-datasets"),
+    datasets_dir: str = os.path.join("data", "datasets", "AutoIRAD-datasets"),
     output_path="parameters.csv",
     meta_data_extractor=SimpleMetaFeatures(),
     preprocessors=sota_preprocessor(),

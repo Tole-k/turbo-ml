@@ -85,4 +85,4 @@ def generate_AutoIRAD_dataset(results_path: str, datasets_dir: str, path1, image
 
 if __name__ == '__main__':
     generate_AutoIRAD_dataset(results_path=os.path.join('data', 'family_scores.csv'), datasets_dir=os.path.join(
-        'datasets', 'AutoIRAD-datasets'), path1='data/best_family.csv', images_dir=os.path.join('autoIRAD', 'images'), resolution=(512, 512))
+        'data', 'datasets', 'AutoIRAD-datasets'), path1='data/best_family.csv', images_dir=os.path.join('autoIRAD', 'images'), resolution=(512, 512))

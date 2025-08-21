@@ -65,11 +65,11 @@ def evaluate_algorithm(dataset: pd.DataFrame, dataset_name: str) -> pd.Series:
     return pd.Series(frame)
 
 
-def load_algorithms_evaluations(path: str = os.path.join('datasets', 'results_algorithms.csv')):
+def load_algorithms_evaluations(path: str = os.path.join('data', 'datasets', 'results_algorithms.csv')):
     return pd.read_csv(path)
 
 
-def evaluate_datasets(datasets_dir: str = os.path.join('datasets', 'AutoIRAD-datasets'),
+def evaluate_datasets(datasets_dir: str = os.path.join('data', 'datasets', 'AutoIRAD-datasets'),
                       output_path='results_algorithms.csv', slice_index: int | None = None) -> pd.DataFrame:
     if slice_index is not None:
         names = list_dataset_files(datasets_dir)[

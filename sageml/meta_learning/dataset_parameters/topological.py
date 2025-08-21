@@ -92,7 +92,7 @@ class RipserFeatures(MetaFeature):
 
 
 if __name__ == '__main__':
-    from datasets import get_iris
+    from data.datasets import get_iris
     # import pprint
     # dataset, target = get_iris()
     # parameters = RipserFeatures()(dataset, target, as_dict=dict)
