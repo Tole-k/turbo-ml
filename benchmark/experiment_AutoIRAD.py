@@ -28,7 +28,7 @@ class AutoIRADExperiment(BaseExperiment):
         with open(os.path.join('data', 'family_rma.csv'), 'r') as f:
             self.scores = pd.read_csv(f, index_col=0)
 
-        images_dir = os.path.join('autoIRAD', 'images')
+        images_dir = os.path.join('benchmark', 'autoIRAD', 'images')
         self.images = []
         ys = []
         self.dataset_names = []
