@@ -3,8 +3,8 @@ import abc
 import logging
 from glob import glob
 from enum import Enum, auto
-from typing import List
 from datetime import datetime
+from tqdm import tqdm
 
 import pandas as pd
 
@@ -91,7 +91,7 @@ class YamlWriter:
         self.decrease_indent()
         self.increase_indent(name)
 
-    def add_partial_result(self, dataset_name: str, result: List[str]):
+    def add_partial_result(self, dataset_name: str, result: list[str]):
         prefix = self.indent_string * self.indent_size + "- "
         self.file.write(prefix + f"{dataset_name}: {result}\n")
 
@@ -101,7 +101,7 @@ class BaseExperiment(abc.ABC):
         self.name = self.__class__.__name__
 
     @abc.abstractmethod
-    def rank_families(self, dataset: pd.DataFrame, dataset_name, task: Task, seed, duration: int) -> List[ClassificationFamily]:
+    def rank_families(self, dataset: pd.DataFrame, dataset_name, task: Task, seed, duration: int) -> list[ClassificationFamily]:
         pass
 
     def perform_experiments(self, seeds=SEEDS, durations=TEST_DURATIONS):
@@ -117,7 +117,11 @@ class BaseExperiment(abc.ABC):
 
     def _perform_experiment(self, seed, duration):
         parameters = self._get_parameters()
-        for (_, dataset_parameter) in parameters.iterrows():
+        pbar = tqdm(
+            parameters.iterrows(), total=len(parameters), desc="Processing datasets")
+        pbar.set_description(f"Processing datasets with seed {seed} and duration {duration}")
+        pbar.set_postfix(seed=seed, duration=duration)
+        for _, dataset_parameter in pbar:
             dataset_name = dataset_parameter["name"]
             num_classes = dataset_parameter["num_classes"]
             dataset = self.__get_dataset(dataset_name)

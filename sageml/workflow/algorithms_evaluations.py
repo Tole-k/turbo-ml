@@ -46,19 +46,22 @@ def evaluate_algorithm(dataset: pd.DataFrame, dataset_name: str) -> pd.Series:
     preprocessor = sota_preprocessor()
     x_train = preprocessor.fit_transform(x_train)
     x_test = preprocessor.transform(x_test)
+    y_train = preprocessor.fit_transform_target(y_train)
+    y_test = preprocessor.transform_target(y_test)
     frame = {'name': dataset_name}
     frame.update({model.__name__: np.nan for model in get_models_list()})
     for model_cls in get_models_list():
+        if model_cls.__name__ in ['XGBoostRegressor']:  # ignore regressors in classification tasks
+            continue
         try:
             model: Model = model_cls()
             model.train(x_train, y_train)
             y_pred = model.predict(x_test)
-            score = calculate_score(y_test, y_pred)
+            score = calculate_score(y_test.to_numpy(), np.asarray(y_pred))
             frame[model_cls.__name__] = score
         except Exception as e:
             frame[model_cls.__name__] = np.nan
             logger.error(f'Error while evaluating model {model_cls.__name__}: {e}')
-
     return pd.Series(frame)
 
 
