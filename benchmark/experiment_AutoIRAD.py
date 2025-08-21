@@ -6,8 +6,8 @@ import tensorflow as tf
 from PIL import Image
 import cv2
 
-from autoIRAD import AutoIRAD
-from .utils import BaseExperiment, _FAMILY_MAPPING
+from benchmark.autoIRAD import AutoIRAD
+from benchmark.utils import BaseExperiment, _FAMILY_MAPPING
 
 import sys
 sys.path.append('.')
