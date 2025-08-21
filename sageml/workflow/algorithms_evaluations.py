@@ -47,10 +47,7 @@ def evaluate_algorithm(dataset: pd.DataFrame, dataset_name: str) -> pd.Series:
     x_train = preprocessor.fit_transform(x_train)
     x_test = preprocessor.transform(x_test)
     y_train = preprocessor.fit_transform_target(y_train)
-    try:
-         y_test = preprocessor.transform_target(y_test)
-    except ValueError:
-        pass
+    y_test = preprocessor.transform_target(y_test)
     frame = {'name': dataset_name}
     frame.update({model.__name__: np.nan for model in get_models_list()})
     for model_cls in get_models_list():
