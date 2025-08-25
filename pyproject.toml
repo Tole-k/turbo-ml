@@ -8,7 +8,7 @@ authors = [
 ]
 license = {text = "LICENSE"}
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "certifi>=2025.4.26",
     "ipykernel>=6.30.1",
@@ -41,9 +41,6 @@ dev = [
     "click>=8.1.8",
     "pydataset>=0.2.0",
     "pytest>=8.3.5",
-]
-mps = [
-    "tensorflow-metal>=1.2.0",
 ]
 
 [project.scripts]
