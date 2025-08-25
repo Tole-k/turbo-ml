@@ -153,8 +153,8 @@ class BaseExperiment(abc.ABC):
         return pd.read_csv("data/parameters.csv")
 
     def __get_dataset(self, name: str):
-        csv_path = f"datasets/AutoIRAD-datasets/*{name}*.csv"
-        dat_path = f"datasets/AutoIRAD-datasets/*{name}*.dat"
+        csv_path = f"data/datasets/AutoIRAD-datasets/*{name}*.csv"
+        dat_path = f"data/datasets/AutoIRAD-datasets/*{name}*.dat"
         found_csv = list(glob(csv_path))
         found_dat = list(glob(dat_path))
         if not found_csv and not found_dat:

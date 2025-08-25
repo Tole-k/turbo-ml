@@ -1,6 +1,6 @@
 from sageml import SageML
 from sageml.utils import options
-from datasets import get_iris
+from data.datasets import get_iris
 
 
 def test_happy_path():

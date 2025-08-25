@@ -1,5 +1,4 @@
 from sklearn import datasets
-from typing import Tuple
 import pandas as pd
 import certifi
 import ssl
@@ -12,37 +11,37 @@ def fetching():
         cafile=certifi.where())
 
 
-def get_iris() -> Tuple[pd.DataFrame, pd.Series]:
+def get_iris() -> tuple[pd.DataFrame, pd.Series]:
     bunch = datasets.load_iris(as_frame=True)
     return bunch['data'], bunch['target']
 
 
-def get_wine() -> Tuple[pd.DataFrame, pd.Series]:
+def get_wine() -> tuple[pd.DataFrame, pd.Series]:
     bunch = datasets.load_wine(as_frame=True)
     return bunch['data'], bunch['target']
 
 
-def get_breast_cancer() -> Tuple[pd.DataFrame, pd.Series]:
+def get_breast_cancer() -> tuple[pd.DataFrame, pd.Series]:
     bunch = datasets.load_breast_cancer(as_frame=True)
     return bunch['data'], bunch['target']
 
 
-def get_digits() -> Tuple[pd.DataFrame, pd.Series]:
+def get_digits() -> tuple[pd.DataFrame, pd.Series]:
     bunch = datasets.load_digits(as_frame=True)
     return bunch['data'], bunch['target']
 
 
-def get_diabetes() -> Tuple[pd.DataFrame, pd.Series]:
+def get_diabetes() -> tuple[pd.DataFrame, pd.Series]:
     bunch = datasets.load_diabetes(as_frame=True)
     return bunch['data'], bunch['target']
 
 
-def get_linnerud() -> Tuple[pd.DataFrame, pd.DataFrame]:
+def get_linnerud() -> tuple[pd.DataFrame, pd.DataFrame]:
     bunch = datasets.load_linnerud(as_frame=True)
     return bunch['data'], bunch['target']
 
 
-def get_titanic() -> Tuple[pd.DataFrame, pd.Series]:
+def get_titanic() -> tuple[pd.DataFrame, pd.Series]:
     url = 'https://raw.githubusercontent.com/mwaskom/seaborn-data/master/titanic.csv'
     response = requests.get(url)
     titanic = pd.read_csv(StringIO(response.text))
@@ -52,7 +51,7 @@ def get_titanic() -> Tuple[pd.DataFrame, pd.Series]:
     return titanic, target
 
 
-def get_tips() -> Tuple[pd.DataFrame, pd.Series]:
+def get_tips() -> tuple[pd.DataFrame, pd.Series]:
     url = 'https://raw.githubusercontent.com/mwaskom/seaborn-data/master/tips.csv'
     response = requests.get(url)
     tips = pd.read_csv(StringIO(response.text))
@@ -61,7 +60,7 @@ def get_tips() -> Tuple[pd.DataFrame, pd.Series]:
     return tips, target
 
 
-def get_adult() -> Tuple[pd.DataFrame, pd.Series]:
+def get_adult() -> tuple[pd.DataFrame, pd.Series]:
     url = 'https://www.openml.org/data/get_csv/1595261/adult-census.arff'
     response = requests.get(url)
     adult = pd.read_csv(StringIO(response.text))
@@ -82,7 +81,7 @@ def get_adult() -> Tuple[pd.DataFrame, pd.Series]:
     return adult, target
 
 
-def get_heart_disease() -> Tuple[pd.DataFrame, pd.Series]:
+def get_heart_disease() -> tuple[pd.DataFrame, pd.Series]:
     url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/heart-disease/processed.cleveland.data'
     response = requests.get(url)
     columns = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg',

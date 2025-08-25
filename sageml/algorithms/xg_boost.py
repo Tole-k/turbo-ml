@@ -153,7 +153,7 @@ class XGBoostRegressor(Model):
 
 
 def __main__imports__():
-    from datasets import get_iris, get_diabetes
+    from data.datasets import get_iris, get_diabetes
     return get_iris, get_diabetes
 
 

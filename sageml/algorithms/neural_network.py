@@ -289,7 +289,7 @@ class NeuralNetworkModel(Model):
 
 
 def __main__imports__():
-    from datasets import get_iris
+    from data.datasets import get_iris
     return get_iris
 
 

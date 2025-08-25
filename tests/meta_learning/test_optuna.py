@@ -1,4 +1,4 @@
-from datasets import get_iris, get_breast_cancer
+from data.datasets import get_iris, get_breast_cancer
 from sageml.algorithms import XGBoostClassifier, SCIKIT_MODELS
 from sageml.hpo import HyperTuner
 

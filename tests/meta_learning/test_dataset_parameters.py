@@ -1,6 +1,6 @@
 import numpy as np
 from sageml.meta_learning.dataset_parameters import sota_meta_features, SimpleMetaFeatures, StatisticalMetaFeatures, PCAMetaFeatures, CombinedMetaFeatures
-from datasets import get_iris, get_diabetes
+from data.datasets import get_iris, get_diabetes
 
 
 def test_sota_np():
